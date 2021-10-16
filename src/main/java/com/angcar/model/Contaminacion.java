@@ -16,6 +16,6 @@ public class Contaminacion {
     String ano;
     String mes;
     String dia;
-    ArrayList horas;
-    ArrayList validacion;
+    ArrayList <String> horas;
+    ArrayList <String> validacion;
 }
