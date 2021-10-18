@@ -119,7 +119,7 @@ public class ReaderFiles {
         if (Files.exists(path)) {
             try (Stream<String> stream = Files.lines(path, Charset.forName("Cp1252"))) {
                 return Optional.of(stream
-                        .map(s -> s.split(";"))
+                        .map(s -> s.split(";", -1))
                         .map(splitted -> {
                             String estacion_codigo = splitted[0];
                             String zona_calidad_aire_descripcion = splitted[1];

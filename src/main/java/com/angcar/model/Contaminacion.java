@@ -8,14 +8,14 @@ import java.util.ArrayList;
 @Data
 @AllArgsConstructor
 public class Contaminacion {
-    String provincia;
-    String municipio;
-    String estacion;
-    String magnitud;
-    String punto_muestreo;
-    String ano;
-    String mes;
-    String dia;
-    ArrayList <String> horas;
-    ArrayList <String> validacion;
+    private String provincia;
+    private String municipio;
+    private String estacion;
+    private String magnitud;
+    private String punto_muestreo;
+    private String ano;
+    private String mes;
+    private String dia;
+    private ArrayList <String> horas;
+    private ArrayList <String> validacion;
 }

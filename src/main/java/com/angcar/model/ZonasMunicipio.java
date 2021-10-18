@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class ZonasMunicipio {
-    String zona_calidad_aire_codigo;
-    String zona_calidad_aire_descripcion;
-    String zona_calidad_aire_municipio;
+    private String zona_calidad_aire_codigo;
+    private String zona_calidad_aire_descripcion;
+    private String zona_calidad_aire_municipio;
 }

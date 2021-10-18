@@ -1,10 +1,15 @@
 package com.angcar;
 
+import com.angcar.io.MeteoReader;
 import com.angcar.io.ReaderFiles;
+import com.angcar.model.Contaminacion;
+import com.angcar.model.UbicacionEstaciones;
+import com.angcar.model.ZonasMunicipio;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -23,7 +28,7 @@ public class App {
         String[] argsTemporal = new String[2];
         argsTemporal[0] = "MADRID";
         argsTemporal[1] = "out";
-
+        //ReaderFiles.readDataOfPathZonasMunicipio().stream().forEach(System.out::println);
         /**
          * Detectar el número de argumentos y procesarlos
          */
@@ -35,11 +40,16 @@ public class App {
                 String ciudad = pair[0]; //Argumento ciudad
                 Path path = Paths.get(WORKING_DIRECTORY + File.separator + pair[1]); //Archivo
 
+
                 System.out.println(ciudad.toString());
                 System.out.println(path.toString());
-
                 //Lee los datos
-                //MeteoReader.readDataOfPathMeteorologia().stream().forEach(System.out::println);
+                //listaFiltrada.stream().filter(c -> c.getZona_calidad_aire_municipio().startsWith("M")).forEach(System.out::println);
+                //ReaderFiles.readDataOfPathUbicacionEstaciones().stream().filter();
+                //ReaderFiles.readDataOfPathUbicacionEstaciones().stream().forEach(System.out::println);
+                //ReaderFiles.readDataOfPathContaminacion().stream().forEach(System.out::println);
+                //ReaderFiles.readDataOfPathMeteorologia().stream().forEach(System.out::println);
+                //ReaderFiles.readDataOfPathZonasMunicipio().stream().forEach(System.out::println);
 
 
                 //MeteoReader.readDataOfPathContaminacion();
@@ -48,7 +58,7 @@ public class App {
 
                 //MeteoReader.readDataOfPathZonasMunicipio().stream().forEach(System.out::println);
 
-                ReaderFiles.readDataOfPathContaminacion().stream().forEach(System.out::println);
+                //ReaderFiles.readDataOfPathContaminacion().stream().forEach(System.out::println);
 
                 //MeteoReader.readDataOfPathZonasMunicipio().ifPresent((list) -> {
                     //servicio = new ServicioClimatologia(list);
