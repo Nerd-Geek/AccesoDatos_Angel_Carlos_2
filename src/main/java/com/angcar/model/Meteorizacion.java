@@ -1,21 +1,10 @@
 package com.angcar.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
 import java.util.ArrayList;
 
-@Data
-@AllArgsConstructor
-public class Meteorizacion {
-    private String provincia;
-    private String municipio;
-    private String estacion;
-    private String magnitud;
-    private String punto_muestreo;
-    private String ano;
-    private String mes;
-    private String dia;
-    private ArrayList horas;
-    private ArrayList validacion;
+public class Meteorizacion extends Medicion{
+
+    public Meteorizacion(String provincia, String municipio, String estacion, String magnitud, String punto_muestreo, int ano, int mes, int dia, ArrayList horas, ArrayList validacion) {
+        super(provincia, municipio, estacion, magnitud, punto_muestreo, ano, mes, dia, horas, validacion);
+    }
 }
