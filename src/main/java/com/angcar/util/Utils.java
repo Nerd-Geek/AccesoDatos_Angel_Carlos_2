@@ -31,59 +31,107 @@ public class Utils {
         magnMeteo = ReaderFiles.readDataOfPathMagnitudMeteorizacion();
     }
 
+    /**
+     * Obtiene una lista de las magnitudes según el nombre de la magnitud dada una lista
+     * @param nombreMagnitud
+     * @return
+     */
+    public static List<Medicion> obtenerMagnitudLista(String nombreMagnitud, List<Medicion> lista){
+        List<Medicion> estacion = lista.stream().filter(nombreMagn ->
+                nombreMagn.getMagnitud().equalsIgnoreCase(nombreMagnitud)).collect(Collectors.toList());
+        return estacion;
+    }
+
+    /**
+     * Filtra por ciudad
+     * @param nombreCiudad
+     * @return List<Medicion>
+     */
+    public static List<UbicacionEstaciones> filtrarPorCiudad(String nombreCiudad) {
+        return estacionesUbi.stream().filter(ubicacionEstaciones ->
+                ubicacionEstaciones.getEstacion_municipio().equalsIgnoreCase(nombreCiudad)).collect(Collectors.toList());
+    }
+
+    public static List<Medicion> filtrarMeteorizacion(String codigoCiudad) {
+        return meteo.stream().filter(punto_muestreo -> punto_muestreo.getPunto_muestreo()
+                .contains(codigoCiudad)).collect(Collectors.toList());
+    }
+
+    public static List<Medicion> filtrarContaminacion(String codigoCiudad) {
+        return contamina.stream().filter(punto_muestreo -> punto_muestreo.getPunto_muestreo()
+                .contains(codigoCiudad)).collect(Collectors.toList());
+    }
 
     //////
-    //////METEOROLOGÍA
+    //////MEDICIÓN
     //////
     /**
-     * Obtener código de estación dada una ciudad
+     * Obtiene la fecha de inicio
+     * @param medicion
+     * @return LocalDate
+     */
+    private static LocalDate obtenerFechaInicioMedicion(List<Medicion> medicion){
+        LocalDate fecha = medicion.stream().min((c, c1) -> Integer.compare(c.getDia(), c1.getDia()))
+                .map(s -> LocalDate.of(s.getAno(), s.getMes(), s.getDia())).get();
+
+        return fecha;
+    }
+
+    /**
+     * Obtiene la fecha final
+     * @param medicion
+     * @return LocalDate
+     */
+    private static LocalDate obtenerFechaFinalMedicion(List<Medicion> medicion){
+        LocalDate fecha = medicion.stream().max((c, c1) -> Integer.compare(c.getDia(), c1.getDia()))
+                .map(s -> LocalDate.of(s.getAno(), s.getMes(), s.getDia())).get();
+
+        return fecha;
+    }
+
+    /**
+     * Formatea la fecha en formato de España
+     * @param medicion
+     * @return List<String>
+     */
+    public static List<String> formatearFechaMedicion(List<Medicion> medicion){ //TODO: CHANGE CODE (OPTIMIZAR)
+        List<String> fecha = new ArrayList<>();
+
+        fecha.add(obtenerFechaInicioMedicion(medicion).format(DateTimeFormatter.ofPattern("dd/MM/yyyy 00:00:00")));
+        fecha.add(obtenerFechaFinalMedicion(medicion).format(DateTimeFormatter.ofPattern("dd/MM/yyyy 00:00:00")));
+
+        return fecha;
+    }
+
+
+
+
+    //////
+    //////TEMPORAL
+    //////
+
+    //TODO: ESTO DE ABAJO ES TEMPORAL; AL FINALIZAR EL PROYECTO REMOVERLO SI NO LO USAMOS
+    /**
+     * Obtener código de la estación principal dada una ciudad
      * @param nombreCiudad
      * @return String
      */
     public static String obtenerCodigo(String nombreCiudad) { //TODO: Al finalizar proyecto, comprobar public, privates, etc
-            Optional<UbicacionEstaciones> estacion = estacionesUbi.stream().filter(ubicacionEstaciones ->
-                    ubicacionEstaciones.getEstacion_municipio().equalsIgnoreCase(nombreCiudad)).findFirst();
+        Optional<UbicacionEstaciones> estacion = estacionesUbi.stream().filter(ubicacionEstaciones ->
+                ubicacionEstaciones.getEstacion_municipio().equalsIgnoreCase(nombreCiudad)).findFirst();
         return estacion.get().getEstacion_codigo();
     }
 
-    /**
-     * Obtiene la fecha de inicio del código de la ciudad pasada como parámetro
-     * @param codigoCiudad
-     * @return LocalDate
-     */
-    private static LocalDate obtenerFechaInicioMeteo(StringBuilder codigoCiudad){
-        LocalDate fecha = meteo.stream().filter(punto_muestreo -> punto_muestreo.getPunto_muestreo()
-                        .contains(codigoCiudad)).min((c, c1) -> Integer.compare(c.getDia(), c1.getDia()))
-                        .map(s -> LocalDate.of(s.getAno(), s.getMes(), s.getDia())).get();
-
-        return fecha;
-    }
 
     /**
-     * Obtiene la fecha final del código de la ciudad pasada como parámetro
-     * @param codigoCiudad
-     * @return LocalDate
+     * Obtiene el código de magnitud dado un nombre
+     * @param nombreMagnitud
+     * @return int
      */
-    private static LocalDate obtenerFechaFinalMeteo(StringBuilder codigoCiudad){
-        LocalDate fecha = meteo.stream().filter(punto_muestreo -> punto_muestreo.getPunto_muestreo()
-                        .contains(codigoCiudad)).max((c, c1) -> Integer.compare(c.getDia(), c1.getDia()))
-                .map(s -> LocalDate.of(s.getAno(), s.getMes(), s.getDia())).get();
-
-        return fecha;
-    }
-
-    /**
-     * Formatea la fecha en formato de España
-     * @param codigoCiudad
-     * @return List<String>
-     */
-    public static List<String> formatearFechaMeteo(StringBuilder codigoCiudad){
-        List<String> fecha = new ArrayList<>();
-
-        fecha.add(obtenerFechaInicioMeteo(codigoCiudad).format(DateTimeFormatter.ofPattern("dd/MM/yyyy 00:00:00")));
-        fecha.add(obtenerFechaFinalMeteo(codigoCiudad).format(DateTimeFormatter.ofPattern("dd/MM/yyyy 00:00:00")));
-
-        return fecha;
+    public static int obtenerCodigoMagnitudMeteo(String nombreMagnitud) {
+        Optional<MagnitudMeteorizacion> estacion = magnMeteo.stream().filter(ubicacionEstaciones ->
+                ubicacionEstaciones.getDescripcion_magnitud().contains(nombreMagnitud)).findFirst();
+        return estacion.get().getCodigo_magnitud();
     }
 
 
@@ -92,47 +140,6 @@ public class Utils {
 
 
 
-    //////
-    //////CONTAMINACIÓN
-    //////
-    /**
-     * Obtiene la fecha de inicio del código de la ciudad pasada como parámetro
-     * @param codigoCiudad
-     * @return LocalDate
-     */
-    private static LocalDate obtenerFechaInicioContamina(StringBuilder codigoCiudad){
-        LocalDate fecha = contamina.stream().filter(punto_muestreo -> punto_muestreo.getPunto_muestreo()
-                        .contains(codigoCiudad)).min((c, c1) -> Integer.compare(c.getDia(), c1.getDia()))
-                .map(s -> LocalDate.of(s.getAno(), s.getMes(), s.getDia())).get();
 
-        return fecha;
-    }
-
-    /**
-     * Obtiene la fecha final del código de la ciudad pasada como parámetro
-     * @param codigoCiudad
-     * @return LocalDate
-     */
-    private static LocalDate obtenerFechaFinalContamina(StringBuilder codigoCiudad){
-        LocalDate fecha = contamina.stream().filter(punto_muestreo -> punto_muestreo.getPunto_muestreo()
-                        .contains(codigoCiudad)).max((c, c1) -> Integer.compare(c.getDia(), c1.getDia()))
-                .map(s -> LocalDate.of(s.getAno(), s.getMes(), s.getDia())).get();
-
-        return fecha;
-    }
-
-    /**
-     * Formatea la fecha en formato de España
-     * @param codigoCiudad
-     * @return List<String>
-     */
-    public static List<String> formatearFechaContamina(StringBuilder codigoCiudad){
-        List<String> fecha = new ArrayList<>();
-
-        fecha.add(obtenerFechaInicioContamina(codigoCiudad).format(DateTimeFormatter.ofPattern("dd/MM/yyyy 00:00:00")));
-        fecha.add(obtenerFechaFinalContamina(codigoCiudad).format(DateTimeFormatter.ofPattern("dd/MM/yyyy 00:00:00")));
-
-        return fecha;
-    }
 
 }

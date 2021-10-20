@@ -1,5 +1,7 @@
 package com.angcar;
 
+import com.angcar.model.Medicion;
+import com.angcar.model.UbicacionEstaciones;
 import com.angcar.util.Utils;
 
 import java.io.File;
@@ -35,7 +37,19 @@ public class App {
             pares.stream().forEach(pair -> {
                 String ciudad = pair[0]; //Argumento ciudad
                 Path path = Paths.get(WORKING_DIRECTORY + File.separator + pair[1]); //Archivo
+                Utils.inicializarDatos();
 
+                //FILTRAMOS POR ESTACIONES LOS ARCHIVOS //TODO: Quitar toda la mierda innecesaria y dejar solo la imprescindible
+                List<UbicacionEstaciones> listaEstaciones = Utils.filtrarPorCiudad(pair[0]);
+                String codigoCiudad = listaEstaciones.get(0).getEstacion_codigo(); //TODO: Si queremos expandir y agregar zonas, hay que editar esto
+                List<Medicion> listaMeteorizacion = Utils.filtrarMeteorizacion(codigoCiudad);
+                List<Medicion> listaContaminacion = Utils.filtrarContaminacion(codigoCiudad);
+
+                System.out.println(Utils.formatearFechaMedicion(listaMeteorizacion));
+
+
+
+                /*
                 System.out.println(ciudad.toString());
                 System.out.println(path.toString());
 
@@ -44,7 +58,7 @@ public class App {
                 System.out.println(Utils.obtenerCodigo(argsTemporal[0]));
                 System.out.println(Utils.formatearFechaMeteo(new StringBuilder("28092005")));
                 System.out.println(Utils.formatearFechaContamina(new StringBuilder("28092005")));
-
+                */
                 //ReaderFiles.readDataOfPathZonasMunicipio().stream().forEach(System.out::println);
 
                 //MeteoReader.readDataOfPathZonasMunicipio().ifPresent((list) -> {
@@ -55,6 +69,9 @@ public class App {
 
 
                 //});
+
+                ////////////////////////////////////////////System.out.println(MeteoService.temperaturaMediaMensual("Leganés","Temperatura"));
+
             });
 
         } else {

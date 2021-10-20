@@ -3,6 +3,7 @@ package com.angcar.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 @Data
@@ -16,6 +17,6 @@ public class Medicion {
     private int ano;
     private int mes;
     private int dia;
-    private ArrayList horas;
-    private ArrayList validacion;
+    private String[] horas;
+    private String[] validacion;
 }
