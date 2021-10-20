@@ -6,7 +6,6 @@ import com.angcar.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class MeteoService {
 
@@ -34,7 +33,8 @@ public class MeteoService {
     /**
      * RADIACIÓN SOLAR
      */
-    public void radiacionSolarMediaMensual(){
+    public void radiacionSolarMediaMensual(List<Medicion> medicion){
+        List<Medicion> listaMagnitudes = Utils.obtenerMagnitudLista("Temperatura", medicion);
 
     }
 

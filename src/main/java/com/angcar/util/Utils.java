@@ -47,6 +47,7 @@ public class Utils {
      * @param nombreCiudad
      * @return List<Medicion>
      */
+
     public static List<UbicacionEstaciones> filtrarPorCiudad(String nombreCiudad) {
         return estacionesUbi.stream().filter(ubicacionEstaciones ->
                 ubicacionEstaciones.getEstacion_municipio().equalsIgnoreCase(nombreCiudad)).collect(Collectors.toList());
@@ -97,8 +98,8 @@ public class Utils {
     public static List<String> formatearFechaMedicion(List<Medicion> medicion){ //TODO: CHANGE CODE (OPTIMIZAR)
         List<String> fecha = new ArrayList<>();
 
-        fecha.add(obtenerFechaInicioMedicion(medicion).format(DateTimeFormatter.ofPattern("dd/MM/yyyy 00:00:00")));
-        fecha.add(obtenerFechaFinalMedicion(medicion).format(DateTimeFormatter.ofPattern("dd/MM/yyyy 00:00:00")));
+        fecha.add(obtenerFechaInicioMedicion(medicion).format(DateTimeFormatter.ofPattern("dd/MM/yyyy - 00:00:00")));
+        fecha.add(obtenerFechaFinalMedicion(medicion).format(DateTimeFormatter.ofPattern("dd/MM/yyyy - 00:00:00")));
 
         return fecha;
     }
@@ -134,12 +135,10 @@ public class Utils {
         return estacion.get().getCodigo_magnitud();
     }
 
+    public static List<String> nombreEstacion(String codigo) {
 
-
-
-
-
-
-
-
+        Optional<UbicacionEstaciones> estacion = estacionesUbi.stream().filter(ubicacionEstaciones ->
+                ubicacionEstaciones.getEstacion_codigo().substring(6));
+        return estacion.get().getCodigo_magnitud();
+    }
 }

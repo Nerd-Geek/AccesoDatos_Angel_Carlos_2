@@ -41,12 +41,16 @@ public class App {
 
                 //FILTRAMOS POR ESTACIONES LOS ARCHIVOS //TODO: Quitar toda la mierda innecesaria y dejar solo la imprescindible
                 List<UbicacionEstaciones> listaEstaciones = Utils.filtrarPorCiudad(pair[0]);
+                if (listaEstaciones.size() == 0) {
+                    System.out.printf("Ciudad no encontrada: %s", argsTemporal[0]);
+                    System.exit(0);
+                }
                 String codigoCiudad = listaEstaciones.get(0).getEstacion_codigo(); //TODO: Si queremos expandir y agregar zonas, hay que editar esto
                 List<Medicion> listaMeteorizacion = Utils.filtrarMeteorizacion(codigoCiudad);
                 List<Medicion> listaContaminacion = Utils.filtrarContaminacion(codigoCiudad);
 
                 System.out.println(Utils.formatearFechaMedicion(listaMeteorizacion));
-
+                System.out.println(Utils.formatearFechaMedicion(listaContaminacion));
 
 
                 /*
