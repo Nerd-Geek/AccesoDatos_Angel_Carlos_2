@@ -21,7 +21,7 @@ public class App {
          * ASÍ NO TENEMOS QUE CREAR Y EJECUTAR EL .JAR CADA VEZ
          */
         String[] argsTemporal = new String[2];
-        argsTemporal[0] = "RIVAS-VACIaMADRID";
+        argsTemporal[0] = "leganés";
         argsTemporal[1] = "out";
         //ReaderFiles.readDataOfPathZonasMunicipio().stream().forEach(System.out::println);
 
@@ -42,7 +42,8 @@ public class App {
                 Utils.inicializarDatos();
 
                 System.out.println(Utils.obtenerCodigo(argsTemporal[0]));
-
+                System.out.println(Utils.formatearFechaMeteo(new StringBuilder("28092005")));
+                System.out.println(Utils.formatearFechaContamina(new StringBuilder("28092005")));
 
                 //ReaderFiles.readDataOfPathZonasMunicipio().stream().forEach(System.out::println);
 

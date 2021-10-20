@@ -7,8 +7,10 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="servicioMeteorologico" />
+        <module name="Primera_Practica_Accesos" />
         <module name="AccesoDatos_Angel_Carlos" />
+        <module name="servicioMeteorologico" />
+        <module name="AngCar_PrimeraPractica" />
       </profile>
     </annotationProcessing>
   </component>
