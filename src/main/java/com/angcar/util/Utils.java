@@ -7,19 +7,16 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Utils {
     private static List<UbicacionEstaciones> estacionesUbi;
-    private static Optional<List<Contaminacion>> contamina;
-    private static Optional<List<Meteorizacion>> meteo;
-    private static Optional<List<ZonasMunicipio>> municipio;
-    private static Optional<List<MagnitudContaminacion>> magnContamina;
-    private static Optional<List<MagnitudMeteorizacion>> magnMeteo;
+    private static List<Contaminacion> contamina;
+    private static List<Meteorizacion> meteo;
+    private static List<ZonasMunicipio> municipio;
+    private static List<MagnitudContaminacion> magnContamina;
+    private static List<MagnitudMeteorizacion> magnMeteo;
 
     /**
      * Carga e inicializa los CSV's
@@ -35,40 +32,107 @@ public class Utils {
     }
 
 
+    //////
+    //////METEOROLOG脥A
+    //////
     /**
-     * Obtener c骴igo dada una ciudad
+     * Obtener c贸digo de estaci贸n dada una ciudad
      * @param nombreCiudad
      * @return String
      */
-    public static StringBuilder obtenerCodigo(String nombreCiudad) {
-        StringBuilder codigo = new StringBuilder("");
-
-            //Encontrar el primer elemento que coincida y obtener su c骴igo
-
-            List<UbicacionEstaciones> lista = estacionesUbi.stream().filter(ubicacionEstaciones ->
-                    ubicacionEstaciones.getEstacion_municipio().equalsIgnoreCase(nombreCiudad))
-                    .collect(Collectors.toList());
-
-            //TODO: DESPLAZAR ESTA CONDICI覰 A SERVICE
-            if (!lista.isEmpty()) {
-                codigo.append(lista.get(0).getEstacion_codigo());
-            }
-            else{
-                System.out.println("No se ha encontrado " + nombreCiudad);
-            }
-
-        return codigo;
+    public static String obtenerCodigo(String nombreCiudad) { //TODO: Al finalizar proyecto, comprobar public, privates, etc
+            Optional<UbicacionEstaciones> estacion = estacionesUbi.stream().filter(ubicacionEstaciones ->
+                    ubicacionEstaciones.getEstacion_municipio().equalsIgnoreCase(nombreCiudad)).findFirst();
+        return estacion.get().getEstacion_codigo();
     }
 
-    public static Optional<LocalDate> obtenerFechaInicio(Medicion medicion){
+    /**
+     * Obtiene la fecha de inicio del c贸digo de la ciudad pasada como par谩metro
+     * @param codigoCiudad
+     * @return LocalDate
+     */
+    private static LocalDate obtenerFechaInicioMeteo(StringBuilder codigoCiudad){
+        LocalDate fecha = meteo.stream().filter(punto_muestreo -> punto_muestreo.getPunto_muestreo()
+                        .contains(codigoCiudad)).min((c, c1) -> Integer.compare(c.getDia(), c1.getDia()))
+                        .map(s -> LocalDate.of(s.getAno(), s.getMes(), s.getDia())).get();
 
-        //TODO: FALTA AGREGAR HORA, MIN, SEC
-        LocalDate fecha=LocalDate.of(medicion.getAno(),medicion.getMes(),medicion.getDia());
-        fecha.format(DateTimeFormatter.ofPattern("dd/MM/yyyy",
-                new Locale("es", "ES")));
-
-        return Optional.of(fecha);
+        return fecha;
     }
 
+    /**
+     * Obtiene la fecha final del c贸digo de la ciudad pasada como par谩metro
+     * @param codigoCiudad
+     * @return LocalDate
+     */
+    private static LocalDate obtenerFechaFinalMeteo(StringBuilder codigoCiudad){
+        LocalDate fecha = meteo.stream().filter(punto_muestreo -> punto_muestreo.getPunto_muestreo()
+                        .contains(codigoCiudad)).max((c, c1) -> Integer.compare(c.getDia(), c1.getDia()))
+                .map(s -> LocalDate.of(s.getAno(), s.getMes(), s.getDia())).get();
+
+        return fecha;
+    }
+
+    /**
+     * Formatea la fecha en formato de Espa帽a
+     * @param codigoCiudad
+     * @return List<String>
+     */
+    public static List<String> formatearFechaMeteo(StringBuilder codigoCiudad){
+        List<String> fecha = new ArrayList<>();
+
+        fecha.add(obtenerFechaInicioMeteo(codigoCiudad).format(DateTimeFormatter.ofPattern("dd/MM/yyyy 00:00:00")));
+        fecha.add(obtenerFechaFinalMeteo(codigoCiudad).format(DateTimeFormatter.ofPattern("dd/MM/yyyy 00:00:00")));
+
+        return fecha;
+    }
+
+
+
+
+
+
+
+    //////
+    //////CONTAMINACI脫N
+    //////
+    /**
+     * Obtiene la fecha de inicio del c贸digo de la ciudad pasada como par谩metro
+     * @param codigoCiudad
+     * @return LocalDate
+     */
+    private static LocalDate obtenerFechaInicioContamina(StringBuilder codigoCiudad){
+        LocalDate fecha = contamina.stream().filter(punto_muestreo -> punto_muestreo.getPunto_muestreo()
+                        .contains(codigoCiudad)).min((c, c1) -> Integer.compare(c.getDia(), c1.getDia()))
+                .map(s -> LocalDate.of(s.getAno(), s.getMes(), s.getDia())).get();
+
+        return fecha;
+    }
+
+    /**
+     * Obtiene la fecha final del c贸digo de la ciudad pasada como par谩metro
+     * @param codigoCiudad
+     * @return LocalDate
+     */
+    private static LocalDate obtenerFechaFinalContamina(StringBuilder codigoCiudad){
+        LocalDate fecha = contamina.stream().filter(punto_muestreo -> punto_muestreo.getPunto_muestreo()
+                        .contains(codigoCiudad)).max((c, c1) -> Integer.compare(c.getDia(), c1.getDia()))
+                .map(s -> LocalDate.of(s.getAno(), s.getMes(), s.getDia())).get();
+
+        return fecha;
+    }
+
+    /**
+     * Formatea la fecha en formato de Espa帽a
+     * @param codigoCiudad
+     * @return List<String>
+     */
+    public static List<String> formatearFechaContamina(StringBuilder codigoCiudad){
+        List<String> fecha = new ArrayList<>();
+
+        fecha.add(obtenerFechaInicioContamina(codigoCiudad).format(DateTimeFormatter.ofPattern("dd/MM/yyyy 00:00:00")));
+        fecha.add(obtenerFechaFinalContamina(codigoCiudad).format(DateTimeFormatter.ofPattern("dd/MM/yyyy 00:00:00")));
+
+        return fecha;
+    }
 
 }
