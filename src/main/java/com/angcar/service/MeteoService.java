@@ -1,17 +1,26 @@
 package com.angcar.service;
 
+import com.angcar.model.Medicion;
+import com.angcar.model.UbicacionEstaciones;
 import com.angcar.util.Utils;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class MeteoService {
 
     /**
      * TEMPERATURA
      */
-    public void temperaturaMediaMensual(String nombreCiudad){
-       // Utils.
-       // Utils.obtenerCodigo(nombreCiudad)
+    public static String temperaturaMediaMensual(List<Medicion> medicion){
+
+        List<Medicion> listaMagnitudes = Utils.obtenerMagnitudLista("Temperatura", medicion);
+
+        //TODO: AHORA DE LAS MAGNITUDES HAY QUE COGER todas las temperaturas y devolver la media
+
+
+        return "";
     }
 
     public void momentoAndTemperaturaMax(){

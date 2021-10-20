@@ -3,6 +3,7 @@ package com.angcar.io;
 import com.angcar.model.*;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -44,15 +45,21 @@ public class ReaderFiles {
                             int mes = Integer.parseInt(splitted[6]);
                             int dia = Integer.parseInt(splitted[7]);
 
-                            ArrayList horas = new ArrayList();
-                            ArrayList validacion = new ArrayList();
+                            String[] horas = new String[24];
+                            String[] validacion = new String[24];
 
                             for (int n = 8; n < splitted.length; n++) {
+                                int arrayPos = 0;
+
                                 if (n % 2 == 0) {
-                                    horas.add(splitted[n]);
+                                    //Horas
+                                    horas[arrayPos] = splitted[n];
                                 } else {
-                                    validacion.add(splitted[n]);
+                                    //Validación
+                                    validacion[arrayPos] = splitted[n];
                                 }
+
+                                arrayPos +=1;
                             }
 
                             return new Meteorizacion(provincia, municipio, estacion, magnitud, punto_muestreo, ano, mes, dia, horas, validacion);
@@ -87,15 +94,21 @@ public class ReaderFiles {
                             int mes = Integer.parseInt(splitted[6]);
                             int dia = Integer.parseInt(splitted[7]);
 
-                            ArrayList horas = new ArrayList();
-                            ArrayList validacion = new ArrayList();
+                            String[] horas = new String[24];
+                            String[] validacion = new String[24];
 
                             for (int n = 8; n < splitted.length; n++) {
+                                int arrayPos = 0;
+
                                 if (n % 2 == 0) {
-                                    horas.add(splitted[n]);
+                                    //Horas
+                                    horas[arrayPos] = splitted[n];
                                 } else {
-                                    validacion.add(splitted[n]);
+                                    //Validación
+                                    validacion[arrayPos] = splitted[n];
                                 }
+
+                                arrayPos +=1;
                             }
 
                             return new Contaminacion(provincia, municipio, estacion, magnitud, punto_muestreo, ano, mes, dia, horas, validacion);
