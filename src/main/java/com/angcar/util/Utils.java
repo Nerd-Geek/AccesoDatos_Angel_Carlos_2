@@ -3,8 +3,6 @@ package com.angcar.util;
 import com.angcar.io.ReaderFiles;
 import com.angcar.model.*;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -135,10 +133,14 @@ public class Utils {
         return estacion.get().getCodigo_magnitud();
     }
 
-    public static List<String> nombreEstacion(String codigo) {
+    public static List<String> nombreEstacion(String ciudadd) {
 
-        Optional<UbicacionEstaciones> estacion = estacionesUbi.stream().filter(ubicacionEstaciones ->
-                ubicacionEstaciones.getEstacion_codigo().substring(6));
-        return estacion.get().getCodigo_magnitud();
+        String codigo = obtenerCodigo(ciudadd);
+        List<UbicacionEstaciones> nombreEstacion;
+        List<UbicacionEstaciones> estacion = estacionesUbi.stream().filter(ubicacionEstaciones ->
+                codigo.substring(6).equals(ubicacionEstaciones.getEstacion_codigo().substring(6)))
+                .collect(Collectors.toList());
+
+        return estacion.stream().map(s ->s.getEstacion_municipio()).collect(Collectors.toList());
     }
 }

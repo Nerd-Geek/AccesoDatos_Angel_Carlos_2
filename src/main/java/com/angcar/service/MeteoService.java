@@ -35,7 +35,6 @@ public class MeteoService {
      */
     public void radiacionSolarMediaMensual(List<Medicion> medicion){
         List<Medicion> listaMagnitudes = Utils.obtenerMagnitudLista("Temperatura", medicion);
-
     }
 
     public void momentoAndRadiacionMax(){
