@@ -1,6 +1,8 @@
 package com.angcar.io;
 
 import com.angcar.model.*;
+import com.angcar.util.Dia;
+import com.angcar.util.Hora;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -45,24 +47,16 @@ public class ReaderFiles {
                             int mes = Integer.parseInt(splitted[6]);
                             int dia = Integer.parseInt(splitted[7]);
 
-                            String[] horas = new String[24];
-                            String[] validacion = new String[24];
 
-                            for (int n = 8; n < splitted.length; n++) {
-                                int arrayPos = 0;
+                            Hora[] horas = new Hora[24];
 
-                                if (n % 2 == 0) {
-                                    //Horas
-                                    horas[arrayPos] = splitted[n];
-                                } else {
-                                    //Validación
-                                    validacion[arrayPos] = splitted[n];
-                                }
-
-                                arrayPos +=1;
+                            for (int i = 0; i < 24; i++){
+                                horas[i] = new Hora(splitted[8 + i], splitted[8 + i + 1], splitted[3]);
                             }
 
-                            return new Meteorizacion(provincia, municipio, estacion, magnitud, punto_muestreo, ano, mes, dia, horas, validacion);
+                            Dia dayHoras = new Dia(horas);
+
+                            return new Meteorizacion(provincia, municipio, estacion, magnitud, punto_muestreo, ano, mes, dia, dayHoras);
                         })
                         .collect(Collectors.toList()));
             } catch (IOException ex) {
@@ -94,24 +88,16 @@ public class ReaderFiles {
                             int mes = Integer.parseInt(splitted[6]);
                             int dia = Integer.parseInt(splitted[7]);
 
-                            String[] horas = new String[24];
-                            String[] validacion = new String[24];
 
-                            for (int n = 8; n < splitted.length; n++) {
-                                int arrayPos = 0;
+                            Hora[] horas = new Hora[24];
 
-                                if (n % 2 == 0) {
-                                    //Horas
-                                    horas[arrayPos] = splitted[n];
-                                } else {
-                                    //Validación
-                                    validacion[arrayPos] = splitted[n];
-                                }
-
-                                arrayPos +=1;
+                            for (int i = 0; i < 24; i++){
+                                horas[i] = new Hora(splitted[8 + i], splitted[8 + i + 1], splitted[3]);
                             }
 
-                            return new Contaminacion(provincia, municipio, estacion, magnitud, punto_muestreo, ano, mes, dia, horas, validacion);
+                            Dia dayHoras = new Dia(horas);
+
+                            return new Contaminacion(provincia, municipio, estacion, magnitud, punto_muestreo, ano, mes, dia, dayHoras);
 
                         })
                         .collect(Collectors.toList()); //)

@@ -2,6 +2,7 @@ package com.angcar;
 
 import com.angcar.model.Medicion;
 import com.angcar.model.UbicacionEstaciones;
+import com.angcar.service.MeteoService;
 import com.angcar.util.Utils;
 
 import java.io.File;
@@ -52,9 +53,11 @@ public class App {
 
                 System.out.println(Utils.formatearFechaMedicion(listaMeteorizacion));
                 System.out.println(Utils.formatearFechaMedicion(listaContaminacion));
+                Utils.obtenerEstaciones(argsTemporal[0]);
 
+                System.out.println(listaMeteorizacion);
 
-                System.out.println(Utils.nombreEstacion(argsTemporal[0]));
+                MeteoService.temperaturaMediaMensual(listaMeteorizacion);
                 /*
                 System.out.println(ciudad.toString());
                 System.out.println(path.toString());
