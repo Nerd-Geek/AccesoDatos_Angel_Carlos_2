@@ -23,7 +23,7 @@ public class App {
          * ASÍ NO TENEMOS QUE CREAR Y EJECUTAR EL .JAR CADA VEZ
          */
         String[] argsTemporal = new String[2];
-        argsTemporal[0] = "leganés";
+        argsTemporal[0] = "Torrejón de Ardoz";
         argsTemporal[1] = "out";
         //ReaderFiles.readDataOfPathZonasMunicipio().stream().forEach(System.out::println);
 
@@ -49,10 +49,12 @@ public class App {
                 List<Medicion> listaMeteorizacion = Utils.filtrarMeteorizacion(codigoCiudad);
                 List<Medicion> listaContaminacion = Utils.filtrarContaminacion(codigoCiudad);
 
+
                 System.out.println(Utils.formatearFechaMedicion(listaMeteorizacion));
                 System.out.println(Utils.formatearFechaMedicion(listaContaminacion));
 
 
+                System.out.println(Utils.nombreEstacion(argsTemporal[0]));
                 /*
                 System.out.println(ciudad.toString());
                 System.out.println(path.toString());
