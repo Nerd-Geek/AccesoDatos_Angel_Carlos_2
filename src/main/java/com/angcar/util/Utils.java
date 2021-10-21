@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Utils {
     private static List<UbicacionEstaciones> estacionesUbi;
@@ -31,12 +32,12 @@ public class Utils {
 
     /**
      * Obtiene una lista de las magnitudes según el nombre de la magnitud dada una lista
-     * @param nombreMagnitud
+     * @param idMagnitud
      * @return
      */
-    public static List<Medicion> obtenerMagnitudLista(String nombreMagnitud, List<Medicion> lista){
+    public static List<Medicion> obtenerMagnitudLista(int idMagnitud, List<Medicion> lista){
         List<Medicion> estacion = lista.stream().filter(nombreMagn ->
-                nombreMagn.getMagnitud().equalsIgnoreCase(nombreMagnitud)).collect(Collectors.toList());
+                nombreMagn.getMagnitud().equalsIgnoreCase(String.valueOf(idMagnitud))).collect(Collectors.toList());
         return estacion;
     }
 
@@ -133,14 +134,18 @@ public class Utils {
         return estacion.get().getCodigo_magnitud();
     }
 
-    public static List<String> nombreEstacion(String ciudadd) {
+    public static void obtenerEstaciones(String ciudadd) {
 
         String codigo = obtenerCodigo(ciudadd);
-        List<UbicacionEstaciones> nombreEstacion;
+
         List<UbicacionEstaciones> estacion = estacionesUbi.stream().filter(ubicacionEstaciones ->
-                codigo.substring(6).equals(ubicacionEstaciones.getEstacion_codigo().substring(6)))
+                        codigo.substring(6).equals(ubicacionEstaciones.getEstacion_codigo().substring(6)))
                 .collect(Collectors.toList());
 
-        return estacion.stream().map(s ->s.getEstacion_municipio()).collect(Collectors.toList());
+        estacion.stream()
+                .map(UbicacionEstaciones::getEstacion_municipio)
+                .forEach(System.out::println);
     }
+
+
 }
