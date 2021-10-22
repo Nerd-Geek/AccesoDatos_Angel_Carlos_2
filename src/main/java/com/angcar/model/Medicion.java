@@ -1,13 +1,8 @@
 package com.angcar.model;
 
-import com.angcar.util.Dia;
-import com.angcar.util.Hora;
+import com.angcar.util.DatosMedicionDia;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -20,5 +15,5 @@ public class Medicion {
     private int ano;
     private int mes;
     private int dia;
-    private Dia dayHoras;
+    private DatosMedicionDia dayHoras;
 }
