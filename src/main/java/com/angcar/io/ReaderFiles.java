@@ -1,18 +1,15 @@
 package com.angcar.io;
 
 import com.angcar.model.*;
-import com.angcar.util.Dia;
+import com.angcar.util.DatosMedicionDia;
 import com.angcar.util.Hora;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -54,7 +51,7 @@ public class ReaderFiles {
                                 horas[i] = new Hora(splitted[8 + i], splitted[8 + i + 1], splitted[3]);
                             }
 
-                            Dia dayHoras = new Dia(horas);
+                            DatosMedicionDia dayHoras = new DatosMedicionDia(horas);
 
                             return new Meteorizacion(provincia, municipio, estacion, magnitud, punto_muestreo, ano, mes, dia, dayHoras);
                         })
@@ -95,7 +92,7 @@ public class ReaderFiles {
                                 horas[i] = new Hora(splitted[8 + i], splitted[8 + i + 1], splitted[3]);
                             }
 
-                            Dia dayHoras = new Dia(horas);
+                            DatosMedicionDia dayHoras = new DatosMedicionDia(horas);
 
                             return new Contaminacion(provincia, municipio, estacion, magnitud, punto_muestreo, ano, mes, dia, dayHoras);
 

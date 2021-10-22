@@ -7,7 +7,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class Utils {
     private static List<UbicacionEstaciones> estacionesUbi;
@@ -145,6 +144,17 @@ public class Utils {
         estacion.stream()
                 .map(UbicacionEstaciones::getEstacion_municipio)
                 .forEach(System.out::println);
+    }
+
+    /**
+     * Obtiene las horas validadas
+     * @param dia
+     * @return
+     */
+    public static List<Hora> obtenerHorasValidadas(DatosMedicionDia dia){
+        return Arrays.stream(dia.getHoras()).filter(hora -> hora.getValidacion().equals("V"))
+                .collect(Collectors.toList());
+
     }
 
 

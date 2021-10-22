@@ -5,6 +5,18 @@ public class Hora {
     private String validacion;
     private String cod_magnitud;
 
+    public String getValor() {
+        return valor;
+    }
+
+    public String getValidacion() {
+        return validacion;
+    }
+
+    public String getCod_magnitud() {
+        return cod_magnitud;
+    }
+
     public Hora(String valor, String validacion, String cod_magnitud) {
         this.valor = valor;
         this.validacion = validacion;

@@ -1,15 +1,10 @@
 package com.angcar.model;
 
-import com.angcar.util.Dia;
-import com.angcar.util.Hora;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
+import com.angcar.util.DatosMedicionDia;
 
 public class Meteorizacion extends Medicion{
 
-    public Meteorizacion(String provincia, String municipio, String estacion, String magnitud, String punto_muestreo, int ano, int mes, int dia, Dia dayHoras) {
+    public Meteorizacion(String provincia, String municipio, String estacion, String magnitud, String punto_muestreo, int ano, int mes, int dia, DatosMedicionDia dayHoras) {
         super(provincia, municipio, estacion, magnitud, punto_muestreo, ano, mes, dia, dayHoras);
     }
 }
