@@ -1,6 +1,7 @@
 package com.angcar.service;
 
 import com.angcar.model.Medicion;
+import com.angcar.util.Hora;
 import com.angcar.util.Utils;
 import java.util.Arrays;
 import java.util.List;
@@ -13,23 +14,18 @@ public class MeteoService {
     /**
      * TEMPERATURA
      */
-    public static String temperaturaMediaMensual(List<Medicion> medicion){
+    public static Double temperaturaMediaMensual(List<Medicion> medicion, int idMagnitud){
+        List<Medicion> listaMagnitudes = Utils.obtenerMagnitudLista(idMagnitud, medicion);
 
-        //SUMAR TODAS LAS TEMPERATURAS DE LAS MAGNITUDES Y HACER MEDIA POR MES
+        listaMagnitudes.stream().mapToDouble(medicion1 ->
+                Utils.obtenerHorasValidadas(medicion1.getDayHoras()).stream().mapToDouble(value ->
+                        Double.parseDouble(value.getValor())).summaryStatistics().getAverage())
+                .summaryStatistics().getAverage();
 
-        //Utils.prueba();
-
-        List<Medicion> listaMagnitudes = Utils.obtenerMagnitudLista(83, medicion);
-        listaMagnitudes.stream().map(medicion1 -> Utils.obtenerHorasValidadas(medicion1.getDayHoras()))
-                .collect(Collectors.toList());
-
-
-       System.out.println(listaMagnitudes);
-
-        //TODO: AHORA DE LAS MAGNITUDES HAY QUE COGER todas las temperaturas y devolver la media
-
-
-        return "";
+        return listaMagnitudes.stream().mapToDouble(medicion1 ->
+                        Utils.obtenerHorasValidadas(medicion1.getDayHoras()).stream().mapToDouble(value ->
+                                Double.parseDouble(value.getValor())).summaryStatistics().getAverage())
+                .summaryStatistics().getAverage();
     }
 
     public void momentoAndTemperaturaMax(){

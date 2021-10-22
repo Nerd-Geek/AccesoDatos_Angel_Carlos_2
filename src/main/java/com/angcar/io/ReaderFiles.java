@@ -9,7 +9,9 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -46,9 +48,15 @@ public class ReaderFiles {
 
 
                             Hora[] horas = new Hora[24];
+                            NumberFormat format = NumberFormat.getInstance(Locale.FRANCE);
 
+
+
+                            int actualSplitted = 8;
                             for (int i = 0; i < 24; i++){
-                                horas[i] = new Hora(splitted[8 + i], splitted[8 + i + 1], splitted[3]);
+                                horas[i] = new Hora(splitted[actualSplitted].replace(',','.')
+                                        , splitted[actualSplitted + 1], splitted[3]);
+                                actualSplitted +=2;
                             }
 
                             DatosMedicionDia dayHoras = new DatosMedicionDia(horas);
@@ -85,11 +93,13 @@ public class ReaderFiles {
                             int mes = Integer.parseInt(splitted[6]);
                             int dia = Integer.parseInt(splitted[7]);
 
-
                             Hora[] horas = new Hora[24];
 
+                            int actualSplitted = 8;
                             for (int i = 0; i < 24; i++){
-                                horas[i] = new Hora(splitted[8 + i], splitted[8 + i + 1], splitted[3]);
+                                horas[i] = new Hora(splitted[actualSplitted].replace(',','.')
+                                        , splitted[actualSplitted + 1], splitted[3]);
+                                actualSplitted +=2;
                             }
 
                             DatosMedicionDia dayHoras = new DatosMedicionDia(horas);

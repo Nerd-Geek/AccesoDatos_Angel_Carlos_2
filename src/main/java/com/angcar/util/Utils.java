@@ -121,18 +121,6 @@ public class Utils {
         return estacion.get().getEstacion_codigo();
     }
 
-
-    /**
-     * Obtiene el código de magnitud dado un nombre
-     * @param nombreMagnitud
-     * @return int
-     */
-    public static int obtenerCodigoMagnitudMeteo(String nombreMagnitud) {
-        Optional<MagnitudMeteorizacion> estacion = magnMeteo.stream().filter(ubicacionEstaciones ->
-                ubicacionEstaciones.getDescripcion_magnitud().contains(nombreMagnitud)).findFirst();
-        return estacion.get().getCodigo_magnitud();
-    }
-
     public static void obtenerEstaciones(String ciudadd) {
 
         String codigo = obtenerCodigo(ciudadd);
@@ -154,7 +142,6 @@ public class Utils {
     public static List<Hora> obtenerHorasValidadas(DatosMedicionDia dia){
         return Arrays.stream(dia.getHoras()).filter(hora -> hora.getValidacion().equals("V"))
                 .collect(Collectors.toList());
-
     }
 
 
