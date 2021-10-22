@@ -14,100 +14,33 @@ public class MeteoService {
     /**
      * TEMPERATURA
      */
-    public static Double temperaturaMediaMensual(List<Medicion> medicion, int idMagnitud){
+    public static Double medicionMedia(List<Medicion> medicion, int idMagnitud) {
         List<Medicion> listaMagnitudes = Utils.obtenerMagnitudLista(idMagnitud, medicion);
 
-        listaMagnitudes.stream().mapToDouble(medicion1 ->
-                Utils.obtenerHorasValidadas(medicion1.getDayHoras()).stream().mapToDouble(value ->
-                        Double.parseDouble(value.getValor())).summaryStatistics().getAverage())
-                .summaryStatistics().getAverage();
-
-        return listaMagnitudes.stream().mapToDouble(medicion1 ->
+        double media = listaMagnitudes.stream().mapToDouble(medicion1 ->
                         Utils.obtenerHorasValidadas(medicion1.getDayHoras()).stream().mapToDouble(value ->
                                 Double.parseDouble(value.getValor())).summaryStatistics().getAverage())
                 .summaryStatistics().getAverage();
+
+        return Math.round(media * 100) / 100d;
     }
 
-    public void momentoAndTemperaturaMax(){
-            //maxBy
+    public static Double medicionMaxima(List<Medicion> medicion, int idMagnitud) {
+        List<Medicion> listaMagnitudes = Utils.obtenerMagnitudLista(idMagnitud, medicion);
+
+        double maxima = listaMagnitudes.stream().mapToDouble(medicion1 ->
+                Utils.obtenerHorasValidadas(medicion1.getDayHoras()).stream().mapToDouble(value ->
+                        Double.parseDouble(value.getValor())).summaryStatistics().getMax()).summaryStatistics().getMax();
+
+        return Math.round(maxima * 100) / 100d;
     }
 
-    public void momentoAndTemperaturaMin(){
-            //minBy
-    }
+    public static Double medicionMinima(List<Medicion> medicion, int idMagnitud) {
+        List<Medicion> listaMagnitudes = Utils.obtenerMagnitudLista(idMagnitud, medicion);
 
-    /**
-     * RADIACIÓN SOLAR
-     */
-    public void radiacionSolarMediaMensual(List<Medicion> medicion){
-       // List<Medicion> listaMagnitudes = Utils.obtenerMagnitudLista("Temperatura", medicion);
-    }
-
-    public void momentoAndRadiacionMax(){
-
-    }
-
-    public void momentoAndRadiacionMin(){
-
-    }
-
-    /**
-     * PRECIPITACIÓN
-     */
-    public void precipitacionMediaMensual(){
-
-    }
-
-    public void listRainDaysAndPrecipitacionEachDay(){
-        //TODO: Lista de días que ha llovido y precipitación de cada día.
-    }
-
-    public void histogramaPorDiasPrecipitación(){
-
-    }
-
-    /**
-     * HUMEDAD
-     */
-    public void humedadRelativaMediaMensual(){
-
-    }
-
-    public void momentoAndHumedadMax(){
-
-    }
-
-    public void momentoAndHumedadMin(){
-
-    }
-
-    /**
-     * VELOCIDAD DEL VIENTO
-     */
-    public void velocidadMediaVientoMensual(){
-
-    }
-
-    public void momentoAndMaxVel(){
-
-    }
-
-    public void momentoAndMinVel(){
-
+        double minima = listaMagnitudes.stream().mapToDouble(medicion1 ->
+                Utils.obtenerHorasValidadas(medicion1.getDayHoras()).stream().mapToDouble(value ->
+                        Double.parseDouble(value.getValor())).summaryStatistics().getMin()).summaryStatistics().getMin();
+        return Math.round(minima * 100) / 100d;
     }
 }
-
-
-
-/*
-private String provincia;
-    private String municipio;
-    private String estacion;
-    private String magnitud;
-    private String punto_muestreo;
-    private int ano;
-    private int mes;
-    private int dia;
-    private ArrayList horas;
-    private ArrayList validacion;
- */
