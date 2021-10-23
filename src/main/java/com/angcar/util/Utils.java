@@ -13,8 +13,7 @@ public class Utils {
     private static List<Contaminacion> contamina;
     private static List<Meteorizacion> meteo;
     private static List<ZonasMunicipio> municipio;
-    private static List<MagnitudContaminacion> magnContamina;
-    private static List<MagnitudMeteorizacion> magnMeteo;
+
 
     /**
      * Carga e inicializa los CSV's
@@ -25,8 +24,6 @@ public class Utils {
         contamina = ReaderFiles.readDataOfPathContaminacion();
         meteo = ReaderFiles.readDataOfPathMeteorologia();
         municipio = ReaderFiles.readDataOfPathZonasMunicipio();
-        magnContamina = ReaderFiles.readDataOfPathMagnitudContaminacion();
-        magnMeteo = ReaderFiles.readDataOfPathMagnitudMeteorizacion();
     }
 
     /**
@@ -88,6 +85,31 @@ public class Utils {
         return fecha;
     }
 
+
+    /**
+     * Obtiene la media diaria de una medición
+     * @param medicion
+     * @return
+     */
+    public static double obtenerMediaDiaria(Medicion medicion){
+            double media = Utils.obtenerHorasValidadas(medicion.getHoras())
+                    .stream()
+                    .mapToDouble(value -> Double.parseDouble(value.getValor()))
+                    .summaryStatistics().getAverage();
+
+            return Math.round(media * 100d) / 100d;
+    }
+
+    /**
+     * Obtiene la fecha de una medición
+     * @param medicion
+     * @return
+     */
+    public static LocalDate obtenerFechaMedicion(Medicion medicion){
+        LocalDate fecha = LocalDate.of(medicion.getAno(), medicion.getMes(), medicion.getDia());
+        return fecha;
+    }
+
     /**
      * Formatea la fecha en formato de España
      * @param medicion
@@ -136,11 +158,11 @@ public class Utils {
 
     /**
      * Obtiene las horas validadas
-     * @param dia
+     * @param horas
      * @return
      */
-    public static List<Hora> obtenerHorasValidadas(DatosMedicionDia dia){
-        return Arrays.stream(dia.getHoras()).filter(hora -> hora.getValidacion().equals("V"))
+    public static List<Hora> obtenerHorasValidadas(Hora[] horas){
+        return Arrays.stream(horas).filter(hora -> hora.getValidacion().equals("V"))
                 .collect(Collectors.toList());
     }
 

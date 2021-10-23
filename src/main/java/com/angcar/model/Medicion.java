@@ -1,6 +1,6 @@
 package com.angcar.model;
 
-import com.angcar.util.DatosMedicionDia;
+import com.angcar.util.Hora;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -15,5 +15,5 @@ public class Medicion {
     private int ano;
     private int mes;
     private int dia;
-    private DatosMedicionDia dayHoras;
+    private Hora[] horas;
 }
