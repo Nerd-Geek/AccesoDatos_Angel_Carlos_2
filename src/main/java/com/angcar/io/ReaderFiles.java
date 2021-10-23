@@ -1,7 +1,6 @@
 package com.angcar.io;
 
 import com.angcar.model.*;
-import com.angcar.util.DatosMedicionDia;
 import com.angcar.util.Hora;
 
 import java.io.IOException;
@@ -46,22 +45,17 @@ public class ReaderFiles {
                             int mes = Integer.parseInt(splitted[6]);
                             int dia = Integer.parseInt(splitted[7]);
 
-
                             Hora[] horas = new Hora[24];
                             NumberFormat format = NumberFormat.getInstance(Locale.FRANCE);
-
-
 
                             int actualSplitted = 8;
                             for (int i = 0; i < 24; i++){
                                 horas[i] = new Hora(splitted[actualSplitted].replace(',','.')
-                                        , splitted[actualSplitted + 1], splitted[3]);
+                                        , splitted[actualSplitted + 1]);
                                 actualSplitted +=2;
                             }
 
-                            DatosMedicionDia dayHoras = new DatosMedicionDia(horas);
-
-                            return new Meteorizacion(provincia, municipio, estacion, magnitud, punto_muestreo, ano, mes, dia, dayHoras);
+                            return new Meteorizacion(provincia, municipio, estacion, magnitud, punto_muestreo, ano, mes, dia, horas);
                         })
                         .collect(Collectors.toList()));
             } catch (IOException ex) {
@@ -98,13 +92,11 @@ public class ReaderFiles {
                             int actualSplitted = 8;
                             for (int i = 0; i < 24; i++){
                                 horas[i] = new Hora(splitted[actualSplitted].replace(',','.')
-                                        , splitted[actualSplitted + 1], splitted[3]);
+                                        , splitted[actualSplitted + 1]);
                                 actualSplitted +=2;
                             }
 
-                            DatosMedicionDia dayHoras = new DatosMedicionDia(horas);
-
-                            return new Contaminacion(provincia, municipio, estacion, magnitud, punto_muestreo, ano, mes, dia, dayHoras);
+                            return new Contaminacion(provincia, municipio, estacion, magnitud, punto_muestreo, ano, mes, dia, horas);
 
                         })
                         .collect(Collectors.toList()); //)
