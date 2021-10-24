@@ -18,21 +18,23 @@ public class DatosHTML {
 
         public static void mediciones(List<Medicion> listaMeteorizacion, List<Medicion> listaContaminacion){
 
-            /////////////////////////////
-            //INFORMACIÓN METEOROLÓGICA// /TODO: magnMeteo
-            /////////////////////////////
+    public static void mediciones(List<Medicion> listaMeteorizacion, List<Medicion> listaContaminacion, String nombreCiudad) {
 
-            datosMedicion(listaMeteorizacion,"Test", 81);
-            datosMedicion(listaMeteorizacion, "Dirección del viento", 82);
-            datosMedicion(listaMeteorizacion, "Temperatura", 83);
-            datosMedicion(listaMeteorizacion, "Humedad relativa", 86);
-            datosMedicion(listaMeteorizacion, "Presión atmosférica", 87);
-            datosMedicion(listaMeteorizacion, "Radiación solar", 88);
-            datosMedicion(listaMeteorizacion, "Precipitación", 89);
+        /////////////////////////////
+        //INFORMACIÓN METEOROLÓGICA// /TODO: magnMeteo
+        /////////////////////////////
 
-            /////////////////////////////
-            //INFORMACIÓN CONTAMINACION// //TODO: Utils.magnContamina
-            /////////////////////////////
+        magnMeteo.forEach((magnitudMeteorizacion) ->
+        {
+            try {
+               ChartUtilities.saveChartAsPNG(new File("src/main/resources/image/" +
+                               magnitudMeteorizacion.getCodigo_magnitud() +".png"),
+                        meteorizacion(listaMeteorizacion, magnitudMeteorizacion.getDescripcion_magnitud(),
+                                magnitudMeteorizacion.getCodigo_magnitud(), nombreCiudad), 300, 300);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
 
             Utils.getMagnContamina().forEach((magnitudContaminacion) -> {
                 try {
@@ -69,4 +71,4 @@ public class DatosHTML {
                     true, false);
         }
     }
-
+}

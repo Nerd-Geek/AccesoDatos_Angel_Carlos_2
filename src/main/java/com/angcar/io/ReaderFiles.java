@@ -21,7 +21,7 @@ public class ReaderFiles {
     private static final String PATH_METEO = "src/main/resources/data/calidad_aire_datos_meteo_mes.csv";
     private static final String PATH_CONTAMINACION = "src/main/resources/data/calidad_aire_datos_mes.csv";
 
-    private static final String PATH_MAGNITUDES_CONTAMINACION = "src/main/resources/data//magnitudes_contaminacion.csv";
+    private static final String PATH_MAGNITUDES_CONTAMINACION = "src/main/resources/data/magnitudes_contaminacion.csv";
     private static final String PATH_MAGNITUDES_METEO = "src/main/resources/data/magnitudes_meteorizacion.csv";
 
 
