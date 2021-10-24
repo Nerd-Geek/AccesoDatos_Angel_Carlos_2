@@ -1,31 +1,23 @@
 package com.angcar.service;
 
 import com.angcar.model.Medicion;
-import com.angcar.util.Hora;
 import com.angcar.util.Utils;
-
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class MeteoService {
 
     /**
      * TEMPERATURA
      */
-    public static Double medicionMedia(List<Medicion> medicion, int idMagnitud) {
-        List<Medicion> listaMediciones = Utils.obtenerMagnitudLista(idMagnitud, medicion);
-
-        if (!listaMediciones.isEmpty()){
+    public static Optional<Double> medicionMedia(List<Medicion> listaMediciones) {
             double media = listaMediciones.stream()
-                    .mapToDouble(medicion1 -> Utils.obtenerMediaDiaria(medicion1))
+                    .mapToDouble(Utils::obtenerMediaDiaria)
                     .summaryStatistics().getAverage();
 
-            return Math.round(media * 100d) / 100d;
-        }else{
-            return null;
-        }
+            return Optional.of(Math.round(media * 100d) / 100d);
     }
 
+/*
     public static Optional<Hora> medicionMaximaDos(List<Medicion> medicion, int idMagnitud) {
 
         List<Medicion> listaMediciones = Utils.obtenerMagnitudLista(idMagnitud, medicion);
@@ -50,39 +42,30 @@ public class MeteoService {
             return null;
         }
     }
+*/
 
-
-    public static Double medicionMaxima(List<Medicion> medicion, int idMagnitud) {
-        List<Medicion> listaMediciones = Utils.obtenerMagnitudLista(idMagnitud, medicion);
-        if (!listaMediciones.isEmpty()){
-
+    public static Optional<Double> medicionMaxima(List<Medicion> listaMediciones) {
             double maxima = listaMediciones.stream()
                     .mapToDouble(medicion1 -> Utils.obtenerHorasValidadas(medicion1.getHoras()).stream()
                             .mapToDouble(value -> Double.parseDouble(value.getValor()))
                             .summaryStatistics().getMax())
                     .summaryStatistics().getMax();
 
-            return Math.round(maxima * 100d) / 100d;
-        }else{
-            return null;
-        }
+            return Optional.of(Math.round(maxima * 100d) / 100d);
     }
 
-    public static Double medicionMinima(List<Medicion> medicion, int idMagnitud) {
-        List<Medicion> listaMediciones = Utils.obtenerMagnitudLista(idMagnitud, medicion);
-        if (!listaMediciones.isEmpty()){
+    public static Optional<Double> medicionMinima(List<Medicion> listaMediciones) {
             double minima = listaMediciones.stream()
                     .mapToDouble(medicion1 -> Utils.obtenerHorasValidadas(medicion1.getHoras()).stream()
                             .mapToDouble(value -> Double.parseDouble(value.getValor()))
                             .summaryStatistics().getMin())
                     .summaryStatistics().getMin();
 
-            return null;
-        }else{
-            return null;
-            }
+            return Optional.of(Math.round(minima * 100d) / 100d);
         }
-    public static List<Medicion> listaDiasPrecipitacion(List<Medicion> medicion) {
+
+
+   /* public static List<Medicion> listaDiasPrecipitacion(List<Medicion> medicion) {
         List<Medicion> listaMediciones = Utils.obtenerMagnitudLista(89, medicion);
 
         //Lista de días que ha llovido
@@ -93,5 +76,5 @@ public class MeteoService {
 
 
         return listaMediciones;
-    }
+    }*/
 }

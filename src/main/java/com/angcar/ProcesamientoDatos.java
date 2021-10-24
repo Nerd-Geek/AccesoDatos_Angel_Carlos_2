@@ -2,23 +2,24 @@ package com.angcar;
 
 import com.angcar.model.Medicion;
 import com.angcar.model.UbicacionEstaciones;
-import com.angcar.service.MeteoService;
+import com.angcar.service.DatosHTML;
 import com.angcar.util.Utils;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class ProcesamientoDatos {
-    private String[] argumentos;
+    private final String[] ARGS;
 
     private static ProcesamientoDatos procesamientoDatos;
 
     private ProcesamientoDatos(String[] argumentos){
-        this.argumentos = argumentos;
+        this.ARGS = argumentos;
         ejecutarPrograma();
     }
 
@@ -39,37 +40,46 @@ public class ProcesamientoDatos {
     public void ejecutarPrograma(){
         String WORKING_DIRECTORY = System.getProperty("user.dir");
 
-        List<String[]> pares = IntStream.iterate(0, i -> i += 2).limit(argumentos.length/2)
-                .mapToObj(n -> new String[] { argumentos[n], argumentos[n + 1] }).collect(Collectors.toList());
+        List<String[]> pares = IntStream.iterate(0, i -> i += 2).limit(ARGS.length/2)
+                .mapToObj(n -> new String[] { ARGS[n], ARGS[n + 1] }).collect(Collectors.toList());
 
-        pares.stream().forEach(pair -> {
+        pares.forEach(pair -> {
             String ciudad = pair[0]; //Argumento ciudad
             Path path = Paths.get(WORKING_DIRECTORY + File.separator + pair[1]); //Archivo
-            Utils.inicializarDatos();
 
-
+            if (Utils.inicializarDatos()){
             //FILTRAMOS POR ESTACIONES LOS ARCHIVOS
-            List<UbicacionEstaciones> listaEstaciones = Utils.filtrarPorCiudad(pair[0]);
-            if (listaEstaciones.size() == 0) {
-                System.out.printf("Ciudad no encontrada: %s", argumentos[0]);
+            Optional<List<UbicacionEstaciones>> listaEstaciones = Utils.filtrarPorCiudad(pair[0]);
+
+                if (listaEstaciones.isPresent()){
+
+                    List<UbicacionEstaciones> lista = listaEstaciones.get();
+
+                    String codigoCiudad = lista.get(0).getEstacion_codigo(); //TODO: Si queremos expandir y agregar zonas, hay que editar esto
+                    List<Medicion> listaMeteorizacion = Utils.filtrarMeteorizacion(codigoCiudad);
+                    List<Medicion> listaContaminacion = Utils.filtrarContaminacion(codigoCiudad);
+
+                    //TODO: ESTO PA'L PDF:
+
+                    System.out.println(ARGS[0]); //Nombre de la ciudad
+                    System.out.println(Utils.formatearFechaMedicion(listaMeteorizacion)); //Fecha inicio medición
+                    System.out.println(Utils.formatearFechaMedicion(listaContaminacion)); //Fecha final medición
+                    Utils.obtenerEstaciones(ARGS[0]); //Estaciones asociadas
+
+
+                    DatosHTML.mediciones(listaMeteorizacion,listaContaminacion);
+
+                    // System.out.println(MeteoService.medicionMaximaDos(listaMeteorizacion, 83));
+                    //System.out.println(listaMeteorizacion);
+
+                }else{
+                    System.out.printf("Ciudad no encontrada: %s", ciudad);
+                    System.exit(0);
+                }
+            }else{
+                System.err.println("Los archivos CSV no se han podido leer.");
                 System.exit(0);
             }
-            String codigoCiudad = listaEstaciones.get(0).getEstacion_codigo(); //TODO: Si queremos expandir y agregar zonas, hay que editar esto
-            List<Medicion> listaMeteorizacion = Utils.filtrarMeteorizacion(codigoCiudad);
-            List<Medicion> listaContaminacion = Utils.filtrarContaminacion(codigoCiudad);
-
-            //TODO: ESTO PA'L PDF:
-
-            System.out.println(argumentos[0]); //Nombre de la ciudad
-            System.out.println(Utils.formatearFechaMedicion(listaMeteorizacion)); //Fecha inicio medición
-            System.out.println(Utils.formatearFechaMedicion(listaContaminacion)); //Fecha final medición
-            Utils.obtenerEstaciones(argumentos[0]); //Estaciones asociadas
-
-                System.out.println(MeteoService.medicionMaximaDos(listaMeteorizacion, 83));
-
-
-
-            //System.out.println(listaMeteorizacion);
         });
     }
 }

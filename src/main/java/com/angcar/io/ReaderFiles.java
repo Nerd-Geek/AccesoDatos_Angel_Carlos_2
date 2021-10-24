@@ -8,31 +8,30 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.NumberFormat;
 import java.util.List;
-import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ReaderFiles {
 
     // Localización csv´s
-    private static final String PATH_ZONAS = "src/main/resources/calidad_aire_zonas.csv";
-    private static final String PATH_UBICA_ESTACIONES = "src/main/resources/calidad_aire_estaciones.csv";
-    private static final String PATH_METEO = "src/main/resources/calidad_aire_datos_meteo_mes.csv";
-    private static final String PATH_CONTAMINACION = "src/main/resources/calidad_aire_datos_mes.csv";
+    private static final String PATH_ZONAS = "src/main/resources/data/calidad_aire_zonas.csv";
+    private static final String PATH_UBICA_ESTACIONES = "src/main/resources/data/calidad_aire_estaciones.csv";
+    private static final String PATH_METEO = "src/main/resources/data/calidad_aire_datos_meteo_mes.csv";
+    private static final String PATH_CONTAMINACION = "src/main/resources/data/calidad_aire_datos_mes.csv";
 
-    private static final String PATH_MAGNITUDES_CONTAMINACION = "src/main/resources/magnitudes_contaminacion.csv";
-    private static final String PATH_MAGNITUDES_METEO = "src/main/resources/magnitudes_meteorizacion.csv";
+    private static final String PATH_MAGNITUDES_CONTAMINACION = "src/main/resources/data//magnitudes_contaminacion.csv";
+    private static final String PATH_MAGNITUDES_METEO = "src/main/resources/data/magnitudes_meteorizacion.csv";
 
 
-    public static List<Meteorizacion> readDataOfPathMeteorologia() {
+    public static Optional<List<Meteorizacion>> readDataOfPathMeteorologia() {
 
-        Path path = Paths.get(String.valueOf(PATH_METEO));
+        Path path = Paths.get(PATH_METEO);
 
         if (Files.exists(path)) {
             try (Stream<String> stream = Files.lines(path, Charset.forName("Cp1252"))) {
-                return (stream
+                return Optional.of(stream
                         .map(s -> s.split(";", -1)).skip(1)
                         .map(splitted -> {
 
@@ -46,9 +45,9 @@ public class ReaderFiles {
                             int dia = Integer.parseInt(splitted[7]);
 
                             Hora[] horas = new Hora[24];
-                            NumberFormat format = NumberFormat.getInstance(Locale.FRANCE);
 
                             int actualSplitted = 8;
+
                             for (int i = 0; i < 24; i++){
                                 horas[i] = new Hora(splitted[actualSplitted].replace(',','.')
                                         , splitted[actualSplitted + 1]);
@@ -60,20 +59,20 @@ public class ReaderFiles {
                         .collect(Collectors.toList()));
             } catch (IOException ex) {
                 System.err.println(ex.getMessage());
-                return null;// Optional.empty(); //TODO: Recordar también cambiar los nulls por los optional empty
+                return Optional.empty();
             }
         } else {
-            return null; //Optional.empty();
+            return Optional.empty();
         }
     }
 
     //TODO: IMPLEMENTAR DE NUEVO OPTIONAL EN TODOS LOS LISTENRS
-    public static List<Contaminacion> readDataOfPathContaminacion() {
-        Path path = Paths.get(String.valueOf(PATH_CONTAMINACION));
+    public static Optional<List<Contaminacion>> readDataOfPathContaminacion() {
+        Path path = Paths.get(PATH_CONTAMINACION);
 
         if (Files.exists(path)) {
             try (Stream<String> stream = Files.lines(path, Charset.forName("Cp1252"))) {
-                return //Optional.of(
+                return Optional.of(
                         stream
                         .map(s -> s.split(";", -1)).skip(1)
                         .map(splitted -> {
@@ -99,22 +98,22 @@ public class ReaderFiles {
                             return new Contaminacion(provincia, municipio, estacion, magnitud, punto_muestreo, ano, mes, dia, horas);
 
                         })
-                        .collect(Collectors.toList()); //)
+                        .collect(Collectors.toList()));
             } catch (IOException ex) {
                 System.err.println(ex.getMessage());
-                return null;//Optional.empty();
+                return Optional.empty();
             }
         } else {
-            return null;//Optional.empty();
+            return Optional.empty();
         }
     }
 
-    public static List<UbicacionEstaciones> readDataOfPathUbicacionEstaciones() {
+    public static Optional<List<UbicacionEstaciones>> readDataOfPathUbicacionEstaciones() {
         Path path = Paths.get(PATH_UBICA_ESTACIONES);
 
         if (Files.exists(path)) {
             try (Stream<String> stream = Files.lines(path, Charset.forName("Cp1252"))) {
-                return stream
+                return Optional.of(stream
                         .map(s -> s.split(";", -1)).skip(1)
                         .map(splitted -> {
                             String estacion_codigo = splitted[0];
@@ -172,25 +171,25 @@ public class ReaderFiles {
                                     , estacion_analizador_HNM
                             );
                         })
-                        .collect(Collectors.toList());
+                        .collect(Collectors.toList()));
             } catch (IOException ex) {
                 System.err.println(ex.getMessage());
-                return null;
+                return Optional.empty();
             }
         }
         else{
-            return null;
+            return Optional.empty();
         }
 
     }
 
-    public static List<ZonasMunicipio> readDataOfPathZonasMunicipio() {
+    public static Optional<List<ZonasMunicipio>> readDataOfPathZonasMunicipio() {
 
         Path path = Paths.get(PATH_ZONAS);
 
         if (Files.exists(path)) {
             try (Stream<String> stream = Files.lines(path, Charset.forName("Cp1252"))) {
-                return stream
+                return Optional.of(stream
                         .map(s -> s.split(";", -1)).skip(1)
                         .map(splitted -> {
 
@@ -202,23 +201,23 @@ public class ReaderFiles {
                                     zona_calidad_aire_descripcion, zona_calidad_aire_municipio);
 
                         })
-                        .collect(Collectors.toList());
+                        .collect(Collectors.toList()));
             } catch (IOException ex) {
                 System.err.println(ex.getMessage());
-                return null;//Optional.empty();
+                return Optional.empty();
             }
         } else {
-            return null; //Optional.empty();
+            return Optional.empty();
         }
     }
 
-    public static List<MagnitudContaminacion> readDataOfPathMagnitudContaminacion() {
+    public static Optional<List<MagnitudContaminacion>> readDataOfPathMagnitudContaminacion() {
 
         Path path = Paths.get(PATH_MAGNITUDES_CONTAMINACION);
 
         if (Files.exists(path)) {
             try (Stream<String> stream = Files.lines(path, Charset.forName("Cp1252"))) {
-                return (stream
+                return Optional.of(stream
                         .map(s -> s.split(";", -1)).skip(1)
                         .map(splitted -> {
 
@@ -226,9 +225,9 @@ public class ReaderFiles {
                             int codigo_magnitud = Integer.parseInt(splitted[0]);
                             String descripcion_magnitud = splitted[1];
                             int codigo_tecnica_medida = Integer.parseInt(splitted[2]);
-                            String descripcion_tecnica_medida = splitted[3];
-                            String unidad = splitted[4];
-                            String descripcion_unidad = splitted[5];
+                            String unidad = splitted[3];
+                            String descripcion_unidad = splitted[4];
+                            String descripcion_tecnica_medida = splitted[5];
 
                             return new MagnitudContaminacion(codigo_magnitud,
                                     descripcion_magnitud, codigo_tecnica_medida,
@@ -238,21 +237,20 @@ public class ReaderFiles {
                         .collect(Collectors.toList()));
             } catch (IOException ex) {
                 System.err.println(ex.getMessage());
-                return null;//Optional.empty();
+                return Optional.empty();
             }
         } else {
-            return null;//Optional.empty();
+            return Optional.empty();
         }
     }
 
-    public static List<MagnitudMeteorizacion> readDataOfPathMagnitudMeteorizacion() {
+    public static Optional<List<MagnitudMeteorizacion>> readDataOfPathMagnitudMeteorizacion() {
 
         Path path = Paths.get(PATH_MAGNITUDES_METEO);
-        List<MagnitudMeteorizacion> meteoList;
 
         if (Files.exists(path)) {
             try (Stream<String> stream = Files.lines(path, Charset.forName("Cp1252"))) {
-                return (stream
+                return Optional.of(stream
                         .map(s -> s.split(";", -1)).skip(1)
                         .map(splitted -> {
                             int codigo_magnitud = Integer.parseInt(splitted[0]);
@@ -262,16 +260,17 @@ public class ReaderFiles {
                             String descripcion_unidad = splitted[4];
 
                             return new MagnitudMeteorizacion(codigo_magnitud,
-                                    descripcion_magnitud, codigo_tecnica_medida, unidad, descripcion_unidad);
+                                    descripcion_magnitud, codigo_tecnica_medida, unidad,
+                                    descripcion_unidad, null);
                         })
                         .collect(Collectors.toList()));
             } catch (IOException ex) {
                 System.err.println(ex.getMessage());
-                return null;
+                return Optional.empty();
             }
         }
         else{
-            return null;
+            return Optional.empty();
         }
     }
 }
