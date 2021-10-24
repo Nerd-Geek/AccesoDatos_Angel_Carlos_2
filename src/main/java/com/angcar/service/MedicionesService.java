@@ -4,7 +4,7 @@ import com.angcar.model.Medicion;
 import com.angcar.util.Utils;
 import java.util.*;
 
-public class MeteoService {
+public class MedicionesService {
 
     /**
      * TEMPERATURA
