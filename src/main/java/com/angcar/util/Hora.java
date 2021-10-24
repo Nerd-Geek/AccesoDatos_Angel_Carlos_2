@@ -7,6 +7,5 @@ import lombok.Data;
 @AllArgsConstructor
 public class Hora {
     private String valor;
-    private String validacion;
-
+    private String validation;
 }

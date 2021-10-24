@@ -1,25 +1,20 @@
 package com.angcar.service;
 
-import com.angcar.io.ReaderFiles;
-import com.angcar.model.MagnitudContaminacion;
-import com.angcar.model.MagnitudMeteorizacion;
 import com.angcar.model.Medicion;
 import com.angcar.util.Utils;
 import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
-    public class DatosHTML {
-        private static List<MagnitudContaminacion> magnContamina;
-        private static List<MagnitudMeteorizacion> magnMeteo;
-
-        public DatosHTML(){
-            magnContamina = ReaderFiles.readDataOfPathMagnitudContaminacion();
-            magnMeteo = ReaderFiles.readDataOfPathMagnitudMeteorizacion();
-        }
+public class DatosHTML {
+    static private final String pathImages = "src/main/resources/image/";
 
         public static void mediciones(List<Medicion> listaMeteorizacion, List<Medicion> listaContaminacion){
 
@@ -27,62 +22,51 @@ import java.util.List;
             //INFORMACIÓN METEOROLÓGICA// /TODO: magnMeteo
             /////////////////////////////
 
-            meteorizacion(listaMeteorizacion, "Velocidad del viento", 81);
-            meteorizacion(listaMeteorizacion, "Dirección del viento", 82);
-            meteorizacion(listaMeteorizacion, "Temperatura", 83);
-            meteorizacion(listaMeteorizacion, "Humedad relativa", 86);
-            meteorizacion(listaMeteorizacion, "Presión atmosférica", 87);
-            meteorizacion(listaMeteorizacion, "Radiación solar", 88);
-            meteorizacion(listaMeteorizacion, "Precipitación", 89);
+            datosMedicion(listaMeteorizacion,"Test", 81);
+            datosMedicion(listaMeteorizacion, "Dirección del viento", 82);
+            datosMedicion(listaMeteorizacion, "Temperatura", 83);
+            datosMedicion(listaMeteorizacion, "Humedad relativa", 86);
+            datosMedicion(listaMeteorizacion, "Presión atmosférica", 87);
+            datosMedicion(listaMeteorizacion, "Radiación solar", 88);
+            datosMedicion(listaMeteorizacion, "Precipitación", 89);
 
             /////////////////////////////
             //INFORMACIÓN CONTAMINACION// //TODO: Utils.magnContamina
             /////////////////////////////
 
-            magnContamina.stream().forEach(magnitudContaminacion ->
-                    contaminacion(listaContaminacion, magnitudContaminacion.getDescripcion_magnitud(),
-                            magnitudContaminacion.getCodigo_magnitud()));
+            Utils.getMagnContamina().forEach((magnitudContaminacion) -> {
+                try {
+                    ChartUtilities.saveChartAsPNG(new File(pathImages +
+                                    magnitudContaminacion.getCodigo_magnitud() + ".png"),
+                            datosMedicion(listaContaminacion, magnitudContaminacion.getDescripcion_magnitud(),
+                                    magnitudContaminacion.getCodigo_magnitud()), 300, 300);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
         }
 
-        private static JFreeChart meteorizacion(List<Medicion> listaMeteorizacion, String nombreMagnitud, int idMagnitud) {
+        private static JFreeChart datosMedicion(List<Medicion> listaMedicion,String descripcion_magnitud, int idMagnitud) {
 
             DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
+            //Filtrar por magnitud
+            Optional<List<Medicion>> listaMediciones = Utils.obtenerMagnitudLista(idMagnitud, listaMedicion);
 
-            double mediaTemperatura = MeteoService.medicionMedia(listaMeteorizacion,idMagnitud);
-            dataset.setValue(mediaTemperatura, "Media", "Media");
+            if (listaMediciones.isPresent()) {
+                //Procesar datos
+                Optional<Double> mediaTemperatura = MeteoService.medicionMedia(listaMediciones.get());
+                Optional<Double> maximaTemperatura = MeteoService.medicionMaxima(listaMediciones.get());
+                Optional<Double> minimaTemperatura = MeteoService.medicionMinima(listaMediciones.get());
 
-            double maximaTemperatura =MeteoService.medicionMaxima(listaMeteorizacion,idMagnitud);
-            dataset.setValue(maximaTemperatura, "Máxima", "Máxima");
+                mediaTemperatura.ifPresent(aDouble -> dataset.setValue(aDouble, "Media", "Media"));
+                maximaTemperatura.ifPresent(aDouble -> dataset.setValue(aDouble, "Máxima", "Máxima"));
+                minimaTemperatura.ifPresent(aDouble -> dataset.setValue(aDouble, "Mínima", "Mínima"));
+            }
 
-            double minimaTemperatura = MeteoService.medicionMinima(listaMeteorizacion,idMagnitud);
-            dataset.setValue(minimaTemperatura, "Mínima", "Mínima");
-
-
-            JFreeChart chart = ChartFactory.createBarChart3D("Ciudad", "Magnitud",
-                    "Meteorización", dataset, PlotOrientation.HORIZONTAL, true,
+            return ChartFactory.createBarChart3D("Ciudad", "Magnitud",
+                    "Medición", dataset, PlotOrientation.HORIZONTAL, true,
                     true, false);
-            return chart;
-        }
-
-        private static JFreeChart contaminacion(List<Medicion> listaContaminacion, String nombreMagnitud, int idMagnitud) {
-
-            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-
-            double mediaTemperatura = MeteoService.medicionMedia(listaContaminacion,idMagnitud);
-            dataset.setValue(mediaTemperatura, "Media", "Media");
-
-            double maximaTemperatura =MeteoService.medicionMaxima(listaContaminacion,idMagnitud);
-            dataset.setValue(maximaTemperatura, "Máxima", "Máxima");
-
-            double minimaTemperatura = MeteoService.medicionMinima(listaContaminacion,idMagnitud);
-            dataset.setValue(minimaTemperatura, "Mínima", "Mínima");
-
-
-            JFreeChart chart = ChartFactory.createBarChart3D("Ciudad", "Magnitud",
-                    "Meteorización", dataset, PlotOrientation.HORIZONTAL, true,
-                    true, false);
-            return chart;
         }
     }
 

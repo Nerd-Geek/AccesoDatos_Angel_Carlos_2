@@ -6,6 +6,7 @@ import com.angcar.model.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 public class Utils {
@@ -13,39 +14,87 @@ public class Utils {
     private static List<Contaminacion> contamina;
     private static List<Meteorizacion> meteo;
     private static List<ZonasMunicipio> municipio;
+    private static List<MagnitudContaminacion> magnContamina;
+    private static List<MagnitudMeteorizacion> magnMeteo;
+
+    //GETTERS
+    public static List<MagnitudContaminacion> getMagnContamina() {
+        return magnContamina;
+    }
+
+    public static List<MagnitudMeteorizacion> getMagnMeteo() {
+        return magnMeteo;
+    }
 
 
     /**
      * Carga e inicializa los CSV's
      */
-    public static void inicializarDatos(){
+    public static boolean inicializarDatos(){
         //Leer .csv's
-        estacionesUbi = ReaderFiles.readDataOfPathUbicacionEstaciones();
-        contamina = ReaderFiles.readDataOfPathContaminacion();
-        meteo = ReaderFiles.readDataOfPathMeteorologia();
-        municipio = ReaderFiles.readDataOfPathZonasMunicipio();
+        AtomicBoolean realizado = new AtomicBoolean(true);
+
+        ReaderFiles.readDataOfPathUbicacionEstaciones().ifPresentOrElse(
+                ubicacionEstaciones -> estacionesUbi = ubicacionEstaciones,
+                () -> {System.err.println("No se ha localizado el csv de Estaciones");
+            realizado.set(false);
+        });
+
+        ReaderFiles.readDataOfPathContaminacion().ifPresentOrElse(
+                contaminacion -> contamina = contaminacion,
+                () -> {System.err.println("No se ha localizado el csv de contaminación");
+            realizado.set(false);
+        });
+
+        ReaderFiles.readDataOfPathMeteorologia().ifPresentOrElse(
+                meteorologia -> meteo = meteorologia,
+                () -> {System.err.println("No se ha localizado el csv de meteorología");
+            realizado.set(false);
+        });
+
+        ReaderFiles.readDataOfPathZonasMunicipio().ifPresentOrElse(
+                zonasMunicipio -> municipio = zonasMunicipio,
+                () -> {System.err.println("No se ha localizado el csv de municipio");
+            realizado.set(false);
+        });
+
+        ReaderFiles.readDataOfPathMagnitudContaminacion().ifPresentOrElse(
+                magnitudContamina -> magnContamina = magnitudContamina,
+                () -> {System.err.println("No se ha localizado el csv de magnitudes de contaminación");
+            realizado.set(false);
+        });
+
+        ReaderFiles.readDataOfPathMagnitudMeteorizacion().ifPresentOrElse(
+                magnitudMeteo -> magnMeteo = magnitudMeteo,
+                () -> {System.err.println("No se ha localizado el csv de magnitudes de meteorización");
+            realizado.set(false);
+        });
+
+        return realizado.get();
     }
 
     /**
      * Obtiene una lista de las magnitudes según el nombre de la magnitud dada una lista
-     * @param idMagnitud
+     * @param idMagnitud La ID de la magnitud
+     * @param lista Lista de mediciones
      * @return
      */
-    public static List<Medicion> obtenerMagnitudLista(int idMagnitud, List<Medicion> lista){
-        List<Medicion> estacion = lista.stream().filter(nombreMagn ->
-                nombreMagn.getMagnitud().equalsIgnoreCase(String.valueOf(idMagnitud))).collect(Collectors.toList());
-        return estacion;
+    public static Optional<List<Medicion>> obtenerMagnitudLista(int idMagnitud, List<Medicion> lista){
+        return Optional.of(lista.stream().filter(nombreMagn ->
+                        nombreMagn.getMagnitud().equalsIgnoreCase(String.valueOf(idMagnitud)))
+                .collect(Collectors.toList()));
+
     }
 
     /**
      * Filtra por ciudad
-     * @param nombreCiudad
+     * @param nombreCiudad El nombre de la ciudad
      * @return List<Medicion>
      */
 
-    public static List<UbicacionEstaciones> filtrarPorCiudad(String nombreCiudad) {
-        return estacionesUbi.stream().filter(ubicacionEstaciones ->
-                ubicacionEstaciones.getEstacion_municipio().equalsIgnoreCase(nombreCiudad)).collect(Collectors.toList());
+    public static Optional<List<UbicacionEstaciones>> filtrarPorCiudad(String nombreCiudad) {
+        return Optional.of(estacionesUbi.stream().filter(ubicacionEstaciones ->
+                ubicacionEstaciones.getEstacion_municipio().equalsIgnoreCase(nombreCiudad)).collect(Collectors.toList()));
     }
 
     public static List<Medicion> filtrarMeteorizacion(String codigoCiudad) {
@@ -88,7 +137,7 @@ public class Utils {
 
     /**
      * Obtiene la media diaria de una medición
-     * @param medicion
+     * @param medicion {@link Medicion}
      * @return
      */
     public static double obtenerMediaDiaria(Medicion medicion){
@@ -102,7 +151,7 @@ public class Utils {
 
     /**
      * Obtiene la fecha de una medición
-     * @param medicion
+     * @param medicion {@link Medicion}
      * @return
      */
     public static LocalDate obtenerFechaMedicion(Medicion medicion){
@@ -162,7 +211,7 @@ public class Utils {
      * @return
      */
     public static List<Hora> obtenerHorasValidadas(Hora[] horas){
-        return Arrays.stream(horas).filter(hora -> hora.getValidacion().equals("V"))
+        return Arrays.stream(horas).filter(hora -> hora.getValidation().equals("V"))
                 .collect(Collectors.toList());
     }
 

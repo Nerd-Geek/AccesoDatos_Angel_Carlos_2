@@ -1,14 +1,7 @@
 package com.angcar.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
-@Data
-@AllArgsConstructor
-public class MagnitudMeteorizacion {
-    private int codigo_magnitud;
-    private String descripcion_magnitud;
-    private int codigo_tecnica_medida;
-    private String unidad;
-    private String descripcion_unidad;
+public class MagnitudMeteorizacion extends Magnitud{
+    public MagnitudMeteorizacion(int codigo_magnitud, String descripcion_magnitud, int codigo_tecnica_medida, String unidad, String descripcion_unidad, String descripcion_tecnica_medida) {
+        super(codigo_magnitud, descripcion_magnitud, codigo_tecnica_medida, unidad, descripcion_unidad, descripcion_tecnica_medida);
+    }
 }
