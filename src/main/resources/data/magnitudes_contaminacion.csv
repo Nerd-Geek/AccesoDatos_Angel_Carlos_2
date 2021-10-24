@@ -1,15 +1,15 @@
-ï»¿CÃ³digo magnitud;DescripciÃ³n magnitud;CÃ³digo tÃ©cnica de medida;DescripciÃ³n tÃ©cnica de medida;Unidad;DescripciÃ³n unidad
-1;DiÃ³xido de azufre;38;Fluorescencia ultravioleta;Î¼g/mÂ³;microgramos por metro cÃºbico
-6;MonÃ³xido de carbono;48;EspectrometrÃ­a infrarroja no dispersiva;mg/mÂ³;miligramos por metro cÃºbico
-7;MonÃ³xido de nitrÃ³geno;8;Quimioluminiscencia;Î¼g/mÂ³;microgramos por metro cÃºbico
-8;DiÃ³xido de nitrÃ³geno;8;Quimioluminiscencia;Î¼g/mÂ³;microgramos por metro cÃºbico
-9;PartÃ­culas en suspensiÃ³n < PM2,5;49;AbsorciÃ³n beta;Î¼g/mÂ³;microgramos por metro cÃºbico
-10;PartÃ­culas en suspensiÃ³n < PM10;49;AbsorciÃ³n beta;Î¼g/mÂ³;microgramos por metro cÃºbico
-12;Ã“xidos de nitrÃ³geno;8;Quimioluminiscencia;Î¼g/mÂ³;microgramos por metro cÃºbico
-14;Ozono;6;AbsorciÃ³n ultravioleta;Î¼g/mÂ³;microgramos por metro cÃºbico
-20;Tolueno;59;CromatografÃ­a de gases;Î¼g/mÂ³;microgramos por metro cÃºbico
-22;Black Carbon;7;AbsorciÃ³n de luz;Î¼g/mÂ³;microgramos por metro cÃºbico
-30;Benceno;59;CromatografÃ­a de gases;Î¼g/mÂ³;microgramos por metro cÃºbico
-42;Hidrocarburos totales;2;IonizaciÃ³n llama;mg/mÂ³;miligramos por metro cÃºbico
-44;Hidrocarburos no metÃ¡nicos;2;IonizaciÃ³n llama;mg/mÂ³;miligramos por metro cÃºbico
-431;MetaParaXileno ;59;CromatografÃ­a de gases ;Î¼g/mÂ³;microgramos por metro cÃºbico
+Código magnitud;Descripción magnitud;Código técnica de medida;Descripción técnica de medida;Unidad;Descripción unidad
+1;Dióxido de azufre;38;Fluorescencia ultravioleta;?g/m³;microgramos por metro cúbico
+6;Monóxido de carbono;48;Espectrometría infrarroja no dispersiva;mg/m³;miligramos por metro cúbico
+7;Monóxido de nitrógeno;8;Quimioluminiscencia;?g/m³;microgramos por metro cúbico
+8;Dióxido de nitrógeno;8;Quimioluminiscencia;?g/m³;microgramos por metro cúbico
+9;Partículas en suspensión < PM2,5;49;Absorción beta;?g/m³;microgramos por metro cúbico
+10;Partículas en suspensión < PM10;49;Absorción beta;?g/m³;microgramos por metro cúbico
+12;Óxidos de nitrógeno;8;Quimioluminiscencia;?g/m³;microgramos por metro cúbico
+14;Ozono;6;Absorción ultravioleta;?g/m³;microgramos por metro cúbico
+20;Tolueno;59;Cromatografía de gases;?g/m³;microgramos por metro cúbico
+22;Black Carbon;7;Absorción de luz;?g/m³;microgramos por metro cúbico
+30;Benceno;59;Cromatografía de gases;?g/m³;microgramos por metro cúbico
+42;Hidrocarburos totales;2;Ionización llama;mg/m³;miligramos por metro cúbico
+44;Hidrocarburos no metánicos;2;Ionización llama;mg/m³;miligramos por metro cúbico
+431;MetaParaXileno ;59;Cromatografía de gases ;?g/m³;microgramos por metro cúbico
