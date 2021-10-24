@@ -1,6 +1,5 @@
 package com.angcar.model;
 
-import com.angcar.util.Hora;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

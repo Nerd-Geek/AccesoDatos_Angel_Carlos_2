@@ -6,7 +6,7 @@ public class App {
          * TODO: refactorizar nombre : argsTemporal por args y borrar la array y declaraciones de abajo
          */
         String[] argsTemporal = new String[2];
-        argsTemporal[0] = "fuenlabrada";
+        argsTemporal[0] = "leganés";
         argsTemporal[1] = "out";
 
         //Dejar solo la línea de abajo

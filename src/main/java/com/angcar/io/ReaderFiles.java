@@ -1,7 +1,7 @@
 package com.angcar.io;
 
 import com.angcar.model.*;
-import com.angcar.util.Hora;
+import com.angcar.model.Hora;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -50,7 +50,7 @@ public class ReaderFiles {
 
                             for (int i = 0; i < 24; i++){
                                 horas[i] = new Hora(splitted[actualSplitted].replace(',','.')
-                                        , splitted[actualSplitted + 1]);
+                                        , splitted[actualSplitted + 1], i + 1);
                                 actualSplitted +=2;
                             }
 
@@ -91,7 +91,7 @@ public class ReaderFiles {
                             int actualSplitted = 8;
                             for (int i = 0; i < 24; i++){
                                 horas[i] = new Hora(splitted[actualSplitted].replace(',','.')
-                                        , splitted[actualSplitted + 1]);
+                                        , splitted[actualSplitted + 1], i + 1);
                                 actualSplitted +=2;
                             }
 

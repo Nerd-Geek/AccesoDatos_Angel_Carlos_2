@@ -159,22 +159,6 @@ public class Utils {
         return fecha;
     }
 
-    /**
-     * Formatea la fecha en formato de España
-     * @param medicion
-     * @return List<String>
-     */
-    public static List<String> formatearFechaMedicion(List<Medicion> medicion){ //TODO: CHANGE CODE (OPTIMIZAR)
-        List<String> fecha = new ArrayList<>();
-
-        fecha.add(obtenerFechaInicioMedicion(medicion).format(DateTimeFormatter.ofPattern("dd/MM/yyyy - 00:00:00")));
-        fecha.add(obtenerFechaFinalMedicion(medicion).format(DateTimeFormatter.ofPattern("dd/MM/yyyy - 00:00:00")));
-
-        return fecha;
-    }
-
-
-
 
     //////
     //////TEMPORAL
