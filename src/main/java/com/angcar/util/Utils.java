@@ -115,11 +115,11 @@ public class Utils {
      * @param medicion
      * @return LocalDate
      */
-    private static LocalDate obtenerFechaInicioMedicion(List<Medicion> medicion){
+    public static String obtenerFechaInicioMedicion(List<Medicion> medicion){
         LocalDate fecha = medicion.stream().min((c, c1) -> Integer.compare(c.getDia(), c1.getDia()))
                 .map(s -> LocalDate.of(s.getAno(), s.getMes(), s.getDia())).get();
 
-        return fecha;
+        return fecha.format(DateTimeFormatter.ofPattern("dd/MM/yyyy - 00:00:00"));
     }
 
     /**
@@ -127,11 +127,11 @@ public class Utils {
      * @param medicion
      * @return LocalDate
      */
-    private static LocalDate obtenerFechaFinalMedicion(List<Medicion> medicion){
+    public static String obtenerFechaFinalMedicion(List<Medicion> medicion){
         LocalDate fecha = medicion.stream().max((c, c1) -> Integer.compare(c.getDia(), c1.getDia()))
                 .map(s -> LocalDate.of(s.getAno(), s.getMes(), s.getDia())).get();
 
-        return fecha;
+        return fecha.format(DateTimeFormatter.ofPattern("dd/MM/yyyy - 00:00:00"));
     }
 
 
@@ -160,6 +160,15 @@ public class Utils {
     }
 
 
+        fecha.add(obtenerFechaInicioMedicion(medicion).format(DateTimeFormatter.ofPattern("dd/MM/yyyy - 00:00:00")));
+        fecha.add(obtenerFechaFinalMedicion(medicion).format(DateTimeFormatter.ofPattern("dd/MM/yyyy - 00:00:00")));
+
+        return fecha;
+    }
+
+
+
+
     //////
     //////TEMPORAL
     //////
@@ -176,17 +185,15 @@ public class Utils {
         return estacion.get().getEstacion_codigo();
     }
 
-    public static void obtenerEstaciones(String ciudadd) {
+    public static List<String> obtenerEstaciones(String ciudadd) {
 
         String codigo = obtenerCodigo(ciudadd);
 
         List<UbicacionEstaciones> estacion = estacionesUbi.stream().filter(ubicacionEstaciones ->
                         codigo.substring(6).equals(ubicacionEstaciones.getEstacion_codigo().substring(6)))
                 .collect(Collectors.toList());
+       return estacion.stream().map(s -> s.getEstacion_municipio()).collect(Collectors.toList());
 
-        estacion.stream()
-                .map(UbicacionEstaciones::getEstacion_municipio)
-                .forEach(System.out::println);
     }
 
     /**
