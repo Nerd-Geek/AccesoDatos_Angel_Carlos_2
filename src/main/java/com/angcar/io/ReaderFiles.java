@@ -17,13 +17,13 @@ import java.util.stream.Stream;
 public class ReaderFiles {
 
     // Localización csv´s
-    private static final String PATH_ZONAS = "src/main/resources/calidad_aire_zonas.csv";
-    private static final String PATH_UBICA_ESTACIONES = "src/main/resources/calidad_aire_estaciones.csv";
-    private static final String PATH_METEO = "src/main/resources/calidad_aire_datos_meteo_mes.csv";
-    private static final String PATH_CONTAMINACION = "src/main/resources/calidad_aire_datos_mes.csv";
+    private static final String PATH_ZONAS = "src/main/resources/data/calidad_aire_zonas.csv";
+    private static final String PATH_UBICA_ESTACIONES = "src/main/resources/data/calidad_aire_estaciones.csv";
+    private static final String PATH_METEO = "src/main/resources/data/calidad_aire_datos_meteo_mes.csv";
+    private static final String PATH_CONTAMINACION = "src/main/resources/data/calidad_aire_datos_mes.csv";
 
-    private static final String PATH_MAGNITUDES_CONTAMINACION = "src/main/resources/magnitudes_contaminacion.csv";
-    private static final String PATH_MAGNITUDES_METEO = "src/main/resources/magnitudes_meteorizacion.csv";
+    private static final String PATH_MAGNITUDES_CONTAMINACION = "src/main/resources/data/magnitudes_contaminacion.csv";
+    private static final String PATH_MAGNITUDES_METEO = "src/main/resources/data/magnitudes_meteorizacion.csv";
 
 
     public static List<Meteorizacion> readDataOfPathMeteorologia() {

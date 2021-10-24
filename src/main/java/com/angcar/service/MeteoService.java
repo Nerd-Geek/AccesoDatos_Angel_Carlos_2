@@ -12,18 +12,14 @@ public class MeteoService {
     /**
      * TEMPERATURA
      */
-    public static Double medicionMedia(List<Medicion> medicion, int idMagnitud) {
+    public static Optional <Double> medicionMedia(List<Medicion> medicion, int idMagnitud) {
         List<Medicion> listaMediciones = Utils.obtenerMagnitudLista(idMagnitud, medicion);
 
-        if (!listaMediciones.isEmpty()){
             double media = listaMediciones.stream()
                     .mapToDouble(medicion1 -> Utils.obtenerMediaDiaria(medicion1))
                     .summaryStatistics().getAverage();
 
-            return Math.round(media * 100d) / 100d;
-        }else{
-            return null;
-        }
+            return Optional.of(Math.round(media * 100d) / 100d);
     }
 
     public static Optional<Hora> medicionMaximaDos(List<Medicion> medicion, int idMagnitud) {
@@ -52,9 +48,8 @@ public class MeteoService {
     }
 
 
-    public static Double medicionMaxima(List<Medicion> medicion, int idMagnitud) {
+    public static Optional <Double> medicionMaxima(List<Medicion> medicion, int idMagnitud) {
         List<Medicion> listaMediciones = Utils.obtenerMagnitudLista(idMagnitud, medicion);
-        if (!listaMediciones.isEmpty()){
 
             double maxima = listaMediciones.stream()
                     .mapToDouble(medicion1 -> Utils.obtenerHorasValidadas(medicion1.getHoras()).stream()
@@ -62,25 +57,17 @@ public class MeteoService {
                             .summaryStatistics().getMax())
                     .summaryStatistics().getMax();
 
-            return Math.round(maxima * 100d) / 100d;
-        }else{
-            return null;
-        }
+            return Optional.of(Math.round(maxima * 100d) / 100d);
     }
 
-    public static Double medicionMinima(List<Medicion> medicion, int idMagnitud) {
+    public static Optional<Double> medicionMinima(List<Medicion> medicion, int idMagnitud) {
         List<Medicion> listaMediciones = Utils.obtenerMagnitudLista(idMagnitud, medicion);
-        if (!listaMediciones.isEmpty()){
             double minima = listaMediciones.stream()
                     .mapToDouble(medicion1 -> Utils.obtenerHorasValidadas(medicion1.getHoras()).stream()
                             .mapToDouble(value -> Double.parseDouble(value.getValor()))
                             .summaryStatistics().getMin())
                     .summaryStatistics().getMin();
-
-            return null;
-        }else{
-            return null;
-            }
+            return Optional.of(Math.round(minima * 100d) / 100d);
         }
     public static List<Medicion> listaDiasPrecipitacion(List<Medicion> medicion) {
         List<Medicion> listaMediciones = Utils.obtenerMagnitudLista(89, medicion);
