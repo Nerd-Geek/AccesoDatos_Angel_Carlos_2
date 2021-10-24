@@ -23,8 +23,8 @@ public class DatosHTML {
                     System.out.println(Utils.formatearFechaMedicion(listaContaminacion)); //Fecha final medición
                     Utils.obtenerEstaciones(ARGS[0]); //Estaciones asociadas*/
 
+
     public void procesarDatosPorCiudad(String nombreCiudad){
-        this.nombreCiudad = nombreCiudad;
 
         //Localizar código de ciudad //TODO: REFACTORIZAR ESTO
         Optional<List<UbicacionEstaciones>> listaEstaciones = Utils.filtrarPorCiudad(nombreCiudad);
@@ -53,7 +53,7 @@ public class DatosHTML {
                    ChartUtilities.saveChartAsPNG(new File("src/main/resources/image/" +
                                    magnitudMeteorizacion.getCodigo_magnitud() +".png"),
                            datosMedicion(listaMeteorizacion, magnitudMeteorizacion.getDescripcion_magnitud(),
-                                    magnitudMeteorizacion.getCodigo_magnitud()), 300, 300);
+                                    magnitudMeteorizacion.getCodigo_magnitud()), 720, 600);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -64,7 +64,7 @@ public class DatosHTML {
                     ChartUtilities.saveChartAsPNG(new File(PATH_IMAGES +
                                     magnitudContaminacion.getCodigo_magnitud() + ".png"),
                             datosMedicion(listaContaminacion, magnitudContaminacion.getDescripcion_magnitud(),
-                                    magnitudContaminacion.getCodigo_magnitud()), 300, 300);
+                                    magnitudContaminacion.getCodigo_magnitud()), 720, 600);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -82,9 +82,9 @@ public class DatosHTML {
 
             if (listaMediciones.isPresent()) {
                 //Procesar los datos
-                Optional<Double> mediaTemperatura = MeteoService.medicionMedia(listaMediciones.get());
-                Optional<Double> maximaTemperatura = MeteoService.medicionMaxima(listaMediciones.get());
-                Optional<Double> minimaTemperatura = MeteoService.medicionMinima(listaMediciones.get());
+                Optional<Double> mediaTemperatura = MedicionesService.medicionMedia(listaMediciones.get());
+                Optional<Double> maximaTemperatura = MedicionesService.medicionMaxima(listaMediciones.get());
+                Optional<Double> minimaTemperatura = MedicionesService.medicionMinima(listaMediciones.get());
 
                 mediaTemperatura.ifPresent(aDouble -> dataset.setValue(aDouble, "Media", "Media"));
                 maximaTemperatura.ifPresent(aDouble -> dataset.setValue(aDouble, "Máxima", "Máxima"));
