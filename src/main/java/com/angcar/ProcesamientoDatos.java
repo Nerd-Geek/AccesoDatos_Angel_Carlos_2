@@ -2,10 +2,12 @@ package com.angcar;
 
 import com.angcar.model.Medicion;
 import com.angcar.model.UbicacionEstaciones;
+import com.angcar.service.DatosHTML;
 import com.angcar.service.MeteoService;
 import com.angcar.util.Utils;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -65,9 +67,8 @@ public class ProcesamientoDatos {
             System.out.println(Utils.formatearFechaMedicion(listaContaminacion)); //Fecha final medición
             Utils.obtenerEstaciones(argumentos[0]); //Estaciones asociadas
 
-                System.out.println(MeteoService.medicionMaximaDos(listaMeteorizacion, 83));
-
-
+                //System.out.println(MeteoService.medicionMaximaDos(listaMeteorizacion, 83));
+            DatosHTML.mediciones(listaMeteorizacion,listaContaminacion, ciudad);
 
             //System.out.println(listaMeteorizacion);
         });

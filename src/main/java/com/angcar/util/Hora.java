@@ -8,5 +8,4 @@ import lombok.Data;
 public class Hora {
     private String valor;
     private String validacion;
-
 }
