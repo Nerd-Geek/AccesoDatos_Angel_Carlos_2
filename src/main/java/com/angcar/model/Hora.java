@@ -1,4 +1,4 @@
-package com.angcar.util;
+package com.angcar.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,4 +8,5 @@ import lombok.Data;
 public class Hora {
     private String valor;
     private String validation;
+    private int numHora;
 }

@@ -24,6 +24,7 @@ public class DatosHTML {
                     Utils.obtenerEstaciones(ARGS[0]); //Estaciones asociadas*/
 
     public void procesarDatosPorCiudad(String nombreCiudad){
+
         this.nombreCiudad = nombreCiudad;
 
         //Localizar código de ciudad //TODO: REFACTORIZAR ESTO
@@ -43,6 +44,8 @@ public class DatosHTML {
             List<Medicion> listaMeteorizacion = Utils.filtrarMeteorizacion(codigoCiudad);
             List<Medicion> listaContaminacion = Utils.filtrarContaminacion(codigoCiudad);
 
+            System.out.println(MedicionesService.medicionMaximaMomento(listaMeteorizacion));
+
         /////////////////////////////
         //INFORMACIÓN METEOROLÓGICA// /TODO: magnMeteo
         /////////////////////////////
@@ -53,7 +56,7 @@ public class DatosHTML {
                    ChartUtilities.saveChartAsPNG(new File("src/main/resources/image/" +
                                    magnitudMeteorizacion.getCodigo_magnitud() +".png"),
                            datosMedicion(listaMeteorizacion, magnitudMeteorizacion.getDescripcion_magnitud(),
-                                    magnitudMeteorizacion.getCodigo_magnitud()), 300, 300);
+                                    magnitudMeteorizacion.getCodigo_magnitud()), 800, 800);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -64,7 +67,7 @@ public class DatosHTML {
                     ChartUtilities.saveChartAsPNG(new File(PATH_IMAGES +
                                     magnitudContaminacion.getCodigo_magnitud() + ".png"),
                             datosMedicion(listaContaminacion, magnitudContaminacion.getDescripcion_magnitud(),
-                                    magnitudContaminacion.getCodigo_magnitud()), 300, 300);
+                                    magnitudContaminacion.getCodigo_magnitud()), 800, 800);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -80,16 +83,21 @@ public class DatosHTML {
             //Filtrar por magnitud
             Optional<List<Medicion>> listaMediciones = Utils.obtenerMagnitudLista(idMagnitud, listaMedicion);
 
-            if (listaMediciones.isPresent()) {
+            listaMediciones.ifPresent(medicions -> medicions.forEach(medicion ->
+                    dataset.setValue(Utils.obtenerMediaDiaria(medicion),
+                            "Día " + medicion.getDia(), "Día " + medicion.getDia())));
+
+
+            /*if (listaMediciones.isPresent()) {
                 //Procesar los datos
-                Optional<Double> mediaTemperatura = MeteoService.medicionMedia(listaMediciones.get());
-                Optional<Double> maximaTemperatura = MeteoService.medicionMaxima(listaMediciones.get());
-                Optional<Double> minimaTemperatura = MeteoService.medicionMinima(listaMediciones.get());
+                Optional<Double> mediaTemperatura = MedicionesService.medicionMedia(listaMediciones.get());
+                Optional<Double> maximaTemperatura = MedicionesService.medicionMaxima(listaMediciones.get());
+                Optional<Double> minimaTemperatura = MedicionesService.medicionMinima(listaMediciones.get());
 
                 mediaTemperatura.ifPresent(aDouble -> dataset.setValue(aDouble, "Media", "Media"));
                 maximaTemperatura.ifPresent(aDouble -> dataset.setValue(aDouble, "Máxima", "Máxima"));
                 minimaTemperatura.ifPresent(aDouble -> dataset.setValue(aDouble, "Mínima", "Mínima"));
-            }
+            }*/
 
             return ChartFactory.createBarChart3D(nombreCiudad, "Magnitud",
                     descripcion_magnitud, dataset, PlotOrientation.HORIZONTAL, true,
