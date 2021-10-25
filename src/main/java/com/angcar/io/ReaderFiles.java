@@ -24,6 +24,10 @@ public class ReaderFiles {
     private static final String PATH_MAGNITUDES_CONTAMINACION = "src/main/resources/data/magnitudes_contaminacion.csv";
     private static final String PATH_MAGNITUDES_METEO = "src/main/resources/data/magnitudes_meteorizacion.csv";
 
+    /**
+     * lee los datos del csv meteorizacion
+     * @return Optional<List<Meteorizacion>> lista meteorización
+     */
 
     public static Optional<List<Meteorizacion>> readDataOfPathMeteorologia() {
 
@@ -66,7 +70,10 @@ public class ReaderFiles {
         }
     }
 
-    //TODO: IMPLEMENTAR DE NUEVO OPTIONAL EN TODOS LOS LISTENRS
+    /**
+     * lee los datos del csv contaminación
+     * @return Optional<List<Contaminacion>> lista contaminación
+     */
     public static Optional<List<Contaminacion>> readDataOfPathContaminacion() {
         Path path = Paths.get(PATH_CONTAMINACION);
 
@@ -108,6 +115,10 @@ public class ReaderFiles {
         }
     }
 
+    /**
+     * lee los datos del csv estaciones
+     * @return Optional<List<UbicacionEstaciones>> lista estaciones
+     */
     public static Optional<List<UbicacionEstaciones>> readDataOfPathUbicacionEstaciones() {
         Path path = Paths.get(PATH_UBICA_ESTACIONES);
 
@@ -183,6 +194,11 @@ public class ReaderFiles {
 
     }
 
+    /**
+     * lee el csv de zonas municipio
+     * @return Optional<List<ZonasMunicipio>> lista zonas municipio
+     */
+
     public static Optional<List<ZonasMunicipio>> readDataOfPathZonasMunicipio() {
 
         Path path = Paths.get(PATH_ZONAS);
@@ -211,6 +227,10 @@ public class ReaderFiles {
         }
     }
 
+    /**
+     * lee el csv de magnitud contaminación
+     * @return Optional<List<MagnitudContaminacion>>
+     */
     public static Optional<List<MagnitudContaminacion>> readDataOfPathMagnitudContaminacion() {
 
         Path path = Paths.get(PATH_MAGNITUDES_CONTAMINACION);
@@ -244,6 +264,10 @@ public class ReaderFiles {
         }
     }
 
+    /**
+     *  lee el csv de magnitud meteorizacion
+     * @return Optional<List<MagnitudMeteorizacion>>
+     */
     public static Optional<List<MagnitudMeteorizacion>> readDataOfPathMagnitudMeteorizacion() {
 
         Path path = Paths.get(PATH_MAGNITUDES_METEO);
