@@ -112,26 +112,44 @@ public class Utils {
     //////
     /**
      * Obtiene la fecha de inicio
-     * @param medicion
      * @return LocalDate
      */
-    public static String obtenerFechaInicioMedicion(List<Medicion> medicion){
-        LocalDate fecha = medicion.stream().min((c, c1) -> Integer.compare(c.getDia(), c1.getDia()))
+    public static String obtenerFechaInicioMedicion(){
+        String formatearFecha = "dd/MM/yyyy - 00:00:00";
+        LocalDate fecha = meteo.stream().min((c, c1) -> Integer.compare(c.getDia(), c1.getDia()))
+                .map(s -> LocalDate.of(s.getAno(), s.getMes(), s.getDia())).get();
+        LocalDate fecha2 = contamina.stream().min((c, c1) -> Integer.compare(c.getDia(), c1.getDia()))
                 .map(s -> LocalDate.of(s.getAno(), s.getMes(), s.getDia())).get();
 
-        return fecha.format(DateTimeFormatter.ofPattern("dd/MM/yyyy - 00:00:00"));
+        if (fecha.equals(fecha2)) {
+            return fecha.format(DateTimeFormatter.ofPattern(formatearFecha));
+        }else if(fecha.getDayOfMonth() < fecha2.getDayOfMonth()) {
+            return fecha.format(DateTimeFormatter.ofPattern(formatearFecha));
+        }else {
+            return fecha2.format(DateTimeFormatter.ofPattern(formatearFecha));
+        }
     }
 
     /**
      * Obtiene la fecha final
-     * @param medicion
      * @return LocalDate
      */
-    public static String obtenerFechaFinalMedicion(List<Medicion> medicion){
-        LocalDate fecha = medicion.stream().max((c, c1) -> Integer.compare(c.getDia(), c1.getDia()))
+    public static String obtenerFechaFinalMedicion(){
+        String formatearFecha = "dd/MM/yyyy - 00:00:00";
+
+        LocalDate fecha = meteo.stream().max((c, c1) -> Integer.compare(c.getDia(), c1.getDia()))
                 .map(s -> LocalDate.of(s.getAno(), s.getMes(), s.getDia())).get();
 
-        return fecha.format(DateTimeFormatter.ofPattern("dd/MM/yyyy - 00:00:00"));
+        LocalDate fecha2 = contamina.stream().max((c, c1) -> Integer.compare(c.getDia(), c1.getDia()))
+                .map(s -> LocalDate.of(s.getAno(), s.getMes(), s.getDia())).get();
+
+        if (fecha.equals(fecha2)) {
+            return fecha.format(DateTimeFormatter.ofPattern(formatearFecha));
+        }else if(fecha.getDayOfMonth() > fecha2.getDayOfMonth()) {
+            return fecha.format(DateTimeFormatter.ofPattern(formatearFecha));
+        }else {
+            return fecha2.format(DateTimeFormatter.ofPattern(formatearFecha));
+        }
     }
 
 
@@ -156,13 +174,6 @@ public class Utils {
      */
     public static LocalDate obtenerFechaMedicion(Medicion medicion){
         LocalDate fecha = LocalDate.of(medicion.getAno(), medicion.getMes(), medicion.getDia());
-        return fecha;
-    }
-
-
-        fecha.add(obtenerFechaInicioMedicion(medicion).format(DateTimeFormatter.ofPattern("dd/MM/yyyy - 00:00:00")));
-        fecha.add(obtenerFechaFinalMedicion(medicion).format(DateTimeFormatter.ofPattern("dd/MM/yyyy - 00:00:00")));
-
         return fecha;
     }
 

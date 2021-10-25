@@ -24,8 +24,8 @@ public class GeneradorHTML {
 
         String estacion = String.valueOf(Utils.obtenerEstaciones(nombreCiudad)).replace("[", "").replace("]", "");
 
-        String fechaIniMeteo = Utils.obtenerFechaInicioMedicion(listaMeteorizacion);
-        String fechaFinMeteo = Utils.obtenerFechaFinalMedicion(listaMeteorizacion);
+        String fechaIniMeteo = Utils.obtenerFechaInicioMedicion();
+        String fechaFinMeteo = Utils.obtenerFechaFinalMedicion();
 
         String tempep = meteo("Temperatura");
         String radip = meteo("Radiación solar");
