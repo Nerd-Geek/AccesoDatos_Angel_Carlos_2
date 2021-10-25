@@ -9,9 +9,18 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import static com.angcar.ProcesamientoDatos.path_destination;
+
 public class GeneradorHTML {
 
     private static final String PROGRAM_NAME = "Servicio meteorológico y contaminación";
+
+    /**
+     * generar html
+     * @param nombreCiudad nombre de la ciudad
+     * @param codigoCiudad codigo de la ciudad
+     * @throws IOException
+     */
 
     public static void generarHtml(String nombreCiudad, String codigoCiudad) throws IOException {
         List<Medicion> listaContaminacion = Utils.filtrarContaminacion(codigoCiudad);
@@ -52,13 +61,11 @@ public class GeneradorHTML {
         htmlString.append(DatosHTML.getStringHTMLData()); //Agregar StringHTMLData
         DatosHTML.resetHTMLData(); //Resetear StringHTMLData
 
-
-
         //END
         htmlString .append("</body>\n" +
                 "</html>");
 
-        File newHtmlFile = new File(ProcesamientoDatos.path_destination + "new.html");
+        File newHtmlFile = new File(path_destination + "new.html");
         FileUtils.writeStringToFile(newHtmlFile, htmlString.toString());
     }
 }

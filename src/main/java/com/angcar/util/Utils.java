@@ -107,9 +107,6 @@ public class Utils {
                 .contains(codigoCiudad)).collect(Collectors.toList());
     }
 
-    //////
-    //////MEDICIÓN
-    //////
     /**
      * Obtiene la fecha de inicio
      * @return LocalDate
@@ -170,7 +167,7 @@ public class Utils {
     /**
      * Obtiene la fecha de una medición
      * @param medicion {@link Medicion}
-     * @return
+     * @return LocalDate
      */
     public static LocalDate obtenerFechaMedicion(Medicion medicion){
         LocalDate fecha = LocalDate.of(medicion.getAno(), medicion.getMes(), medicion.getDia());
@@ -178,19 +175,12 @@ public class Utils {
     }
 
 
-
-
-    //////
-    //////TEMPORAL
-    //////
-
-    //TODO: ESTO DE ABAJO ES TEMPORAL; AL FINALIZAR EL PROYECTO REMOVERLO SI NO LO USAMOS
     /**
      * Obtener código de la estación principal dada una ciudad
      * @param nombreCiudad
      * @return String
      */
-    public static String obtenerCodigo(String nombreCiudad) { //TODO: Al finalizar proyecto, comprobar public, privates, etc
+    public static String obtenerCodigo(String nombreCiudad) {
         Optional<UbicacionEstaciones> estacion = estacionesUbi.stream().filter(ubicacionEstaciones ->
                 ubicacionEstaciones.getEstacion_municipio().equalsIgnoreCase(nombreCiudad)).findFirst();
         return estacion.get().getEstacion_codigo();
@@ -217,6 +207,4 @@ public class Utils {
         return Arrays.stream(horas).filter(hora -> hora.getValidation().equals("V"))
                 .collect(Collectors.toList());
     }
-
-
 }

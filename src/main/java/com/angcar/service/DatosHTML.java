@@ -33,22 +33,19 @@ public class DatosHTML {
         if (stringHTMLData !=null) {
             stringHTMLData.setLength(0);
         }
-
     }
 
-    /*System.out.println(ARGS[0]); //Nombre de la ciudad
-                    System.out.println(Utils.formatearFechaMedicion(listaMeteorizacion)); //Fecha inicio medición
-                    System.out.println(Utils.formatearFechaMedicion(listaContaminacion)); //Fecha final medición
-                    Utils.obtenerEstaciones(ARGS[0]); //Estaciones asociadas*/
-
+    /**
+     * Se procesan los datos por ciudad
+     * @param nombreCiudad nombre ciudad
+     */
 
     public void procesarDatosPorCiudad(String nombreCiudad){
 
         this.nombreCiudad = nombreCiudad;
 
-        //Localizar código de ciudad //TODO: REFACTORIZAR ESTO
         Optional<List<UbicacionEstaciones>> listaEstaciones = Utils.filtrarPorCiudad(nombreCiudad);
-        String codigoCiudad = Utils.filtrarPorCiudad(nombreCiudad).get().get(0).getEstacion_codigo(); //TODO: Si queremos expandir y agregar zonas, hay que editar esto
+        String codigoCiudad = Utils.filtrarPorCiudad(nombreCiudad).get().get(0).getEstacion_codigo();
 
         if (listaEstaciones.isPresent()){
             procesarDatosPorCode(codigoCiudad);
@@ -58,25 +55,35 @@ public class DatosHTML {
         }
     }
 
-        private void procesarDatosPorCode(String codigoCiudad){
+    /**
+     *  Se procesan los datos por el codigo de ciudad
+     * @param codigoCiudad codigo de ciudad
+     */
+
+    private void procesarDatosPorCode(String codigoCiudad){
             stringHTMLData = new StringBuilder();
 
             //Filtrar por ciudad pasada por parámetro
             List<Medicion> listaMeteorizacion = Utils.filtrarMeteorizacion(codigoCiudad);
             List<Medicion> listaContaminacion = Utils.filtrarContaminacion(codigoCiudad);
 
-            //TODO: REDUCIR ESTA MIERDA DE PREDICATE
             Predicate<Magnitud> filtroMedicion = (Magnitud m) -> m.getCodigo_magnitud() == 83 || m.getCodigo_magnitud() == 88
                     || m.getCodigo_magnitud() == 89 || m.getCodigo_magnitud() == 86 || m.getCodigo_magnitud() == 81;
 
             Predicate<Magnitud> filtroContamina = (Magnitud m) ->
-                    m.getCodigo_magnitud() != -1; //TODO: CAMBIAR ESTA CHAPUZA
+                    m.getCodigo_magnitud() != -1;
 
             procesarDatosMeteo(listaMeteorizacion, filtroMedicion);
             procesarDatosContamina(listaContaminacion, filtroContamina);
 
             System.out.println("Datos procesados.");
         }
+
+    /**
+     * Se procesan los datos por datos meteorizacion
+      * @param listaMeteo lista con los datos de meteorizacion
+     * @param filtro
+     */
 
     private void procesarDatosMeteo(List<Medicion> listaMeteo, Predicate<Magnitud> filtro) {
         stringHTMLData.append("<h1>Meteorología</h1>\n");
@@ -94,19 +101,8 @@ public class DatosHTML {
 
                 if (!listaMediciones.isEmpty()){
                     try {
-                            //TODO: ACTUAL
-                        //Tratar al código de precipitación de manera diferente a las demás mediciones
+
                         if (magnitudMeteo.getCodigo_magnitud() == 89){
-                            /*
-                            HistogramDataset datos = new HistogramDataset();
-                            datos.addSeries("key", datosMedicion(listaMeteo, magnitudMeteo.getDescripcion_magnitud()), 20);
-
-                            JFreeChart histograma = ChartFactory.createHistogram("JFreeChart Histogram",
-                                    "Data", "Frequency", datos);
-
-                            ChartUtilities.saveChartAsPNG(new File(PATH_DESTINATION + actualPath),
-                                    histograma, 800, 800);
-                            */
 
                             //MEDICIÓN MENSUAL
                             double valorMediomensual = 0;
@@ -142,9 +138,6 @@ public class DatosHTML {
                                             "<img src=\"%s\" />",
                                     magnitudMeteo.getDescripcion_magnitud(), valorMediomensual,
                                     tabla, actualPath));
-
-
-
                         }
                         //Si es otro tipo de medición, tratar de manera habitual
                         else {
@@ -152,8 +145,6 @@ public class DatosHTML {
                                     datosMedicion(listaMeteo, magnitudMeteo.getDescripcion_magnitud())
                                     , 800, 800);
 
-
-                            //TODO: ESTO PONERLO EN EL INICIO
 
                             //MEDICIÓN MÁXIMA
                             String medicionMaxMomento = "No se ha encontrado valor máximo."; //Por defecto
@@ -213,6 +204,12 @@ public class DatosHTML {
         });
     }
 
+    /**
+     * Se procesan los datos de la lista contaminacion
+     * @param listaContamina lista con los datos de contaminacion
+     * @param filtro
+     */
+
     private void procesarDatosContamina(List<Medicion> listaContamina, Predicate<Magnitud> filtro) {
         stringHTMLData.append("<h1>Contaminación</h1>\n");
 
@@ -233,9 +230,6 @@ public class DatosHTML {
                         ChartUtilities.saveChartAsPNG(new File(ProcesamientoDatos.path_destination + actualPath),
                                 datosMedicion(listaContamina, magnitudContamina.getDescripcion_magnitud())
                                 , 800, 800);
-
-
-                        //TODO: ESTO PONERLO EN EL INICIO
 
                         //MEDICIÓN MÁXIMA
                         String medicionMaxMomento = "No se ha encontrado valor máximo."; //Por defecto
@@ -298,7 +292,7 @@ public class DatosHTML {
      * Crea la gráfica con los datos de medición
      * @param listaMediciones
      * @param descripcion_magnitud
-     * @return
+     * @return JFreeChart
      */
         private JFreeChart datosMedicion(List<Medicion> listaMediciones,String descripcion_magnitud) {
 
@@ -312,5 +306,4 @@ public class DatosHTML {
                     descripcion_magnitud, dataset, PlotOrientation.VERTICAL, true,
                     true, false);
         }
-
 }

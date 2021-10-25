@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class Magnitud{
+public class Magnitud{ // POJO
     private int codigo_magnitud;
     private String descripcion_magnitud;
     private int codigo_tecnica_medida;

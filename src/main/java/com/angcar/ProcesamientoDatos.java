@@ -44,15 +44,15 @@ public class ProcesamientoDatos {
         return procesamientoDatos;
     }
 
+    // Ejecuta todo el programa
     public void ejecutarPrograma() {
-        String WORKING_DIRECTORY = System.getProperty("user.dir");
 
         List<String[]> pares = IntStream.iterate(0, i -> i += 2).limit(ARGS.length / 2)
                 .mapToObj(n -> new String[]{ARGS[n], ARGS[n + 1]}).collect(Collectors.toList());
 
         pares.forEach(pair -> {
             String ciudad = pair[0]; //Argumento ciudad
-            Path path = Paths.get(WORKING_DIRECTORY + File.separator + pair[1]); //Archivo
+            Path path = Paths.get(pair[1]); //Archivo
             path_destination = path.toString();
 
             if (Utils.inicializarDatos()) {
@@ -63,7 +63,7 @@ public class ProcesamientoDatos {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                // TODO: TEST - System.out.println(MeteoService.medicionMaximaDos(listaMeteorizacion, 83));
+
             } else {
                 System.err.println("Los archivos CSV no se han podido leer.");
                 System.exit(0);
@@ -71,6 +71,7 @@ public class ProcesamientoDatos {
         });
     }
 
+    // Mide el tiempo de ejecucion del programa
     public String tiempoInforme() {
         double tiempo = (double) ((System.currentTimeMillis() - INIT_TIME)/1000);
         DateTimeFormatter dtf5 = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm");

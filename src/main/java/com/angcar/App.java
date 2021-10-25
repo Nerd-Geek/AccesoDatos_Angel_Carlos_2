@@ -16,15 +16,6 @@ import java.util.stream.Stream;
 
 public class App {
     public static void main(String[] args) throws IOException {
-
-        /**
-         * TODO: refactorizar nombre : argsTemporal por args y borrar la array y declaraciones de abajo
-         */
-        String[] argsTemporal = new String[2];
-        argsTemporal[0] = "Majadahonda";
-        argsTemporal[1] = "out";
-
-        //Dejar solo la línea de abajo
-        ProcesamientoDatos.getInstance(argsTemporal);
+        ProcesamientoDatos.getInstance(args);
     }
 }
