@@ -30,7 +30,7 @@ public class ReaderFiles {
         Path path = Paths.get(PATH_METEO);
 
         if (Files.exists(path)) {
-            try (Stream<String> stream = Files.lines(path, Charset.forName("Cp1252"))) {
+            try (Stream<String> stream = Files.lines(path, Charset.forName("windows-1252"))) {
                 return Optional.of(stream
                         .map(s -> s.split(";", -1)).skip(1)
                         .map(splitted -> {
@@ -71,7 +71,7 @@ public class ReaderFiles {
         Path path = Paths.get(PATH_CONTAMINACION);
 
         if (Files.exists(path)) {
-            try (Stream<String> stream = Files.lines(path, Charset.forName("Cp1252"))) {
+            try (Stream<String> stream = Files.lines(path, Charset.forName("windows-1252"))) {
                 return Optional.of(
                         stream
                         .map(s -> s.split(";", -1)).skip(1)
@@ -112,7 +112,7 @@ public class ReaderFiles {
         Path path = Paths.get(PATH_UBICA_ESTACIONES);
 
         if (Files.exists(path)) {
-            try (Stream<String> stream = Files.lines(path, Charset.forName("Cp1252"))) {
+            try (Stream<String> stream = Files.lines(path, Charset.forName("windows-1252"))) {
                 return Optional.of(stream
                         .map(s -> s.split(";", -1)).skip(1)
                         .map(splitted -> {
@@ -188,7 +188,7 @@ public class ReaderFiles {
         Path path = Paths.get(PATH_ZONAS);
 
         if (Files.exists(path)) {
-            try (Stream<String> stream = Files.lines(path, Charset.forName("Cp1252"))) {
+            try (Stream<String> stream = Files.lines(path, Charset.forName("windows-1252"))) {
                 return Optional.of(stream
                         .map(s -> s.split(";", -1)).skip(1)
                         .map(splitted -> {
@@ -216,7 +216,7 @@ public class ReaderFiles {
         Path path = Paths.get(PATH_MAGNITUDES_CONTAMINACION);
 
         if (Files.exists(path)) {
-            try (Stream<String> stream = Files.lines(path, Charset.forName("Cp1252"))) {
+            try (Stream<String> stream = Files.lines(path, Charset.forName("windows-1252"))) {
                 return Optional.of(stream
                         .map(s -> s.split(";", -1)).skip(1)
                         .map(splitted -> {
@@ -249,7 +249,7 @@ public class ReaderFiles {
         Path path = Paths.get(PATH_MAGNITUDES_METEO);
 
         if (Files.exists(path)) {
-            try (Stream<String> stream = Files.lines(path, Charset.forName("Cp1252"))) {
+            try (Stream<String> stream = Files.lines(path, Charset.forName("windows-1252"))) {
                 return Optional.of(stream
                         .map(s -> s.split(";", -1)).skip(1)
                         .map(splitted -> {

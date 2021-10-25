@@ -1,110 +1,63 @@
 package com.angcar.service;
 
-import com.angcar.ProcesamientoDatos;
 import com.angcar.model.Medicion;
 import com.angcar.util.Utils;
 import org.apache.commons.io.FileUtils;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class GeneradorHTML {
+
+    private static final String PROGRAM_NAME = "Servicio meteorológico y contaminación";
 
     public static void generarHtml(String nombreCiudad, String codigoCiudad) throws IOException {
         List<Medicion> listaContaminacion = Utils.filtrarContaminacion(codigoCiudad);
         List<Medicion> listaMeteorizacion = Utils.filtrarMeteorizacion(codigoCiudad);
-        File htmlTemplateFile = new File("src/main/resources/template.html");
-        String htmlString = FileUtils.readFileToString(htmlTemplateFile);
-        String title = "Servicio meteorologico y contaminación";
 
-        String estacion = String.valueOf(Utils.obtenerEstaciones(nombreCiudad)).replace("[", "").replace("]", "");
+        //HEAD
+        StringBuilder htmlString = new StringBuilder();
+        htmlString.append(String.format("<!DOCTYPE html>\n" +
+                "<html lang=\"es\">\n" +
+                "    <head>\n" +
+                "    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n" +
+                "    <title>%s</title>\n" +
+                "    </head>\n" +
+                "    <body>",PROGRAM_NAME));
 
-        String fechaIniMeteo = Utils.obtenerFechaInicioMedicion(listaMeteorizacion);
-        String fechaFinMeteo = Utils.obtenerFechaFinalMedicion(listaMeteorizacion);
+        //Obtener estaciones
+        StringBuilder sb = new StringBuilder();
+        Utils.obtenerEstaciones(nombreCiudad).ifPresent(strings -> strings
+                .forEach(s -> sb.append("<p>").append(s).append("</p>")));
 
-        String tempep = meteo("Temperatura");
-        String radip = meteo("Radiación solar");
-        String prep = meteo("Precipitación");
-        String humep = meteo("Humep");
-        String velop = meteo("Velocidad del viento");
+        String fechaIni = Utils.obtenerFechaInicioMedicion(listaMeteorizacion); //TODO: MAX Y MIN
+        String fechaFin = Utils.obtenerFechaFinalMedicion(listaMeteorizacion);
 
-
-
-        List<String> Tmax = medidas(listaMeteorizacion,83);
-
-        String RMedia = String.valueOf(media(listaMeteorizacion, 88));
-        String RMaxima = String.valueOf(max(listaMeteorizacion, 88));
-        String RMinima = String.valueOf(min(listaMeteorizacion, 88));
-        String radiacionG = "../image/88.png";
-
-        htmlString = htmlString.replace("$title", title);
-        htmlString = htmlString.replace("ciudad", nombreCiudad);
-        htmlString = htmlString.replace("estacion", estacion);
-        htmlString = htmlString.replace("fechaIniMeteo", fechaIniMeteo);
-        htmlString = htmlString.replace("fechaFinMeteo", fechaFinMeteo);
-        htmlString = htmlString.replace("tempep", tempep);
-        htmlString = htmlString.replace("Tmax", String.valueOf(Tmax));
-        //htmlString = htmlString.replace("TMaxima", String.valueOf(TMaxima));
-        //htmlString = htmlString.replace("TMinima", String.valueOf(TMinima));
-        //htmlString = htmlString.replace("temperatuG", temperatuG);
-        htmlString = htmlString.replace("radip", radip);
-        htmlString = htmlString.replace("RMedia", String.valueOf(RMedia));
-        htmlString = htmlString.replace("RMaxima", String.valueOf(RMaxima));
-        htmlString = htmlString.replace("RMinima", String.valueOf(RMinima));
-        htmlString = htmlString.replace("radiacionG", radiacionG);
+        htmlString.append(String.format("<h1>%s</h1>\n" +
+                "<h2>%s</h2>\n" +
+                "        <h3>Estaciones asociadas:</h3>\n" +
+                "        %s\n" +
+                "<h3>Fecha de inicio de la medición:</h3>\n" +
+                "<p>%s</p>\n" +
+                        "<h3>Fecha de fin de la medición:</h3>\n" +
+                        "<p>%s</p>\n"
+                ,PROGRAM_NAME, nombreCiudad, sb, fechaIni, fechaFin));
 
 
-        File newHtmlFile = new File("src/main/resources/path/new.html");
-        FileUtils.writeStringToFile(newHtmlFile, htmlString);
-    }
 
-    private static Optional<Double> media(List<Medicion> listaMedicion, int idMagnitud) {
 
-        Optional<List<Medicion>> listaMediciones = Utils.obtenerMagnitudLista(idMagnitud, listaMedicion);
-        Optional<Double> mediaTemperatura = MedicionesService.medicionMedia(listaMediciones.get());
+        ///CARGAR DATOS MEDICIONES
+        htmlString.append(DatosHTML.getStringHTMLData()); //Agregar StringHTMLData
+        DatosHTML.resetHTMLData(); //Resetear StringHTMLData
 
-        return  mediaTemperatura;
-    }
 
-    private static Optional<Double> max(List<Medicion> listaMedicion, int idMagnitud) {
 
-        Optional<List<Medicion>> listaMediciones = Utils.obtenerMagnitudLista(idMagnitud, listaMedicion);
-        Optional<Double> mediaTemperatura = MedicionesService.medicionMaxima(listaMediciones.get());
+        //END
+        htmlString .append("</body>\n" +
+                "</html>");
 
-        return  mediaTemperatura;
-    }
-
-    private static Optional<Double> min(List<Medicion> listaMedicion, int idMagnitud) {
-
-        Optional<List<Medicion>> listaMediciones = Utils.obtenerMagnitudLista(idMagnitud, listaMedicion);
-        Optional<Double> mediaTemperatura = MedicionesService.medicionMinima(listaMediciones.get());
-
-        return  mediaTemperatura;
-    }
-
-    private static String meteo (String descripcion_magnitud) {
-        String medic = String.valueOf(Utils.getMagnMeteo().stream()
-                        .map(m -> m.getDescripcion_magnitud()).filter(m -> m.contains("Radiación solar")).collect(Collectors.toList()))
-                .replace("[", "").replace("]", "");
-
-        return medic;
-    }
-    private static List<String> medidas (List<Medicion>listaMediciones, int codigo) {
-        String media = String.valueOf(media(listaMediciones, codigo));
-        String maxima = String.valueOf(max(listaMediciones, codigo));
-        String minima = String.valueOf(min(listaMediciones, codigo));
-        String grafico = "../image/" + codigo + ".png";
-
-        ArrayList<String> datos = new ArrayList<String>();
-        datos.add(media);
-        datos.add(maxima);
-        datos.add(minima);
-
-        return datos;
+        File newHtmlFile = new File("src/main/resources/new.html"); //TODO: UNIFICAR
+        FileUtils.writeStringToFile(newHtmlFile, htmlString.toString());
     }
 }
