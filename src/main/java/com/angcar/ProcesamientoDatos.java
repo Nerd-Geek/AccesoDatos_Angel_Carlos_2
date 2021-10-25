@@ -8,6 +8,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -15,12 +18,15 @@ import java.util.stream.IntStream;
 public class ProcesamientoDatos {
     private static String ciudad;
     private final String[] ARGS;
+    private final long INIT_TIME;
 
     private static ProcesamientoDatos procesamientoDatos;
 
     private ProcesamientoDatos(String[] argumentos){
+        INIT_TIME = System.currentTimeMillis();
         this.ARGS = argumentos;
         ejecutarPrograma();
+        System.out.println(tiempoInforme()); //TODO: TRATAR SOUT
     }
 
     //Singleton
@@ -61,5 +67,19 @@ public class ProcesamientoDatos {
                 System.exit(0);
             }
         });
+    }
+
+    public String tiempoInforme() {
+        double tiempo = (double) ((System.currentTimeMillis() - INIT_TIME)/1000);
+        DateTimeFormatter dtf5 = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm");
+        LocalDate fecha = LocalDate.now();
+        String formatearFecha = "dd/MM/yyyy";
+        LocalTime hora = LocalTime.now();
+        String formatearHora = "HH:mm:ss";
+
+        String retorno = "Informe generado en el día " + fecha.format(DateTimeFormatter.ofPattern(formatearFecha))
+                + " a las " + hora.format(DateTimeFormatter.ofPattern(formatearHora))+ " en "+ tiempo + " segundos";
+
+        return retorno;
     }
 }
