@@ -1,5 +1,6 @@
 package com.angcar.service;
 
+import com.angcar.ProcesamientoDatos;
 import com.angcar.model.*;
 import com.angcar.util.Utils;
 import org.jfree.chart.ChartFactory;
@@ -20,7 +21,6 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 public class DatosHTML {
-    static private final String PATH_DESTINATION = "src/main/resources/"; //TODO: UNIFICAR PATHS (coger de otro sitio el principal)
     private String nombreCiudad;
     static private StringBuilder stringHTMLData;
 
@@ -132,7 +132,7 @@ public class DatosHTML {
                                                 );
                                             }
                                     );
-                            stringHTMLData.append("</table>\n");
+                            tabla.append("</table>\n");
 
                             stringHTMLData.append(String.format("\n<h2>%s</h2>\n" +
                                             "<p>Precipitación media mensual: %s</p>\n" +
@@ -148,7 +148,7 @@ public class DatosHTML {
                         }
                         //Si es otro tipo de medición, tratar de manera habitual
                         else {
-                            ChartUtilities.saveChartAsPNG(new File(PATH_DESTINATION + actualPath),
+                            ChartUtilities.saveChartAsPNG(new File(ProcesamientoDatos.path_destination + actualPath),
                                     datosMedicion(listaMeteo, magnitudMeteo.getDescripcion_magnitud())
                                     , 800, 800);
 
@@ -230,7 +230,7 @@ public class DatosHTML {
                 if (!listaMediciones.isEmpty()){
                     try {
 
-                        ChartUtilities.saveChartAsPNG(new File(PATH_DESTINATION + actualPath),
+                        ChartUtilities.saveChartAsPNG(new File(ProcesamientoDatos.path_destination + actualPath),
                                 datosMedicion(listaContamina, magnitudContamina.getDescripcion_magnitud())
                                 , 800, 800);
 

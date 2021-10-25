@@ -19,6 +19,7 @@ public class ProcesamientoDatos {
     private static String ciudad;
     private final String[] ARGS;
     private final long INIT_TIME;
+    static public String path_destination;
 
     private static ProcesamientoDatos procesamientoDatos;
 
@@ -52,6 +53,7 @@ public class ProcesamientoDatos {
         pares.forEach(pair -> {
             String ciudad = pair[0]; //Argumento ciudad
             Path path = Paths.get(WORKING_DIRECTORY + File.separator + pair[1]); //Archivo
+            path_destination = path.toString();
 
             if (Utils.inicializarDatos()) {
                 DatosHTML datosCiudad = new DatosHTML();

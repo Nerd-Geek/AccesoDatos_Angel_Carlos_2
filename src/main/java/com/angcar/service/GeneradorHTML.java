@@ -1,5 +1,6 @@
 package com.angcar.service;
 
+import com.angcar.ProcesamientoDatos;
 import com.angcar.model.Medicion;
 import com.angcar.util.Utils;
 import org.apache.commons.io.FileUtils;
@@ -31,8 +32,8 @@ public class GeneradorHTML {
         Utils.obtenerEstaciones(nombreCiudad).ifPresent(strings -> strings
                 .forEach(s -> sb.append("<p>").append(s).append("</p>")));
 
-        String fechaIni = Utils.obtenerFechaInicioMedicion(listaMeteorizacion); //TODO: MAX Y MIN
-        String fechaFin = Utils.obtenerFechaFinalMedicion(listaMeteorizacion);
+        String fechaIni = Utils.obtenerFechaInicioMedicion();
+        String fechaFin = Utils.obtenerFechaFinalMedicion();
 
         htmlString.append(String.format("<h1>%s</h1>\n" +
                 "<h2>%s</h2>\n" +
@@ -57,7 +58,7 @@ public class GeneradorHTML {
         htmlString .append("</body>\n" +
                 "</html>");
 
-        File newHtmlFile = new File("src/main/resources/new.html"); //TODO: UNIFICAR
+        File newHtmlFile = new File(ProcesamientoDatos.path_destination + "new.html");
         FileUtils.writeStringToFile(newHtmlFile, htmlString.toString());
     }
 }
