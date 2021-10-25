@@ -178,13 +178,6 @@ public class Utils {
     }
 
 
-        fecha.add(obtenerFechaInicioMedicion(medicion).format(DateTimeFormatter.ofPattern("dd/MM/yyyy - 00:00:00")));
-        fecha.add(obtenerFechaFinalMedicion(medicion).format(DateTimeFormatter.ofPattern("dd/MM/yyyy - 00:00:00")));
-
-        return fecha;
-    }
-
-
 
 
     //////

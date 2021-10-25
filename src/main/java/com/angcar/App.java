@@ -17,10 +17,6 @@ import java.util.stream.Stream;
 public class App {
     public static void main(String[] args) throws IOException {
 
-
-        //long fin = System.currentTimeMillis();
-       // ProcesamientoDatos.tiempo(System.currentTimeMillis(), fin);
-
         /**
          * TODO: refactorizar nombre : argsTemporal por args y borrar la array y declaraciones de abajo
          */
