@@ -31,7 +31,7 @@ public class WriterFiles {
             directory.mkdirs();
         }
 
-        File file = new File(path + "/" + fileName);
+        File file = new File(path + File.separator + fileName);
 
         try{
             FileUtils.writeStringToFile(file, value);
