@@ -70,6 +70,8 @@ public class ProcesamientoDatos {
             String ciudad = pair[0]; //Argumento ciudad
             path_destination = pair[1] + File.separator;
 
+            creteEmptyFolders();
+
             if (Utils.inicializarDatos()) {
                 DatosHTML datosCiudad = new DatosHTML();
                 datosCiudad.procesarDatosPorCiudad(ciudad);
