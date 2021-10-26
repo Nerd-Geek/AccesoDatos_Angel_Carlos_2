@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class Medicion {
+public class Medicion { //POJO
     private String provincia;
     private String municipio;
     private String estacion;

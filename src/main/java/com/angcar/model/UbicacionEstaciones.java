@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class UbicacionEstaciones {
+public class UbicacionEstaciones { //POJO
     private String estacion_codigo;
     private String zona_calidad_aire_descripcion;
     private String estacion_municipio;

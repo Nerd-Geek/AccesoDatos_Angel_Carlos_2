@@ -13,10 +13,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * READERS
+ */
 public class ReaderFiles {
-
     // Localización csv´s
-    private static final String PATH_ZONAS = "src/main/resources/data/calidad_aire_zonas.csv";
+    //private static final String PATH_ZONAS = "src/main/resources/data/calidad_aire_zonas.csv";
     private static final String PATH_UBICA_ESTACIONES = "src/main/resources/data/calidad_aire_estaciones.csv";
     private static final String PATH_METEO = "src/main/resources/data/calidad_aire_datos_meteo_mes.csv";
     private static final String PATH_CONTAMINACION = "src/main/resources/data/calidad_aire_datos_mes.csv";
@@ -24,7 +26,15 @@ public class ReaderFiles {
     private static final String PATH_MAGNITUDES_CONTAMINACION = "src/main/resources/data/magnitudes_contaminacion.csv";
     private static final String PATH_MAGNITUDES_METEO = "src/main/resources/data/magnitudes_meteorizacion.csv";
 
+    /**
+     * lee los datos del csv meteorizacion
+     * @return Optional<List<Meteorizacion>> lista meteorización
+     */
 
+    /**
+     * Leer datos de meteorología
+     * @return Opcional que de vuelve una lista de {@link Meteorizacion}
+     */
     public static Optional<List<Meteorizacion>> readDataOfPathMeteorologia() {
 
         Path path = Paths.get(PATH_METEO);
@@ -66,7 +76,10 @@ public class ReaderFiles {
         }
     }
 
-    //TODO: IMPLEMENTAR DE NUEVO OPTIONAL EN TODOS LOS LISTENRS
+    /**
+     * Leer datos de contaminación
+     * @return Opcional que de vuelve una lista de {@link Contaminacion}
+     */
     public static Optional<List<Contaminacion>> readDataOfPathContaminacion() {
         Path path = Paths.get(PATH_CONTAMINACION);
 
@@ -108,6 +121,10 @@ public class ReaderFiles {
         }
     }
 
+    /**
+     * Leer datos de ubicación de estaciones
+     * @return Opcional que de vuelve una lista de {@link UbicacionEstaciones}
+     */
     public static Optional<List<UbicacionEstaciones>> readDataOfPathUbicacionEstaciones() {
         Path path = Paths.get(PATH_UBICA_ESTACIONES);
 
@@ -183,7 +200,7 @@ public class ReaderFiles {
 
     }
 
-    public static Optional<List<ZonasMunicipio>> readDataOfPathZonasMunicipio() {
+  /*  public static Optional<List<ZonasMunicipio>> readDataOfPathZonasMunicipio() {
 
         Path path = Paths.get(PATH_ZONAS);
 
@@ -210,7 +227,11 @@ public class ReaderFiles {
             return Optional.empty();
         }
     }
-
+*/
+    /**
+     * Leer datos de contaminación
+     * @return Opcional que de vuelve una lista de {@link MagnitudContaminacion}
+     */
     public static Optional<List<MagnitudContaminacion>> readDataOfPathMagnitudContaminacion() {
 
         Path path = Paths.get(PATH_MAGNITUDES_CONTAMINACION);
@@ -244,6 +265,10 @@ public class ReaderFiles {
         }
     }
 
+    /**
+     * Leer datos magnitud meteorización
+     * @return Opcional que de vuelve una lista de {@link MagnitudMeteorizacion}
+     */
     public static Optional<List<MagnitudMeteorizacion>> readDataOfPathMagnitudMeteorizacion() {
 
         Path path = Paths.get(PATH_MAGNITUDES_METEO);
