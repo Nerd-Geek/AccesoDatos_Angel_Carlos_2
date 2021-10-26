@@ -26,7 +26,18 @@ public class ProcesamientoDatos {
     private ProcesamientoDatos(String[] argumentos){
         Utils.init_time = System.currentTimeMillis();
         this.ARGS = argumentos;
+        creteEmptyFolders();
         ejecutarPrograma();
+    }
+
+    /**
+     * Crea las carpetas necesarias si no existen
+     */
+    private void creteEmptyFolders() {
+        File directory = new File(path_destination + "/image/");
+        while (!directory.exists()){
+            directory.mkdirs();
+        }
     }
 
     /**
