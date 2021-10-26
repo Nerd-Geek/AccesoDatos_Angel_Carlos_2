@@ -67,7 +67,7 @@ public class ProcesamientoDatos {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                // TODO: TEST - System.out.println(MeteoService.medicionMaximaDos(listaMeteorizacion, 83));
+
             } else {
                 System.err.println("Los archivos CSV no se han podido leer.");
                 System.exit(0);
@@ -75,6 +75,7 @@ public class ProcesamientoDatos {
         });
     }
 
+    // Mide el tiempo de ejecucion del programa
     public String tiempoInforme() {
         double tiempo = (double) ((System.currentTimeMillis() - Utils.init_time)/1000);
         DateTimeFormatter dtf5 = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm");

@@ -69,7 +69,6 @@ public class MedicionesService {
                 Map.Entry.comparingByValue(Comparator.comparingDouble(o -> Double.parseDouble(o.getValor()))));
     }*/
 
-
     public static Optional<Double> medicionMaxima(List<Medicion> listaMediciones) {
             double maxima = listaMediciones.stream()
                     .mapToDouble(medicion1 -> Utils.obtenerHorasValidadas(medicion1.getHoras()).stream()
@@ -79,6 +78,12 @@ public class MedicionesService {
 
             return Optional.of(Math.round(maxima * 100d) / 100d);
     }
+
+    /**
+     * calcular el dato minimo de la lista medicion
+     * @param listaMediciones lista medicion
+     * @return
+     */
 
     public static Optional<Double> medicionMinima(List<Medicion> listaMediciones) {
             double minima = listaMediciones.stream()

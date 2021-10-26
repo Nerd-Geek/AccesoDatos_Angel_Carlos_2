@@ -44,9 +44,8 @@ public class DatosHTML {
 
         this.nombreCiudad = nombreCiudad;
 
-        //Localizar código de ciudad //TODO: REFACTORIZAR ESTO
         Optional<List<UbicacionEstaciones>> listaEstaciones = Utils.filtrarPorCiudad(nombreCiudad);
-        String codigoCiudad = Utils.filtrarPorCiudad(nombreCiudad).get().get(0).getEstacion_codigo(); //TODO: Si queremos expandir y agregar zonas, hay que editar esto
+        String codigoCiudad = Utils.filtrarPorCiudad(nombreCiudad).get().get(0).getEstacion_codigo();
 
         if (listaEstaciones.isPresent()){
             codigoCiudad = listaEstaciones.get().get(0).getEstacion_codigo();
@@ -147,8 +146,6 @@ public class DatosHTML {
                                     datosMedicion(listaMeteo, magnitudMeteo.getDescripcion_magnitud())
                                     , 800, 800);
 
-
-                            //TODO: ESTO PONERLO EN EL INICIO
 
                             //MEDICIÓN MÁXIMA
                             String medicionMaxMomento = "No se ha encontrado valor máximo."; //Por defecto
