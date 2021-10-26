@@ -1,9 +1,11 @@
 package com.angcar.util;
 
+import com.angcar.ProcesamientoDatos;
 import com.angcar.io.ReaderFiles;
 import com.angcar.model.*;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -13,15 +15,14 @@ public class Utils {
     private static List<UbicacionEstaciones> estacionesUbi;
     private static List<Contaminacion> contamina;
     private static List<Meteorizacion> meteo;
-    private static List<ZonasMunicipio> municipio;
+    //private static List<ZonasMunicipio> municipio;
     private static List<MagnitudContaminacion> magnContamina;
     private static List<MagnitudMeteorizacion> magnMeteo;
+    static public long init_time;
 
-    //GETTERS
     public static List<MagnitudContaminacion> getMagnContamina() {
         return magnContamina;
     }
-
     public static List<MagnitudMeteorizacion> getMagnMeteo() {
         return magnMeteo;
     }
@@ -52,12 +53,6 @@ public class Utils {
             realizado.set(false);
         });
 
-        ReaderFiles.readDataOfPathZonasMunicipio().ifPresentOrElse(
-                zonasMunicipio -> municipio = zonasMunicipio,
-                () -> {System.err.println("No se ha localizado el csv de municipio");
-            realizado.set(false);
-        });
-
         ReaderFiles.readDataOfPathMagnitudContaminacion().ifPresentOrElse(
                 magnitudContamina -> magnContamina = magnitudContamina,
                 () -> {System.err.println("No se ha localizado el csv de magnitudes de contaminación");
@@ -77,7 +72,7 @@ public class Utils {
      * Obtiene una lista de las magnitudes según el nombre de la magnitud dada una lista
      * @param idMagnitud La ID de la magnitud
      * @param lista Lista de mediciones
-     * @return
+     * @return Optional con una lista de mediciones
      */
     public static Optional<List<Medicion>> obtenerMagnitudLista(int idMagnitud, List<Medicion> lista){
         return Optional.of(lista.stream().filter(nombreMagn ->
@@ -89,7 +84,7 @@ public class Utils {
     /**
      * Filtra por ciudad
      * @param nombreCiudad El nombre de la ciudad
-     * @return List<Medicion>
+     * @return Optional con una lista de mediciones
      */
 
     public static Optional<List<UbicacionEstaciones>> filtrarPorCiudad(String nombreCiudad) {
@@ -97,37 +92,52 @@ public class Utils {
                 ubicacionEstaciones.getEstacion_municipio().equalsIgnoreCase(nombreCiudad)).collect(Collectors.toList()));
     }
 
+    /**
+     * Filtrar por meteorización
+     * @param codigoCiudad {@link String}
+     * @return Lista de mediciones
+     */
     public static List<Medicion> filtrarMeteorizacion(String codigoCiudad) {
         return meteo.stream().filter(punto_muestreo -> punto_muestreo.getPunto_muestreo()
                 .contains(codigoCiudad)).collect(Collectors.toList());
     }
 
+    /**
+     * Filtrar por contaminación
+     * @param codigoCiudad {@link String}
+     * @return Lista de contaminaciones
+     */
     public static List<Medicion> filtrarContaminacion(String codigoCiudad) {
         return contamina.stream().filter(punto_muestreo -> punto_muestreo.getPunto_muestreo()
                 .contains(codigoCiudad)).collect(Collectors.toList());
     }
 
-    //////
-    //////MEDICIÓN
-    //////
     /**
      * Obtiene la fecha de inicio
      * @return LocalDate
      */
     public static String obtenerFechaInicioMedicion(){
         String formatearFecha = "dd/MM/yyyy - 00:00:00";
-        LocalDate fecha = meteo.stream().min((c, c1) -> Integer.compare(c.getDia(), c1.getDia()))
-                .map(s -> LocalDate.of(s.getAno(), s.getMes(), s.getDia())).get();
-        LocalDate fecha2 = contamina.stream().min((c, c1) -> Integer.compare(c.getDia(), c1.getDia()))
-                .map(s -> LocalDate.of(s.getAno(), s.getMes(), s.getDia())).get();
+        Optional<LocalDate> fecha = meteo.stream().min(Comparator.comparingInt(Medicion::getDia))
+                .map(s -> LocalDate.of(s.getAno(), s.getMes(), s.getDia()));
 
-        if (fecha.equals(fecha2)) {
-            return fecha.format(DateTimeFormatter.ofPattern(formatearFecha));
-        }else if(fecha.getDayOfMonth() < fecha2.getDayOfMonth()) {
-            return fecha.format(DateTimeFormatter.ofPattern(formatearFecha));
-        }else {
-            return fecha2.format(DateTimeFormatter.ofPattern(formatearFecha));
+        Optional<LocalDate> fecha2 = contamina.stream().min(Comparator.comparingInt(Medicion::getDia))
+                .map(s -> LocalDate.of(s.getAno(), s.getMes(), s.getDia()));
+
+        if (fecha.isPresent() && fecha2.isPresent()){
+            if (fecha.get().equals(fecha2.get())) {
+                return fecha.get().format(DateTimeFormatter.ofPattern(formatearFecha));
+            }else if(fecha.get().getDayOfMonth() < fecha2.get().getDayOfMonth())
+                return fecha.get().format(DateTimeFormatter.ofPattern(formatearFecha));
+            else {
+                return fecha2.get().format(DateTimeFormatter.ofPattern(formatearFecha));
+            }
         }
+        else{
+            return "";
+        }
+
+
     }
 
     /**
@@ -137,18 +147,23 @@ public class Utils {
     public static String obtenerFechaFinalMedicion(){
         String formatearFecha = "dd/MM/yyyy - 00:00:00";
 
-        LocalDate fecha = meteo.stream().max((c, c1) -> Integer.compare(c.getDia(), c1.getDia()))
-                .map(s -> LocalDate.of(s.getAno(), s.getMes(), s.getDia())).get();
+        Optional<LocalDate> fecha = meteo.stream().max(Comparator.comparingInt(Medicion::getDia))
+                .map(s -> LocalDate.of(s.getAno(), s.getMes(), s.getDia()));
 
-        LocalDate fecha2 = contamina.stream().max((c, c1) -> Integer.compare(c.getDia(), c1.getDia()))
-                .map(s -> LocalDate.of(s.getAno(), s.getMes(), s.getDia())).get();
+        Optional<LocalDate> fecha2 = contamina.stream().max(Comparator.comparingInt(Medicion::getDia))
+                .map(s -> LocalDate.of(s.getAno(), s.getMes(), s.getDia()));
 
-        if (fecha.equals(fecha2)) {
-            return fecha.format(DateTimeFormatter.ofPattern(formatearFecha));
-        }else if(fecha.getDayOfMonth() > fecha2.getDayOfMonth()) {
-            return fecha.format(DateTimeFormatter.ofPattern(formatearFecha));
-        }else {
-            return fecha2.format(DateTimeFormatter.ofPattern(formatearFecha));
+        if (fecha.isPresent() && fecha2.isPresent()){
+            if (fecha.get().equals(fecha2.get())) {
+                return fecha.get().format(DateTimeFormatter.ofPattern(formatearFecha));
+            }else if(fecha.get().getDayOfMonth() > fecha2.get().getDayOfMonth())
+                return fecha.get().format(DateTimeFormatter.ofPattern(formatearFecha));
+            else {
+                return fecha2.get().format(DateTimeFormatter.ofPattern(formatearFecha));
+            }
+        }
+        else{
+            return "";
         }
     }
 
@@ -156,7 +171,7 @@ public class Utils {
     /**
      * Obtiene la media diaria de una medición
      * @param medicion {@link Medicion}
-     * @return
+     * @return double con la media diaria
      */
     public static double obtenerMediaDiaria(Medicion medicion){
             double media = Utils.obtenerHorasValidadas(medicion.getHoras())
@@ -170,35 +185,35 @@ public class Utils {
     /**
      * Obtiene la fecha de una medición
      * @param medicion {@link Medicion}
-     * @return
+     * @return fecha de medición
      */
     public static LocalDate obtenerFechaMedicion(Medicion medicion){
-        LocalDate fecha = LocalDate.of(medicion.getAno(), medicion.getMes(), medicion.getDia());
-        return fecha;
+        return LocalDate.of(medicion.getAno(), medicion.getMes(), medicion.getDia());
     }
 
 
-
-
-    //////
-    //////TEMPORAL
-    //////
-
-    //TODO: ESTO DE ABAJO ES TEMPORAL; AL FINALIZAR EL PROYECTO REMOVERLO SI NO LO USAMOS
     /**
      * Obtener código de la estación principal dada una ciudad
-     * @param nombreCiudad
+     * @param nombreCiudad {@link String}
      * @return String
      */
-    public static String obtenerCodigo(String nombreCiudad) { //TODO: Al finalizar proyecto, comprobar public, privates, etc
+    public static String obtenerCodigo(String nombreCiudad) {
         Optional<UbicacionEstaciones> estacion = estacionesUbi.stream().filter(ubicacionEstaciones ->
                 ubicacionEstaciones.getEstacion_municipio().equalsIgnoreCase(nombreCiudad)).findFirst();
-        return estacion.get().getEstacion_codigo();
+
+        String name = "";
+        if (estacion.isPresent()) name = estacion.get().getEstacion_codigo();
+        return name;
     }
 
-    public static Optional<List<String>> obtenerEstaciones(String ciudadd) {
+    /**
+     * Obtener estaciones
+     * @param ciudad {@link String}
+     * @return Optional con una lista de las estaciones en String
+     */
+    public static Optional<List<String>> obtenerEstaciones(String ciudad) {
 
-        String codigo = obtenerCodigo(ciudadd);
+        String codigo = obtenerCodigo(ciudad);
 
         List<UbicacionEstaciones> estacion = estacionesUbi.stream().filter(ubicacionEstaciones ->
                         codigo.substring(6).equals(ubicacionEstaciones.getEstacion_codigo().substring(6)))
@@ -210,12 +225,27 @@ public class Utils {
 
     /**
      * Obtiene las horas validadas
-     * @param horas
-     * @return
+     * @param horas Array de horas
+     * @return Lista de horas
      */
     public static List<Hora> obtenerHorasValidadas(Hora[] horas){
         return Arrays.stream(horas).filter(hora -> hora.getValidation().equals("V"))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Mide el tiempo de ejecución del programa y devuelve un informe
+     * @return Devuelve cuándo se ha creado el informe y cuánto tiempo ha tardado
+     */
+    public static String tiempoInforme() {
+        double tiempo = (double) ((System.currentTimeMillis() - Utils.init_time)/1000);
+        LocalDate fecha = LocalDate.now();
+        String formatearFecha = "dd/MM/yyyy";
+        LocalTime hora = LocalTime.now();
+        String formatearHora = "HH:mm:ss";
+
+        return "Informe generado en el día " + fecha.format(DateTimeFormatter.ofPattern(formatearFecha))
+                + " a las " + hora.format(DateTimeFormatter.ofPattern(formatearHora))+ " en "+ tiempo + " segundos";
     }
 
 

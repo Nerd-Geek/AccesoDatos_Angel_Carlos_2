@@ -8,40 +8,38 @@ import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.data.statistics.HistogramDataset;
-
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+/**
+ * Datos de HTML
+ */
 public class DatosHTML {
     private String nombreCiudad;
     static private StringBuilder stringHTMLData;
-
     public static StringBuilder getStringHTMLData() {
         return stringHTMLData;
     }
 
+    /**
+     * Reset HTML Data
+     */
     public static void resetHTMLData(){
 
         if (stringHTMLData !=null) {
             stringHTMLData.setLength(0);
         }
-
     }
 
-    /*System.out.println(ARGS[0]); //Nombre de la ciudad
-                    System.out.println(Utils.formatearFechaMedicion(listaMeteorizacion)); //Fecha inicio medición
-                    System.out.println(Utils.formatearFechaMedicion(listaContaminacion)); //Fecha final medición
-                    Utils.obtenerEstaciones(ARGS[0]); //Estaciones asociadas*/
-
-
+    /**
+     * Procesar los datos por ciudad
+     * @param nombreCiudad {@link String}
+     */
     public void procesarDatosPorCiudad(String nombreCiudad){
 
         this.nombreCiudad = nombreCiudad;
@@ -51,6 +49,10 @@ public class DatosHTML {
         String codigoCiudad = Utils.filtrarPorCiudad(nombreCiudad).get().get(0).getEstacion_codigo(); //TODO: Si queremos expandir y agregar zonas, hay que editar esto
 
         if (listaEstaciones.isPresent()){
+            codigoCiudad = listaEstaciones.get().get(0).getEstacion_codigo();
+        }
+
+        if (listaEstaciones.isPresent()){
             procesarDatosPorCode(codigoCiudad);
         }else{
             System.out.printf("Ciudad no encontrada: %s", nombreCiudad);
@@ -58,6 +60,10 @@ public class DatosHTML {
         }
     }
 
+    /**
+     * Procesar datos por código de ciudad
+     * @param codigoCiudad {@link String}
+     */
         private void procesarDatosPorCode(String codigoCiudad){
             stringHTMLData = new StringBuilder();
 
@@ -65,12 +71,11 @@ public class DatosHTML {
             List<Medicion> listaMeteorizacion = Utils.filtrarMeteorizacion(codigoCiudad);
             List<Medicion> listaContaminacion = Utils.filtrarContaminacion(codigoCiudad);
 
-            //TODO: REDUCIR ESTA MIERDA DE PREDICATE
             Predicate<Magnitud> filtroMedicion = (Magnitud m) -> m.getCodigo_magnitud() == 83 || m.getCodigo_magnitud() == 88
                     || m.getCodigo_magnitud() == 89 || m.getCodigo_magnitud() == 86 || m.getCodigo_magnitud() == 81;
 
             Predicate<Magnitud> filtroContamina = (Magnitud m) ->
-                    m.getCodigo_magnitud() != -1; //TODO: CAMBIAR ESTA CHAPUZA
+                    m.getCodigo_magnitud() != -1;
 
             procesarDatosMeteo(listaMeteorizacion, filtroMedicion);
             procesarDatosContamina(listaContaminacion, filtroContamina);
@@ -78,6 +83,11 @@ public class DatosHTML {
             System.out.println("Datos procesados.");
         }
 
+    /**
+     * Procesar los datos de meteorización
+     * @param listaMeteo {@link List}<{@link Medicion}>
+     * @param filtro {@link Predicate}<{@link Magnitud}>
+     */
     private void procesarDatosMeteo(List<Medicion> listaMeteo, Predicate<Magnitud> filtro) {
         stringHTMLData.append("<h1>Meteorología</h1>\n");
 
@@ -94,19 +104,12 @@ public class DatosHTML {
 
                 if (!listaMediciones.isEmpty()){
                     try {
-                            //TODO: ACTUAL
-                        //Tratar al código de precipitación de manera diferente a las demás mediciones
                         if (magnitudMeteo.getCodigo_magnitud() == 89){
-                            /*
-                            HistogramDataset datos = new HistogramDataset();
-                            datos.addSeries("key", datosMedicion(listaMeteo, magnitudMeteo.getDescripcion_magnitud()), 20);
 
-                            JFreeChart histograma = ChartFactory.createHistogram("JFreeChart Histogram",
-                                    "Data", "Frequency", datos);
-
-                            ChartUtilities.saveChartAsPNG(new File(PATH_DESTINATION + actualPath),
-                                    histograma, 800, 800);
-                            */
+                            ChartUtilities.saveChartAsPNG(
+                                    new File(ProcesamientoDatos.path_destination + actualPath),
+                                    datosMedicion(listaMeteo, magnitudMeteo.getDescripcion_magnitud())
+                                    , 800, 800);
 
                             //MEDICIÓN MENSUAL
                             double valorMediomensual = 0;
@@ -124,13 +127,8 @@ public class DatosHTML {
                                     "</tr>\n");
                             MedicionesService.listaDiasPrecipitacion(listaMediciones)
                                     .forEach((key, value) ->
-                                            {
-                                                tabla.append("<tr>\n" +
-                                                        "<td>" + key + "</td>\n" +
-                                                                "<td>" + value + "</td>\n" +
-                                                        "</tr>\n"
-                                                );
-                                            }
+                                            tabla.append("<tr>\n" + "<td>").append(key).append("</td>\n")
+                                                    .append("<td>").append(value).append("</td>\n").append("</tr>\n")
                                     );
                             tabla.append("</table>\n");
 
@@ -142,9 +140,6 @@ public class DatosHTML {
                                             "<img src=\"%s\" />",
                                     magnitudMeteo.getDescripcion_magnitud(), valorMediomensual,
                                     tabla, actualPath));
-
-
-
                         }
                         //Si es otro tipo de medición, tratar de manera habitual
                         else {
@@ -213,11 +208,16 @@ public class DatosHTML {
         });
     }
 
+    /**
+     * Procesar los datos de contaminación
+     * @param listaContamina {@link List}<{@link Medicion}>
+     * @param filtro {@link Predicate}<{@link Magnitud}>
+     */
     private void procesarDatosContamina(List<Medicion> listaContamina, Predicate<Magnitud> filtro) {
         stringHTMLData.append("<h1>Contaminación</h1>\n");
 
         Utils.getMagnContamina().stream().filter(filtro).forEach((magnitudContamina) -> {
-            String actualPath = "image/" + magnitudContamina.getCodigo_magnitud() + ".png";
+            String actualPath = "image" + File.separator + magnitudContamina.getCodigo_magnitud() + ".png";
             int idMagnitud = magnitudContamina.getCodigo_magnitud();
 
 
@@ -233,9 +233,6 @@ public class DatosHTML {
                         ChartUtilities.saveChartAsPNG(new File(ProcesamientoDatos.path_destination + actualPath),
                                 datosMedicion(listaContamina, magnitudContamina.getDescripcion_magnitud())
                                 , 800, 800);
-
-
-                        //TODO: ESTO PONERLO EN EL INICIO
 
                         //MEDICIÓN MÁXIMA
                         String medicionMaxMomento = "No se ha encontrado valor máximo."; //Por defecto
@@ -296,9 +293,9 @@ public class DatosHTML {
 
     /**
      * Crea la gráfica con los datos de medición
-     * @param listaMediciones
-     * @param descripcion_magnitud
-     * @return
+     * @param listaMediciones Lista de mediciones {@link List}<{@link Medicion}>
+     * @param descripcion_magnitud Descripción de magnitud {@link String}
+     * @return List<Medicion>
      */
         private JFreeChart datosMedicion(List<Medicion> listaMediciones,String descripcion_magnitud) {
 
@@ -312,5 +309,4 @@ public class DatosHTML {
                     descripcion_magnitud, dataset, PlotOrientation.VERTICAL, true,
                     true, false);
         }
-
 }

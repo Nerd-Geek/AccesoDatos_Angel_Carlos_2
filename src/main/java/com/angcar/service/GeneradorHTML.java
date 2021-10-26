@@ -1,22 +1,22 @@
 package com.angcar.service;
 
 import com.angcar.ProcesamientoDatos;
-import com.angcar.model.Medicion;
+import com.angcar.io.WriterFiles;
 import com.angcar.util.Utils;
-import org.apache.commons.io.FileUtils;
-
-import java.io.File;
 import java.io.IOException;
-import java.util.List;
+
+import static com.angcar.ProcesamientoDatos.path_destination;
 
 public class GeneradorHTML {
 
     private static final String PROGRAM_NAME = "Servicio meteorológico y contaminación";
 
-    public static void generarHtml(String nombreCiudad, String codigoCiudad) throws IOException {
-        List<Medicion> listaContaminacion = Utils.filtrarContaminacion(codigoCiudad);
-        List<Medicion> listaMeteorizacion = Utils.filtrarMeteorizacion(codigoCiudad);
-
+    /**
+     * Genera el HTML
+     * @param nombreCiudad {@link String}
+     * @throws IOException Excepción IO
+     */
+    public static void generarHtml(String nombreCiudad) throws IOException {
         //HEAD
         StringBuilder htmlString = new StringBuilder();
         htmlString.append(String.format("<!DOCTYPE html>\n" +
@@ -46,19 +46,17 @@ public class GeneradorHTML {
                 ,PROGRAM_NAME, nombreCiudad, sb, fechaIni, fechaFin));
 
 
-
-
         ///CARGAR DATOS MEDICIONES
         htmlString.append(DatosHTML.getStringHTMLData()); //Agregar StringHTMLData
         DatosHTML.resetHTMLData(); //Resetear StringHTMLData
 
 
+        htmlString.append("<p>" + Utils.tiempoInforme() + "</p>");
 
         //END
         htmlString .append("</body>\n" +
                 "</html>");
 
-        File newHtmlFile = new File(ProcesamientoDatos.path_destination + "new.html");
-        FileUtils.writeStringToFile(newHtmlFile, htmlString.toString());
+        WriterFiles.writeFile(htmlString.toString(), nombreCiudad);
     }
 }
