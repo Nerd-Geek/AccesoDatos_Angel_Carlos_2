@@ -11,7 +11,6 @@ Se ha codificado un programa donde se debe pasar una ciudad, por ejemplo "Lengan
 - Ficheros csv input
 - Fichero HTML y PDF output
 - Expresiones regulares
-## Enlace a YouTube
 
 ## Librerías usadas 📚
 - Lombok
