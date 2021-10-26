@@ -20,8 +20,16 @@ public class WriterFiles {
         LocalDate fecha = LocalDate.now();
         String formatearFecha = "dd-MM-yyyy";
 
+
+
+        //
         String path = ProcesamientoDatos.path_destination;
         String fileName = nombreCiudad + "-" + fecha.format(DateTimeFormatter.ofPattern(formatearFecha)) + ".html";
+
+        File directory = new File(path);
+        while (!directory.exists()){
+            directory.mkdirs();
+        }
 
         File file = new File(path + File.separator + fileName);
 

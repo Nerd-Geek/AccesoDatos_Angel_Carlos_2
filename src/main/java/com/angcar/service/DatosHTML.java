@@ -91,7 +91,7 @@ public class DatosHTML {
         stringHTMLData.append("<h1>Meteorología</h1>\n");
 
         Utils.getMagnMeteo().stream().filter(filtro).forEach((magnitudMeteo) -> {
-            String actualPath = "image" + File.separator + magnitudMeteo.getCodigo_magnitud() + ".png";
+            String actualPath = "image/" + magnitudMeteo.getCodigo_magnitud() + ".png";
             int idMagnitud = magnitudMeteo.getCodigo_magnitud();
 
 
