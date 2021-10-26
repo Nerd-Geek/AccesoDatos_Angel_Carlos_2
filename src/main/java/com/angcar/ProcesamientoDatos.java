@@ -26,7 +26,6 @@ public class ProcesamientoDatos {
     private ProcesamientoDatos(String[] argumentos){
         Utils.init_time = System.currentTimeMillis();
         this.ARGS = argumentos;
-        creteEmptyFolders();
         ejecutarPrograma();
     }
 
@@ -69,6 +68,8 @@ public class ProcesamientoDatos {
         pares.forEach(pair -> {
             String ciudad = pair[0]; //Argumento ciudad
             path_destination = pair[1] + File.separator;
+
+            creteEmptyFolders();
 
             if (Utils.inicializarDatos()) {
                 DatosHTML datosCiudad = new DatosHTML();
