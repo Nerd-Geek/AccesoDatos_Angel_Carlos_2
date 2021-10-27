@@ -2,7 +2,9 @@ package com.angcar.io;
 
 import com.angcar.model.*;
 import com.angcar.model.Hora;
+import org.w3c.dom.ls.LSOutput;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -19,12 +21,12 @@ import java.util.stream.Stream;
 public class ReaderFiles {
     // Localización csv´s
     //private static final String PATH_ZONAS = "src/main/resources/data/calidad_aire_zonas.csv";
-    private static final String PATH_UBICA_ESTACIONES = "src/main/resources/data/calidad_aire_estaciones.csv";
-    private static final String PATH_METEO = "src/main/resources/data/calidad_aire_datos_meteo_mes.csv";
-    private static final String PATH_CONTAMINACION = "src/main/resources/data/calidad_aire_datos_mes.csv";
+    private static final String PATH_UBICA_ESTACIONES = System.getProperty("user.dir")+ File.separator+"data"+File.separator+"calidad_aire_estaciones.csv";
+    private static final String PATH_METEO =System.getProperty("user.dir")+ File.separator+"data"+File.separator+"calidad_aire_datos_meteo_mes.csv";
+    private static final String PATH_CONTAMINACION = System.getProperty("user.dir")+ File.separator+"data"+File.separator+"calidad_aire_datos_mes.csv";
 
-    private static final String PATH_MAGNITUDES_CONTAMINACION = "src/main/resources/data/magnitudes_contaminacion.csv";
-    private static final String PATH_MAGNITUDES_METEO = "src/main/resources/data/magnitudes_meteorizacion.csv";
+    private static final String PATH_MAGNITUDES_CONTAMINACION = System.getProperty("user.dir")+ File.separator+"data"+File.separator+"magnitudes_contaminacion.csv";
+    private static final String PATH_MAGNITUDES_METEO = System.getProperty("user.dir")+ File.separator+"data"+File.separator+"magnitudes_meteorizacion.csv";
 
     /**
      * lee los datos del csv meteorizacion
