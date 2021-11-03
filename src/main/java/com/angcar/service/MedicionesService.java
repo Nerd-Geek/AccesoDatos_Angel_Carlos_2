@@ -32,15 +32,15 @@ public class MedicionesService {
         //Mapear la medición con su hora máxima
         Map<Medicion, Optional<Hora>> medicionesMax = listaMediciones.stream()
                 .collect(Collectors.toMap(
-                        medicion -> medicion, (o) -> Arrays.stream(o.getHoras())
+                        medicion -> medicion, (o) -> Arrays.stream(o.getHours())
                                 .filter(hora -> hora.getValidation().equals("V"))
-                                .max(Comparator.comparing(Hora::getValor)),(o, o2) -> o
+                                .max(Comparator.comparing(Hora::getValue)),(o, o2) -> o
                 ));
 
         //Conseguir la medición con la hora máxima y meterla en un "'Map.Entry'"
         return Collections.max(medicionesMax.entrySet(),
                 Map.Entry.comparingByValue(Comparator.comparingDouble(o -> o.map(hora ->
-                        Double.parseDouble(hora.getValor())).orElse(0.0))));
+                        Double.parseDouble(hora.getValue())).orElse(0.0))));
     }
 
     /**
@@ -52,15 +52,15 @@ public class MedicionesService {
         //Mapear la medición con su hora máxima
         Map<Medicion, Optional<Hora>> medicionesMin = listaMediciones.stream()
                 .collect(Collectors.toMap(
-                        medicion -> medicion, (o) -> Arrays.stream(o.getHoras())
+                        medicion -> medicion, (o) -> Arrays.stream(o.getHours())
                                 .filter(hora -> hora.getValidation().equals("V"))
-                                .min(Comparator.comparing(Hora::getValor)),(o, o2) -> o
+                                .min(Comparator.comparing(Hora::getValue)),(o, o2) -> o
                 ));
 
         //Conseguir la medición con la hora máxima y meterla en un "'Map.Entry'"
         return Collections.min(medicionesMin.entrySet(),
                 Map.Entry.comparingByValue(Comparator.comparingDouble(o -> o.map(hora ->
-                        Double.parseDouble(hora.getValor())).orElse(0.0))));
+                        Double.parseDouble(hora.getValue())).orElse(0.0))));
     }
 
     /*public static Map.Entry<Medicion, Hora> medicionMinimaMomento(List<Medicion> listaMediciones) {
@@ -71,8 +71,8 @@ public class MedicionesService {
 
     public static Optional<Double> medicionMaxima(List<Medicion> listaMediciones) {
             double maxima = listaMediciones.stream()
-                    .mapToDouble(medicion1 -> Utils.obtenerHorasValidadas(medicion1.getHoras()).stream()
-                            .mapToDouble(value -> Double.parseDouble(value.getValor()))
+                    .mapToDouble(medicion1 -> Utils.obtenerHorasValidadas(medicion1.getHours()).stream()
+                            .mapToDouble(value -> Double.parseDouble(value.getValue()))
                             .summaryStatistics().getMax())
                     .summaryStatistics().getMax();
 
@@ -87,8 +87,8 @@ public class MedicionesService {
 
     public static Optional<Double> medicionMinima(List<Medicion> listaMediciones) {
             double minima = listaMediciones.stream()
-                    .mapToDouble(medicion1 -> Utils.obtenerHorasValidadas(medicion1.getHoras()).stream()
-                            .mapToDouble(value -> Double.parseDouble(value.getValor()))
+                    .mapToDouble(medicion1 -> Utils.obtenerHorasValidadas(medicion1.getHours()).stream()
+                            .mapToDouble(value -> Double.parseDouble(value.getValue()))
                             .summaryStatistics().getMin())
                     .summaryStatistics().getMin();
 

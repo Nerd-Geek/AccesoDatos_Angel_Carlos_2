@@ -1,7 +1,7 @@
 package com.angcar.model;
 
 public class MagnitudMeteorizacion extends Magnitud{
-    public MagnitudMeteorizacion(int codigo_magnitud, String descripcion_magnitud, int codigo_tecnica_medida, String unidad, String descripcion_unidad, String descripcion_tecnica_medida) {
-        super(codigo_magnitud, descripcion_magnitud, codigo_tecnica_medida, unidad, descripcion_unidad, descripcion_tecnica_medida);
+    public MagnitudMeteorizacion(int code_magnitude, String description_magnitude, int code_technical_media, String undid, String descriptions_undid, String description_technical_media) {
+        super(code_magnitude, description_magnitude, code_technical_media, undid, descriptions_undid, description_technical_media);
     }
 }
