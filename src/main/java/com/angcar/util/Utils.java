@@ -1,6 +1,5 @@
 package com.angcar.util;
 
-import com.angcar.ProcesamientoDatos;
 import com.angcar.io.ReaderFiles;
 import com.angcar.model.*;
 
@@ -76,7 +75,7 @@ public class Utils {
      */
     public static Optional<List<Medicion>> obtenerMagnitudLista(int idMagnitud, List<Medicion> lista){
         return Optional.of(lista.stream().filter(nombreMagn ->
-                        nombreMagn.getMagnitud().equalsIgnoreCase(String.valueOf(idMagnitud)))
+                        nombreMagn.getMagnitude().equalsIgnoreCase(String.valueOf(idMagnitud)))
                 .collect(Collectors.toList()));
 
     }
@@ -89,7 +88,7 @@ public class Utils {
 
     public static Optional<List<UbicacionEstaciones>> filtrarPorCiudad(String nombreCiudad) {
         return Optional.of(estacionesUbi.stream().filter(ubicacionEstaciones ->
-                ubicacionEstaciones.getEstacion_municipio().equalsIgnoreCase(nombreCiudad)).collect(Collectors.toList()));
+                ubicacionEstaciones.getStation_municipal().equalsIgnoreCase(nombreCiudad)).collect(Collectors.toList()));
     }
 
     /**
@@ -98,7 +97,7 @@ public class Utils {
      * @return Lista de mediciones
      */
     public static List<Medicion> filtrarMeteorizacion(String codigoCiudad) {
-        return meteo.stream().filter(punto_muestreo -> punto_muestreo.getPunto_muestreo()
+        return meteo.stream().filter(punto_muestreo -> punto_muestreo.getSampling_point()
                 .contains(codigoCiudad)).collect(Collectors.toList());
     }
 
@@ -108,7 +107,7 @@ public class Utils {
      * @return Lista de contaminaciones
      */
     public static List<Medicion> filtrarContaminacion(String codigoCiudad) {
-        return contamina.stream().filter(punto_muestreo -> punto_muestreo.getPunto_muestreo()
+        return contamina.stream().filter(punto_muestreo -> punto_muestreo.getSampling_point()
                 .contains(codigoCiudad)).collect(Collectors.toList());
     }
 
@@ -118,11 +117,11 @@ public class Utils {
      */
     public static String obtenerFechaInicioMedicion(){
         String formatearFecha = "dd/MM/yyyy - 00:00:00";
-        Optional<LocalDate> fecha = meteo.stream().min(Comparator.comparingInt(Medicion::getDia))
-                .map(s -> LocalDate.of(s.getAno(), s.getMes(), s.getDia()));
+        Optional<LocalDate> fecha = meteo.stream().min(Comparator.comparingInt(Medicion::getDay))
+                .map(s -> LocalDate.of(s.getYear(), s.getMonth(), s.getDay()));
 
-        Optional<LocalDate> fecha2 = contamina.stream().min(Comparator.comparingInt(Medicion::getDia))
-                .map(s -> LocalDate.of(s.getAno(), s.getMes(), s.getDia()));
+        Optional<LocalDate> fecha2 = contamina.stream().min(Comparator.comparingInt(Medicion::getDay))
+                .map(s -> LocalDate.of(s.getYear(), s.getMonth(), s.getDay()));
 
         if (fecha.isPresent() && fecha2.isPresent()){
             if (fecha.get().equals(fecha2.get())) {
@@ -147,11 +146,11 @@ public class Utils {
     public static String obtenerFechaFinalMedicion(){
         String formatearFecha = "dd/MM/yyyy - 00:00:00";
 
-        Optional<LocalDate> fecha = meteo.stream().max(Comparator.comparingInt(Medicion::getDia))
-                .map(s -> LocalDate.of(s.getAno(), s.getMes(), s.getDia()));
+        Optional<LocalDate> fecha = meteo.stream().max(Comparator.comparingInt(Medicion::getDay))
+                .map(s -> LocalDate.of(s.getYear(), s.getMonth(), s.getDay()));
 
-        Optional<LocalDate> fecha2 = contamina.stream().max(Comparator.comparingInt(Medicion::getDia))
-                .map(s -> LocalDate.of(s.getAno(), s.getMes(), s.getDia()));
+        Optional<LocalDate> fecha2 = contamina.stream().max(Comparator.comparingInt(Medicion::getDay))
+                .map(s -> LocalDate.of(s.getYear(), s.getMonth(), s.getDay()));
 
         if (fecha.isPresent() && fecha2.isPresent()){
             if (fecha.get().equals(fecha2.get())) {
@@ -174,9 +173,9 @@ public class Utils {
      * @return double con la media diaria
      */
     public static double obtenerMediaDiaria(Medicion medicion){
-            double media = Utils.obtenerHorasValidadas(medicion.getHoras())
+            double media = Utils.obtenerHorasValidadas(medicion.getHours())
                     .stream()
-                    .mapToDouble(value -> Double.parseDouble(value.getValor()))
+                    .mapToDouble(value -> Double.parseDouble(value.getValue()))
                     .summaryStatistics().getAverage();
 
             return Math.round(media * 100d) / 100d;
@@ -188,7 +187,7 @@ public class Utils {
      * @return fecha de medición
      */
     public static LocalDate obtenerFechaMedicion(Medicion medicion){
-        return LocalDate.of(medicion.getAno(), medicion.getMes(), medicion.getDia());
+        return LocalDate.of(medicion.getYear(), medicion.getMonth(), medicion.getDay());
     }
 
 
@@ -199,10 +198,10 @@ public class Utils {
      */
     public static String obtenerCodigo(String nombreCiudad) {
         Optional<UbicacionEstaciones> estacion = estacionesUbi.stream().filter(ubicacionEstaciones ->
-                ubicacionEstaciones.getEstacion_municipio().equalsIgnoreCase(nombreCiudad)).findFirst();
+                ubicacionEstaciones.getStation_municipal().equalsIgnoreCase(nombreCiudad)).findFirst();
 
         String name = "";
-        if (estacion.isPresent()) name = estacion.get().getEstacion_codigo();
+        if (estacion.isPresent()) name = estacion.get().getStation_code();
         return name;
     }
 
@@ -216,10 +215,10 @@ public class Utils {
         String codigo = obtenerCodigo(ciudad);
 
         List<UbicacionEstaciones> estacion = estacionesUbi.stream().filter(ubicacionEstaciones ->
-                        codigo.substring(6).equals(ubicacionEstaciones.getEstacion_codigo().substring(6)))
+                        codigo.substring(6).equals(ubicacionEstaciones.getStation_code().substring(6)))
                 .collect(Collectors.toList());
 
-       return Optional.of(estacion.stream().map(UbicacionEstaciones::getEstacion_municipio).collect(Collectors.toList()));
+       return Optional.of(estacion.stream().map(UbicacionEstaciones::getStation_municipal).collect(Collectors.toList()));
 
     }
 

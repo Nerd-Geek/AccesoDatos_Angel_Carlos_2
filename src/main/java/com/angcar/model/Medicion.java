@@ -6,13 +6,13 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class Medicion { //POJO
-    private String provincia;
-    private String municipio;
-    private String estacion;
-    private String magnitud;
-    private String punto_muestreo;
-    private int ano;
-    private int mes;
-    private int dia;
-    private Hora[] horas;
+    private String provincial;
+    private String municipal;
+    private String station;
+    private String magnitude;
+    private String sampling_point;
+    private int year;
+    private int month;
+    private int day;
+    private Hora[] hours;
 }
