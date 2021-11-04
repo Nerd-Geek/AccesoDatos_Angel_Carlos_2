@@ -1,8 +1,10 @@
 package com.angcar.util;
 
+import com.angcar.io.JDOMController;
 import com.angcar.io.ReaderFiles;
 import com.angcar.model.*;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -14,7 +16,7 @@ public class Utils {
     private static List<UbicacionEstaciones> estacionesUbi;
     private static List<Contaminacion> contamina;
     private static List<Meteorizacion> meteo;
-    //private static List<ZonasMunicipio> municipio;
+    private static List<ZonasMunicipio> municipio;
     private static List<MagnitudContaminacion> magnContamina;
     private static List<MagnitudMeteorizacion> magnMeteo;
     static public long init_time;
@@ -63,6 +65,12 @@ public class Utils {
                 () -> {System.err.println("No se ha localizado el csv de magnitudes de meteorización");
             realizado.set(false);
         });
+
+        ReaderFiles.readDataOfPathZonasMunicipio().ifPresentOrElse(
+                munic -> municipio = munic,
+                () -> {System.err.println("No se ha localizado el csv de magnitudes de meteorización");
+                    realizado.set(false);
+                });
 
         return realizado.get();
     }

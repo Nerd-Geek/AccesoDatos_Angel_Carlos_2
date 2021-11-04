@@ -1,4 +1,4 @@
-Código magnitud;Descripción magnitud;Código de técnica de medida;Unidad;Descripción unidad
+cod_magnitud;desc_magnitud;cod_tec_medida;unidad;desc_unidad
 81;Velocidad del viento;89;m/s;metros por segundo
 82;Dirección del viento;89;Grd;grados
 83;Temperatura;89;ºc;grados centígrados
