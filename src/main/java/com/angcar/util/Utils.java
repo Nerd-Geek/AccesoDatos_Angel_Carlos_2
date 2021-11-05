@@ -1,8 +1,9 @@
 package com.angcar.util;
 
-import com.angcar.io.JDOMController;
+import com.angcar.io.JDOMReader;
 import com.angcar.io.ReaderFiles;
 import com.angcar.model.*;
+import org.jdom2.JDOMException;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -32,7 +33,7 @@ public class Utils {
     /**
      * Carga e inicializa los CSV's
      */
-    public static boolean inicializarDatos(){
+    public static boolean inicializarDatosCSV(){
         //Leer .csv's
         AtomicBoolean realizado = new AtomicBoolean(true);
 
@@ -73,6 +74,18 @@ public class Utils {
                 });
 
         return realizado.get();
+    }
+
+    public static void inicializarDatosXML() throws IOException, JDOMException {
+        JDOMReader controller = JDOMReader.getInstance();
+
+        controller.loadData();
+        controller.getZonas();
+        controller.getUbicaciones();
+        controller.getMeteorizacion();
+        controller.getContaminacion();
+        controller.getMagnitudContaminacion();
+        controller.getMagnitudMeteorizacion();
     }
 
     /**

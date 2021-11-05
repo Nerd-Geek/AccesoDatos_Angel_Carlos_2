@@ -1,9 +1,6 @@
 package com.angcar.model;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
+import lombok.*;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -12,6 +9,7 @@ import javax.xml.bind.annotation.XmlType;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @XmlRootElement(name = "mediciones", namespace = "com.angar")
 @XmlType(name = "medicion", propOrder = {"provincial", "municipal", "station", "magnitude",
         "sampling_point", "year", "month", "day", "hours"})

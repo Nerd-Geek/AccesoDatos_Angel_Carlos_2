@@ -3,6 +3,7 @@ package com.angcar;
 import com.angcar.service.DatosHTML;
 import com.angcar.service.GeneradorHTML;
 import com.angcar.util.Utils;
+import org.jdom2.JDOMException;
 
 import java.io.File;
 import java.io.IOException;
@@ -71,7 +72,7 @@ public class ProcesamientoDatos {
 
             creteEmptyFolders();
 
-            if (Utils.inicializarDatos()) {
+            if (Utils.inicializarDatosCSV()) {
                 DatosHTML datosCiudad = new DatosHTML();
                 datosCiudad.procesarDatosPorCiudad(ciudad);
                 try {
@@ -83,6 +84,14 @@ public class ProcesamientoDatos {
             } else {
                 System.err.println("Los archivos CSV no se han podido leer.");
                 System.exit(0);
+            }
+
+            try {
+                Utils.inicializarDatosXML();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JDOMException e) {
+                e.printStackTrace();
             }
         });
     }
