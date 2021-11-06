@@ -8,32 +8,6 @@ import javax.xml.bind.annotation.XmlType;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@XmlRootElement(name = "estaciones", namespace = "com.angar")
-@XmlType(name="estacion2", propOrder = {"station_code",
-        "air_quality_zone_description",
-        "station_municipal",
-        "high_date_station",
-        "area_type_station",
-        "station_type_station",
-        "rural_subarea_station",
-        "postal_address_station",
-        "station_coord_UTM_ETRS89_x",
-        "station_coord_UTM_ETRS89_y",
-        "station_coord_length",
-        "latitude_coord_station",
-        "station_altitude",
-          "NO_analyzer_station",
-          "NO2_analyzer_station",
-          "analyzer_station_PM10",
-          "analyzer_station_PM2_5",
-          "O3_analyzer_station",
-          "TOL_analyzer_station",
-          "BEN_analyzer_station",
-          "XIL_analyzer_station",
-          "CO_analyzer_station",
-          "SO2_analyzer_station",
-          "HCT_analyzer_station",
-          "HNM_analyzer_station"})
 public class UbicacionEstaciones { //POJO
     private String station_code;
     private String air_quality_zone_description;

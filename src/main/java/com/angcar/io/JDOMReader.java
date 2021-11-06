@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class JDOMReader {
@@ -54,7 +55,7 @@ public class JDOMReader {
         this.dataMagMeteo = (Document) builder.build(magMeteoXML);
     }
 
-    public List<ZonasMunicipio> getZonas() {
+    public Optional<List<ZonasMunicipio>> getZonas() {
         Element root = (Element) this.dataZonas.getRootElement();
         List<Element> listOfZonas = root.getChildren("item");
 
@@ -67,10 +68,10 @@ public class JDOMReader {
             zonas_m.setMunicipal_air_quality_zone(zona.getChildText("zona_calidad_aire_municipio"));
             zonasList.add(zonas_m);
         });
-        return zonasList;
+        return Optional.of(zonasList);
     }
 
-    public List<UbicacionEstaciones> getUbicaciones() {
+    public Optional<List<UbicacionEstaciones>> getUbicaciones() {
         Element root = (Element) this.dataUbicaciones.getRootElement();
         List<Element> listOfUbic = root.getChildren("item");
         List<UbicacionEstaciones> listUbica = new ArrayList<>();
@@ -104,10 +105,10 @@ public class JDOMReader {
             ubicacionEstaciones.setHNM_analyzer_station(ubica.getChildText("estacion_analizador_HNM"));
             listUbica.add(ubicacionEstaciones);
         });
-        return listUbica;
+        return Optional.of(listUbica);
     }
 
-    public List<Meteorizacion> getMeteorizacion() {
+    public Optional<List<Meteorizacion>> getMeteorizacion() {
         Element root = this.dataMeteo.getRootElement();
         List<Element> listOfMeteo = root.getChildren("item");
         List<Meteorizacion> listMeteo = new ArrayList<>();
@@ -129,10 +130,10 @@ public class JDOMReader {
             }
             listMeteo.add(meteorizacion);
         });
-        return listMeteo;
+        return Optional.of(listMeteo);
     }
 
-    public List<Contaminacion> getContaminacion() {
+    public Optional<List<Contaminacion>> getContaminacion() {
         Element root = this.dataContamina.getRootElement();
         List<Element> listOfContamina = root.getChildren("item");
         List<Contaminacion> listContamina = new ArrayList<>();
@@ -154,13 +155,13 @@ public class JDOMReader {
             }
             listContamina.add(contaminacion);
         });
-        return listContamina;
+        return Optional.of(listContamina);
     }
 
-    public List<MagnitudMeteorizacion> getMagnitudMeteorizacion() {
+    public Optional<List<Magnitud>> getMagnitudMeteorizacion() {
         Element root = this.dataMagMeteo.getRootElement();
         List<Element> listOfMagMeteo = root.getChildren("item");
-        List<MagnitudMeteorizacion> listMagMeteo = new ArrayList<>();
+        List<Magnitud> listMagMeteo = new ArrayList<>();
 
         listOfMagMeteo.forEach(mag -> {
             MagnitudMeteorizacion magnitudMeteorizacion = new MagnitudMeteorizacion();
@@ -171,13 +172,13 @@ public class JDOMReader {
             magnitudMeteorizacion.setDescriptions_undid(mag.getChildText("desc_unidad"));
             listMagMeteo.add(magnitudMeteorizacion);
         });
-        return listMagMeteo;
+        return Optional.of(listMagMeteo);
     }
 
-    public List<MagnitudContaminacion> getMagnitudContaminacion() {
+    public Optional<List<Magnitud>> getMagnitudContaminacion() {
         Element root = this.dataMagMeteo.getRootElement();
         List<Element> listOfMagMeteo = root.getChildren("item");
-        List<MagnitudContaminacion> listMagMeteo = new ArrayList<>();
+        List<Magnitud> listMagMeteo = new ArrayList<>();
 
         listOfMagMeteo.forEach(mag -> {
             MagnitudContaminacion magnitudContaminacion = new MagnitudContaminacion();
@@ -188,6 +189,6 @@ public class JDOMReader {
             magnitudContaminacion.setDescriptions_undid(mag.getChildText("desc_unidad"));
             listMagMeteo.add(magnitudContaminacion);
         });
-        return listMagMeteo;
+        return Optional.of(listMagMeteo);
     }
 }

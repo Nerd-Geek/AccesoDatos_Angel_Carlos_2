@@ -1,10 +1,15 @@
 package com.angcar;
 
+import com.angcar.io.JAXBdbMediciones;
+import com.angcar.model.resultados.ResultadoMediciones;
 import com.angcar.service.DatosHTML;
 import com.angcar.service.GeneradorHTML;
+import com.angcar.service.ResultadosMedicionService;
 import com.angcar.util.Utils;
 import org.jdom2.JDOMException;
 
+import javax.xml.bind.JAXBException;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -31,16 +36,6 @@ public class ProcesamientoDatos {
     }
 
     /**
-     * Crea las carpetas necesarias si no existen
-     */
-    private void creteEmptyFolders() {
-        File directory = new File(path_destination + "/image/");
-        while (!directory.exists()){
-            directory.mkdirs();
-        }
-    }
-
-    /**
      * Singleton
      * @param argumentos Argumentos iniciales del programa
      * @return Singleton respuesta
@@ -62,7 +57,6 @@ public class ProcesamientoDatos {
      * Ejecución del programa
      */
     public void ejecutarPrograma() {
-
         List<String[]> pares = IntStream.iterate(0, i -> i += 2).limit(ARGS.length / 2)
                 .mapToObj(n -> new String[]{ARGS[n], ARGS[n + 1]}).collect(Collectors.toList());
 
@@ -70,28 +64,45 @@ public class ProcesamientoDatos {
             String ciudad = pair[0]; //Argumento ciudad
             path_destination = pair[1] + File.separator;
 
-            creteEmptyFolders();
+            Utils.createEmptyFolders(path_destination);
 
             if (Utils.inicializarDatosCSV()) {
+                ResultadoMediciones datosResultadoMediciones = new ResultadoMediciones();
+
+                //En su lugar, leer los datos desde el XML
+                try {
+                    Utils.inicializarDatosXML();
+                    ResultadosMedicionService res = new ResultadosMedicionService(ciudad);
+                    datosResultadoMediciones = res.cargarResultadosMediciones();
+
+                } catch (IOException | JDOMException e) {
+                    System.err.println("No se ha podido inicializar los datos del XML.");
+                    System.exit(0);
+                }
+
+                //Una vez recibidos los datos de las mediciones, trabajar con ellos
+                //CREAR LA BASE DE DATOS DE MEDICIONES
+                JAXBdbMediciones bd = JAXBdbMediciones.getInstance();
+                try {
+                    bd.crearBDMediciones(datosResultadoMediciones, path_destination + File.separator + "db"
+                            + File.separator + "mediciones.xml");
+                    bd.domTest(datosResultadoMediciones, path_destination + File.separator + "db"
+                            + File.separator + "mediciones.xml");
+                } catch (JAXBException | IOException | ParserConfigurationException e) {
+                    e.printStackTrace();
+                }
+
                 DatosHTML datosCiudad = new DatosHTML();
                 datosCiudad.procesarDatosPorCiudad(ciudad);
                 try {
                     GeneradorHTML.generarHtml(ciudad);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    System.err.println("No se ha podido generar el HTML.");
                 }
 
             } else {
                 System.err.println("Los archivos CSV no se han podido leer.");
                 System.exit(0);
-            }
-
-            try {
-                Utils.inicializarDatosXML();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JDOMException e) {
-                e.printStackTrace();
             }
         });
     }

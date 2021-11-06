@@ -283,9 +283,9 @@ public class ReaderFiles {
 
     /**
      * Leer datos de contaminación
-     * @return Opcional que de vuelve una lista de {@link MagnitudContaminacion}
+     * @return Opcional que de vuelve una lista de {@link Magnitud}
      */
-    public static Optional<List<MagnitudContaminacion>> readDataOfPathMagnitudContaminacion() {
+    public static Optional<List<Magnitud>> readDataOfPathMagnitudContaminacion() {
 
         Path path = Paths.get(PATH_MAGNITUDES_CONTAMINACION);
         String nombreArchivo = XMLConvertUtil.nombreArchivoDeCSV(path.getFileName().toString()); //TODO: AGREGADO NUEVO
@@ -299,7 +299,7 @@ public class ReaderFiles {
                 ArrayList<String> elementos = XMLConvertUtil.getTitlesCSV(path);
                 //TODO: AGREGADO NUEVO
 
-                Optional<List<MagnitudContaminacion>> listaFinal =  Optional.of(stream
+                Optional<List<Magnitud>> listaFinal =  Optional.of(stream
                         .map(s -> s.split(";", -1)).skip(1)
                         .map(splitted -> {
 
@@ -312,7 +312,7 @@ public class ReaderFiles {
                             String descripcion_unidad = splitted[4];
                             String descripcion_tecnica_medida = splitted[5];
 
-                            return new MagnitudContaminacion(codigo_magnitud,
+                            return new Magnitud(codigo_magnitud,
                                     descripcion_magnitud, codigo_tecnica_medida,
                                     descripcion_tecnica_medida, unidad, descripcion_unidad);
 
@@ -331,9 +331,9 @@ public class ReaderFiles {
 
     /**
      * Leer datos magnitud meteorización
-     * @return Opcional que de vuelve una lista de {@link MagnitudMeteorizacion}
+     * @return Opcional que de vuelve una lista de {@link Magnitud}
      */
-    public static Optional<List<MagnitudMeteorizacion>> readDataOfPathMagnitudMeteorizacion() {
+    public static Optional<List<Magnitud>> readDataOfPathMagnitudMeteorizacion() {
 
         Path path = Paths.get(PATH_MAGNITUDES_METEO);
         String nombreArchivo = XMLConvertUtil.nombreArchivoDeCSV(path.getFileName().toString()); //TODO: AGREGADO NUEVO
@@ -347,7 +347,7 @@ public class ReaderFiles {
                 ArrayList<String> elementos = XMLConvertUtil.getTitlesCSV(path);
                 //TODO: AGREGADO NUEVO
 
-                Optional<List<MagnitudMeteorizacion>> listaFinal =  Optional.of(stream
+                Optional<List<Magnitud>> listaFinal =  Optional.of(stream
                         .map(s -> s.split(";", -1)).skip(1)
                         .map(splitted -> {
 
@@ -359,7 +359,7 @@ public class ReaderFiles {
                             String unidad = splitted[3];
                             String descripcion_unidad = splitted[4];
 
-                            return new MagnitudMeteorizacion(codigo_magnitud,
+                            return new Magnitud(codigo_magnitud,
                                     descripcion_magnitud, codigo_tecnica_medida, unidad,
                                     descripcion_unidad, null);
                         })

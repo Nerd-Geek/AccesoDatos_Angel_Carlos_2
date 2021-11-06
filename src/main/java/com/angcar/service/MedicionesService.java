@@ -102,6 +102,7 @@ public class MedicionesService {
      * @return Devuelve un map con le fecha de precipitación y su cantidad
      */
     public static Map<LocalDate, Double> listaDiasPrecipitacion(List<Medicion> listaMediciones) {
+
         return listaMediciones.stream()
                 .collect(Collectors.toMap(Utils::obtenerFechaMedicion,
                         Utils::obtenerMediaDiaria, (k1, k2) -> k1));
