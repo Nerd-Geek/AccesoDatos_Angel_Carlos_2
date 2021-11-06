@@ -5,8 +5,10 @@ import com.angcar.io.ReaderFiles;
 import com.angcar.model.*;
 import org.jdom2.JDOMException;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -18,14 +20,14 @@ public class Utils {
     private static List<Contaminacion> contamina;
     private static List<Meteorizacion> meteo;
     private static List<ZonasMunicipio> municipio;
-    private static List<MagnitudContaminacion> magnContamina;
-    private static List<MagnitudMeteorizacion> magnMeteo;
+    private static List<Magnitud> magnContamina;
+    private static List<Magnitud> magnMeteo;
     static public long init_time;
 
-    public static List<MagnitudContaminacion> getMagnContamina() {
+    public static List<Magnitud> getMagnContamina() {
         return magnContamina;
     }
-    public static List<MagnitudMeteorizacion> getMagnMeteo() {
+    public static List<Magnitud> getMagnMeteo() {
         return magnMeteo;
     }
 
@@ -77,15 +79,41 @@ public class Utils {
     }
 
     public static void inicializarDatosXML() throws IOException, JDOMException {
+        //Leer .xml's
         JDOMReader controller = JDOMReader.getInstance();
-
+        AtomicBoolean realizado = new AtomicBoolean(true);
         controller.loadData();
-        controller.getZonas();
-        controller.getUbicaciones();
-        controller.getMeteorizacion();
-        controller.getContaminacion();
-        controller.getMagnitudContaminacion();
-        controller.getMagnitudMeteorizacion();
+
+        controller.getZonas().ifPresentOrElse(d -> d = municipio, () -> {
+            System.out.println("No se ha localizado el xml de municipio.");
+            realizado.set(false);
+        });;
+
+        controller.getUbicaciones().ifPresentOrElse(d -> d = estacionesUbi, () -> {
+            System.out.println("No se ha localizado el xml de estaciones.");
+            realizado.set(false);
+        });;
+
+        controller.getMeteorizacion().ifPresentOrElse(d -> d = meteo, () -> {
+            System.out.println("No se ha localizado el xml de meteorización.");
+            realizado.set(false);
+        });;
+
+        controller.getContaminacion().ifPresentOrElse(d -> d = contamina, () -> {
+            System.out.println("No se ha localizado el xml de contaminación.");
+            realizado.set(false);
+        });;
+
+        controller.getMagnitudContaminacion().ifPresentOrElse(d -> d = magnContamina, () -> {
+            System.out.println("No se ha localizado el xml de magnitud de contaminación.");
+            realizado.set(false);
+        });;
+
+        controller.getMagnitudMeteorizacion().ifPresentOrElse(d -> d = magnMeteo, () -> {
+            System.out.println("No se ha localizado el xml de magnitud de meteorización.");
+            realizado.set(false);
+        });;
+
     }
 
     /**
@@ -203,16 +231,6 @@ public class Utils {
     }
 
     /**
-     * Obtiene la fecha de una medición
-     * @param medicion {@link Medicion}
-     * @return fecha de medición
-     */
-    public static LocalDate obtenerFechaMedicion(Medicion medicion){
-        return LocalDate.of(medicion.getYear(), medicion.getMonth(), medicion.getDay());
-    }
-
-
-    /**
      * Obtener código de la estación principal dada una ciudad
      * @param nombreCiudad {@link String}
      * @return String
@@ -268,5 +286,71 @@ public class Utils {
                 + " a las " + hora.format(DateTimeFormatter.ofPattern(formatearHora))+ " en "+ tiempo + " segundos";
     }
 
+    public static Optional<String> obtenerCodeEstacion(String nombreCiudad){
+        Optional<List<UbicacionEstaciones>> listaEstaciones = Utils.filtrarPorCiudad(nombreCiudad);
+        Optional <String> codigoCiudad = Optional.empty();
 
+        if (Utils.filtrarPorCiudad(nombreCiudad).isPresent()){
+            codigoCiudad = Optional.of(Utils.filtrarPorCiudad(nombreCiudad).get().get(0).getStation_code());
+        }
+
+        return codigoCiudad;
+    }
+
+    /**
+     * Obtiene la fecha de una medición
+     * @param medicion {@link Medicion}
+     * @return fecha de medición
+     */
+    public static LocalDate obtenerFechaMedicion(Medicion medicion){
+        return LocalDate.of(medicion.getYear(), medicion.getMonth(), medicion.getDay());
+    }
+
+    /**
+     * Dada una hora, obtiene un LocalTime
+     * @param value
+     * @return
+     */
+    public static Optional<LocalTime> obtenerHoraMedicion(Optional<Hora> value) {
+        return value.map(hora -> LocalTime.of(hora.getNumHour(), 0));
+    }
+
+    /**
+     * Obtener la fecha y la hora dada una medición
+     * @param mapEntry
+     * @return
+     */
+    public static Optional<LocalDateTime> obtenerFechaAndHoraMedicion(Map.Entry<Medicion, Optional<Hora>> mapEntry) {
+        LocalDate date;
+        LocalTime time;
+
+        if (Utils.obtenerHoraMedicion(mapEntry.getValue()).isPresent()){
+            return Optional.of(LocalDateTime.of(Utils.obtenerFechaMedicion(mapEntry.getKey()),
+                    Utils.obtenerHoraMedicion(mapEntry.getValue()).get()));
+        }
+
+        return Optional.empty();
+    }
+
+    /**
+     * Crea las carpetas necesarias si no existen
+     */
+    public static void createEmptyFolders(String path_destination) {
+
+        //Crear directorio inicial si no existe + directorio image
+        File directory = new File(path_destination + File.separator + "image");
+        while (!directory.exists()){
+            if (directory.mkdirs()){
+                System.out.println("Directorio " + directory.getPath() + " creado");
+            };
+        }
+
+        //Crear directorio db si no existe
+        directory = new File(path_destination + File.separator + "db");
+        while (!directory.exists()){
+            if (directory.mkdirs()){
+                System.out.println("Carpeta /db creada");
+            };
+        }
+    }
 }

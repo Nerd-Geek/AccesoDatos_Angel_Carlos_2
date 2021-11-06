@@ -7,5 +7,7 @@ public class App {
     public static void main(String[] args) throws IOException {
         String PATH_UBICA_ESTACIONES = System.getProperty("user.dir")+ File.separator+"data"+File.separator+"calidad_aire_estaciones.csv";
         ProcesamientoDatos.getInstance(args);
+
+        //TODO: REEPLAZAR ISPRESENT Y HACER MÁS EFECTIVOS PARA EVITAR QUE ESTÉN CARGÁNDOSE CONSTANTEMENTE
     }
 }
