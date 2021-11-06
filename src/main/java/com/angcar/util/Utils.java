@@ -346,7 +346,7 @@ public class Utils {
         }
 
         //Crear directorio db si no existe
-        directory = new File(path_destination + File.separator + "db");
+        directory = new File("db");
         while (!directory.exists()){
             if (directory.mkdirs()){
                 System.out.println("Carpeta /db creada");

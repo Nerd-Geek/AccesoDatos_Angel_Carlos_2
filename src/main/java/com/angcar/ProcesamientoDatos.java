@@ -10,6 +10,7 @@ import org.jdom2.JDOMException;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathExpressionException;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -84,11 +85,12 @@ public class ProcesamientoDatos {
                 //CREAR LA BASE DE DATOS DE MEDICIONES
                 JAXBdbMediciones bd = JAXBdbMediciones.getInstance();
                 try {
-                    bd.crearBDMediciones(datosResultadoMediciones, path_destination + File.separator + "db"
+
+                    bd.crearBDMediciones(datosResultadoMediciones, "db"
                             + File.separator + "mediciones.xml");
-                    bd.domTest(datosResultadoMediciones, path_destination + File.separator + "db"
-                            + File.separator + "mediciones.xml");
-                } catch (JAXBException | IOException | ParserConfigurationException e) {
+                    bd.domTest(datosResultadoMediciones, "db"
+                            + File.separator + "mediciones.xml", ciudad,path_destination);
+                } catch (JAXBException | IOException | ParserConfigurationException | XPathExpressionException e) {
                     e.printStackTrace();
                 }
 
@@ -99,7 +101,6 @@ public class ProcesamientoDatos {
                 } catch (IOException e) {
                     System.err.println("No se ha podido generar el HTML.");
                 }
-
             } else {
                 System.err.println("Los archivos CSV no se han podido leer.");
                 System.exit(0);
