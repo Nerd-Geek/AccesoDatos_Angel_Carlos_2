@@ -24,7 +24,8 @@ import java.util.stream.Stream;
  */
 public class ReaderFiles {
     // Localización csv´s
-    public static final String PATH_FILES = System.getProperty("user.dir") + File.separator + "data"; //TODO MOVER
+    public static final String PATH_FILES = System.getProperty("user.dir") + File.separator + "src" + File.separator
+            + "main"  + File.separator + "resources" +  File.separator +"data"; //TODO MOVER
 
     private static final String PATH_ZONAS = PATH_FILES + File.separator + "calidad_aire_zonas.csv"; //TODO: IMPLEMENT
     private static final String PATH_UBICA_ESTACIONES = PATH_FILES + File.separator + "calidad_aire_estaciones.csv";

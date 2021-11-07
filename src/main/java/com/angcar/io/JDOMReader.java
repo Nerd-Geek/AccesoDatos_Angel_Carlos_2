@@ -14,7 +14,8 @@ import java.util.Optional;
 
 public class JDOMReader {
     private static JDOMReader controller;
-    public static final String PATH_FILES = System.getProperty("user.dir") + File.separator + "data";
+    public static final String PATH_FILES = System.getProperty("user.dir") + File.separator + "src" + File.separator
+            + "main"  + File.separator + "resources" +  File.separator +"data";
     private static final String PATH_ZONAS = PATH_FILES + File.separator + "calidad_aire_zonas.xml";
     private static final String PATH_UBICA_ESTACIONES = PATH_FILES + File.separator + "calidad_aire_estaciones.xml";
     private static final String PATH_METEO = PATH_FILES + File.separator + "calidad_aire_datos_meteo_mes.xml";
