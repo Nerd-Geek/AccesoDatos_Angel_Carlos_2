@@ -5,11 +5,8 @@ import com.angcar.model.Hora;
 import com.angcar.util.XMLConvertUtil;
 import org.jdom2.Document;
 import org.jdom2.Element;
-import org.jdom2.output.Format;
-import org.jdom2.output.XMLOutputter;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -24,10 +21,10 @@ import java.util.stream.Stream;
  */
 public class ReaderFiles {
     // Localización csv´s
-    public static final String PATH_FILES = System.getProperty("user.dir") + File.separator + "src" + File.separator
-            + "main"  + File.separator + "resources" +  File.separator +"data"; //TODO MOVER
+    public static final String PATH_FILES = System.getProperty("user.dir") + File.separator + "src" + File.separator +
+            "main" + File.separator + "resources" + File.separator + "data";
 
-    private static final String PATH_ZONAS = PATH_FILES + File.separator + "calidad_aire_zonas.csv"; //TODO: IMPLEMENT
+    private static final String PATH_ZONAS = PATH_FILES + File.separator + "calidad_aire_zonas.csv";
     private static final String PATH_UBICA_ESTACIONES = PATH_FILES + File.separator + "calidad_aire_estaciones.csv";
     private static final String PATH_METEO = PATH_FILES + File.separator + "calidad_aire_datos_meteo_mes.csv";
     private static final String PATH_CONTAMINACION = PATH_FILES + File.separator + "calidad_aire_datos_mes.csv";
@@ -40,22 +37,22 @@ public class ReaderFiles {
      */
     public static Optional<List<Meteorizacion>> readDataOfPathMeteorologia() {
         Path path = Paths.get(PATH_METEO);
-        String nombreArchivo = XMLConvertUtil.nombreArchivoDeCSV(path.getFileName().toString()); //TODO: AGREGADO NUEVO
+        String nombreArchivo = XMLConvertUtil.quitarExtensionCSV(path.getFileName().toString());
 
         if (Files.exists(path)) {
 
             try (Stream<String> stream = Files.lines(path, Charset.forName("windows-1252"))) {
-                //TODO: AGREGADO NUEVO
+
                 Element contenidos = new Element(nombreArchivo);
                 Document doc = new Document(contenidos);
                 ArrayList<String> elementos = XMLConvertUtil.getTitlesCSV(path);
-                //TODO: AGREGADO NUEVO
+
 
                 Optional<List<Meteorizacion>> listaFinal = Optional.of(stream
                         .map(s -> s.split(";", -1)).skip(1)
                         .map(splitted -> {
 
-                            contenidos.addContent(XMLConvertUtil.contenidoCSVLoad(elementos, splitted)); //TODO: AGREGADO NUEVO
+                            contenidos.addContent(XMLConvertUtil.createXMLItem(elementos, splitted));
 
                             String provincia = splitted[0];
                             String municipio = splitted[1];
@@ -80,7 +77,7 @@ public class ReaderFiles {
                         })
                         .collect(Collectors.toList()));
 
-                XMLConvertUtil.generarXML(nombreArchivo,doc); //Generar el XML //TODO: AGREGADO NUEVO
+                XMLConvertUtil.generarXML(nombreArchivo,doc); //Generar el XML
                 return listaFinal;
 
             } catch (IOException ex) {
@@ -99,23 +96,23 @@ public class ReaderFiles {
      */
     public static Optional<List<Contaminacion>> readDataOfPathContaminacion() {
         Path path = Paths.get(PATH_CONTAMINACION);
-        String nombreArchivo = XMLConvertUtil.nombreArchivoDeCSV(path.getFileName().toString()); //TODO: AGREGADO NUEVO
+        String nombreArchivo = XMLConvertUtil.quitarExtensionCSV(path.getFileName().toString());
 
         if (Files.exists(path)) {
             try (Stream<String> stream = Files.lines(path, Charset.forName("windows-1252"))) {
 
-                //TODO: AGREGADO NUEVO
+
                 Element contenidos = new Element(nombreArchivo);
                 Document doc = new Document(contenidos);
                 ArrayList<String> elementos = XMLConvertUtil.getTitlesCSV(path);
-                //TODO: AGREGADO NUEVO
+
 
                 Optional<List<Contaminacion>> listaFinal =  Optional.of(
                         stream
                         .map(s -> s.split(";", -1)).skip(1)
                         .map(splitted -> {
 
-                            contenidos.addContent(XMLConvertUtil.contenidoCSVLoad(elementos, splitted)); //TODO: AGREGADO NUEVO
+                            contenidos.addContent(XMLConvertUtil.createXMLItem(elementos, splitted));
 
                             String provincia = splitted[0];
                             String municipio = splitted[1];
@@ -139,7 +136,7 @@ public class ReaderFiles {
 
                         })
                         .collect(Collectors.toList()));
-                XMLConvertUtil.generarXML(nombreArchivo,doc); //Generar el XML //TODO: AGREGADO NUEVO
+                XMLConvertUtil.generarXML(nombreArchivo,doc); //Generar el XML
                 return listaFinal;
             } catch (IOException ex) {
                 System.err.println(ex.getMessage());
@@ -156,22 +153,22 @@ public class ReaderFiles {
      */
     public static Optional<List<UbicacionEstaciones>> readDataOfPathUbicacionEstaciones() {
         Path path = Paths.get(PATH_UBICA_ESTACIONES);
-        String nombreArchivo = XMLConvertUtil.nombreArchivoDeCSV(path.getFileName().toString()); //TODO: AGREGADO NUEVO
+        String nombreArchivo = XMLConvertUtil.quitarExtensionCSV(path.getFileName().toString());
 
         if (Files.exists(path)) {
             try (Stream<String> stream = Files.lines(path, Charset.forName("windows-1252"))) {
 
-                //TODO: AGREGADO NUEVO
+
                 Element contenidos = new Element(nombreArchivo);
                 Document doc = new Document(contenidos);
                 ArrayList<String> elementos = XMLConvertUtil.getTitlesCSV(path);
-                //TODO: AGREGADO NUEVO
+
 
                 Optional<List<UbicacionEstaciones>> listaFinal =  Optional.of(stream
                         .map(s -> s.split(";", -1)).skip(1)
                         .map(splitted -> {
 
-                            contenidos.addContent(XMLConvertUtil.contenidoCSVLoad(elementos, splitted)); //TODO: AGREGADO NUEVO
+                            contenidos.addContent(XMLConvertUtil.createXMLItem(elementos, splitted));
 
                             String estacion_codigo = splitted[0];
                             String zona_calidad_aire_descripcion = splitted[1];
@@ -229,7 +226,7 @@ public class ReaderFiles {
                             );
                         })
                         .collect(Collectors.toList()));
-                XMLConvertUtil.generarXML(nombreArchivo,doc); //Generar el XML //TODO: AGREGADO NUEVO
+                XMLConvertUtil.generarXML(nombreArchivo,doc); //Generar el XML
                 return listaFinal;
             } catch (IOException ex) {
                 System.err.println(ex.getMessage());
@@ -245,7 +242,7 @@ public class ReaderFiles {
     public static Optional<List<ZonasMunicipio>> readDataOfPathZonasMunicipio() {
 
         Path path = Paths.get(PATH_ZONAS);
-        String nombreArchivo = XMLConvertUtil.nombreArchivoDeCSV(path.getFileName().toString());
+        String nombreArchivo = XMLConvertUtil.quitarExtensionCSV(path.getFileName().toString());
 
         if (Files.exists(path)) {
             try (Stream<String> stream = Files.lines(path, Charset.forName("windows-1252"))) {
@@ -259,7 +256,7 @@ public class ReaderFiles {
                         .map(s -> s.split(";", -1)).skip(1)
                         .map(splitted -> {
 
-                            contenidos.addContent(XMLConvertUtil.contenidoCSVLoad(elementos, splitted));
+                            contenidos.addContent(XMLConvertUtil.createXMLItem(elementos, splitted));
 
                             String zonaCalidadAireCodigo = splitted[0];
                             String zonaCalidadAireDesc = splitted[1];
@@ -288,22 +285,22 @@ public class ReaderFiles {
     public static Optional<List<Magnitud>> readDataOfPathMagnitudContaminacion() {
 
         Path path = Paths.get(PATH_MAGNITUDES_CONTAMINACION);
-        String nombreArchivo = XMLConvertUtil.nombreArchivoDeCSV(path.getFileName().toString()); //TODO: AGREGADO NUEVO
+        String nombreArchivo = XMLConvertUtil.quitarExtensionCSV(path.getFileName().toString());
 
         if (Files.exists(path)) {
             try (Stream<String> stream = Files.lines(path, Charset.forName("windows-1252"))) {
 
-                //TODO: AGREGADO NUEVO
+
                 Element contenidos = new Element(nombreArchivo);
                 Document doc = new Document(contenidos);
                 ArrayList<String> elementos = XMLConvertUtil.getTitlesCSV(path);
-                //TODO: AGREGADO NUEVO
+
 
                 Optional<List<Magnitud>> listaFinal =  Optional.of(stream
                         .map(s -> s.split(";", -1)).skip(1)
                         .map(splitted -> {
 
-                            contenidos.addContent(XMLConvertUtil.contenidoCSVLoad(elementos, splitted)); //TODO: AGREGADO NUEVO
+                            contenidos.addContent(XMLConvertUtil.createXMLItem(elementos, splitted));
 
                             int codigo_magnitud = Integer.parseInt(splitted[0]);
                             String descripcion_magnitud = splitted[1];
@@ -318,7 +315,7 @@ public class ReaderFiles {
 
                         })
                         .collect(Collectors.toList()));
-                XMLConvertUtil.generarXML(nombreArchivo,doc); //Generar el XML //TODO: AGREGADO NUEVO
+                XMLConvertUtil.generarXML(nombreArchivo,doc); //Generar el XML
                 return listaFinal;
             } catch (IOException ex) {
                 System.err.println(ex.getMessage());
@@ -336,22 +333,22 @@ public class ReaderFiles {
     public static Optional<List<Magnitud>> readDataOfPathMagnitudMeteorizacion() {
 
         Path path = Paths.get(PATH_MAGNITUDES_METEO);
-        String nombreArchivo = XMLConvertUtil.nombreArchivoDeCSV(path.getFileName().toString()); //TODO: AGREGADO NUEVO
+        String nombreArchivo = XMLConvertUtil.quitarExtensionCSV(path.getFileName().toString());
 
         if (Files.exists(path)) {
             try (Stream<String> stream = Files.lines(path, Charset.forName("windows-1252"))) {
 
-                //TODO: AGREGADO NUEVO
+
                 Element contenidos = new Element(nombreArchivo);
                 Document doc = new Document(contenidos);
                 ArrayList<String> elementos = XMLConvertUtil.getTitlesCSV(path);
-                //TODO: AGREGADO NUEVO
+
 
                 Optional<List<Magnitud>> listaFinal =  Optional.of(stream
                         .map(s -> s.split(";", -1)).skip(1)
                         .map(splitted -> {
 
-                            contenidos.addContent(XMLConvertUtil.contenidoCSVLoad(elementos, splitted)); //TODO: AGREGADO NUEVO
+                            contenidos.addContent(XMLConvertUtil.createXMLItem(elementos, splitted));
 
                             int codigo_magnitud = Integer.parseInt(splitted[0]);
                             String descripcion_magnitud = splitted[1];
@@ -364,7 +361,7 @@ public class ReaderFiles {
                                     descripcion_unidad, null);
                         })
                         .collect(Collectors.toList()));
-                XMLConvertUtil.generarXML(nombreArchivo,doc); //Generar el XML //TODO: AGREGADO NUEVO
+                XMLConvertUtil.generarXML(nombreArchivo,doc); //Generar el XML
                 return listaFinal;
             } catch (IOException ex) {
                 System.err.println(ex.getMessage());
