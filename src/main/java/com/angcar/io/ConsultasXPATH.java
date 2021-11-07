@@ -25,14 +25,6 @@ public class ConsultasXPATH {
     public static void operacionesXpath(String ciudad, String path, Document doc)
             throws JAXBException, ParserConfigurationException, XPathExpressionException, IOException {
 
-        //Leer archivo e introducir resultados
-
-
-        //Ahora escribir los cambios
-//        this.marshaller = context.createMarshaller();
-//        this.marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-//        this.marshaller.marshal(resultados, doc);
-
         // Almacenar los datos necesarios para mostrarselo al usuario
         XPathFactory factory = XPathFactory.newInstance();
         XPath xpath = factory.newXPath();
@@ -74,8 +66,6 @@ public class ConsultasXPATH {
         // Sacar los datos por pantalla
         //for(int i = list3.getLength() -1; i < list4.getLength(); i++) { Otra manera para sacar la última medición añadida
 
-
-        // Sacar los datos por pantalla
         for(int i = 0; i < list4.getLength(); i++) {
             if (ciudad.equals(list4.item(i).getTextContent())) { // Mostrar la ciudad que ha sido pasada por parametro
                 System.out.println(list4.item(i).getTextContent() + " id: " + list3.item(i).getTextContent());

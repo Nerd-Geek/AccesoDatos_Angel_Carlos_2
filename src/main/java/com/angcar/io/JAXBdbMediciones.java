@@ -5,10 +5,7 @@ import com.angcar.model.resultados.ResultadosMediciones;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -50,8 +47,10 @@ public class JAXBdbMediciones {
      * @param uri {@link String}
      * @throws JAXBException excepción
      */
-    public Document crearBDMediciones(ResultadoMediciones resultadoMediciones, String uri) throws JAXBException, ParserConfigurationException {
+    public Document crearBDMediciones(ResultadoMediciones resultadoMediciones, String uri) throws JAXBException, ParserConfigurationException, IOException {
         JAXBContext context = JAXBContext.newInstance(ResultadosMediciones.class);
+        SchemaOutputResolver sor = new GenerateXSDbyXML();
+        context.generateSchema(sor);
 
         //Leer archivo e introducir resultados
         File xml = new File(uri);
