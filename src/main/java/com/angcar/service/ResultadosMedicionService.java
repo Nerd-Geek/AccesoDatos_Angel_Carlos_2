@@ -15,14 +15,23 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+
 public class ResultadosMedicionService {
 
     private final String CITY_NAME;
 
+    /**
+     * COnstructor
+     * @param nombreCiudad
+     */
     public ResultadosMedicionService(String nombreCiudad){
         this.CITY_NAME = nombreCiudad;
     }
 
+    /**
+     * Carga y devuelve el resultado de las mediciones
+     * @return
+     */
     public ResultadoMediciones cargarResultadosMediciones() {
         ResultadoMediciones resultadoMediciones = new ResultadoMediciones();
 
@@ -69,10 +78,13 @@ public class ResultadosMedicionService {
     }
 
 
-
-
-
-
+    /**
+     * Procesa los datos de la magnitud
+     * @param magnitudLista List<Magnitud>
+     * @param listaMedicion List<Medicion> listaMedicion
+     * @param filtro Predicate<Magnitud> filtro
+     * @return Optional<List<DatosMagnitud>>
+     */
     private Optional<List<DatosMagnitud>> procesarDatosMagnitud(List<Magnitud> magnitudLista, List<Medicion> listaMedicion, Predicate<Magnitud> filtro) {
         List<DatosMagnitud> listaDatos = new ArrayList<>();
 

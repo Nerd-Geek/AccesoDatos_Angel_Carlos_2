@@ -1,5 +1,6 @@
 package com.angcar;
 
+import com.angcar.io.ConsultasXPATH;
 import com.angcar.io.JAXBdbMediciones;
 import com.angcar.model.resultados.ResultadoMediciones;
 import com.angcar.service.DatosHTML;
@@ -84,21 +85,30 @@ public class ProcesamientoDatos {
                 //Una vez recibidos los datos de las mediciones, trabajar con ellos
                 //CREAR LA BASE DE DATOS DE MEDICIONES
                 JAXBdbMediciones bd = JAXBdbMediciones.getInstance();
+
+                //Intentar generar Base de datos
                 try {
 
-                    bd.crearBDMediciones(datosResultadoMediciones, System.getProperty("user.dir") + File.separator + "src" + File.separator
-                            + "main"  + File.separator + "resources" +  File.separator +"data" + File.separator+"db"
-                            + File.separator + "mediciones.xml");
-                    bd.domTest(datosResultadoMediciones, System.getProperty("user.dir") + File.separator + "src" + File.separator
-                            + "main"  + File.separator + "resources" +  File.separator +"data" + File.separator + "db"
-                            + File.separator + "mediciones.xml", ciudad,path_destination);
-                } catch (JAXBException | IOException | ParserConfigurationException | XPathExpressionException e) {
-                    e.printStackTrace();
+                String uri = System.getProperty("user.dir") + File.separator + "src" + File.separator
+                        + "main"  + File.separator + "resources" +  File.separator +"data" + File.separator+"db"
+                        + File.separator + "mediciones.xml";
+
+                    //Crear base de datos de mediciones
+                    ConsultasXPATH.operacionesXpath(ciudad,path_destination,
+                            bd.crearBDMediciones(datosResultadoMediciones, uri)
+                    );
+
+                } catch (JAXBException | ParserConfigurationException e) {
+                    System.err.println("No se ha podido crear la base de datos de mediciones.");
+                    System.exit(0);
+                } catch (XPathExpressionException | IOException e) {
+                    System.err.println("No se han podido realizar las consultas con XPATH.");
                 }
 
-                DatosHTML datosCiudad = new DatosHTML();
-                datosCiudad.procesarDatosPorCiudad(ciudad);
+                //Intentar generar HTML
                 try {
+                    DatosHTML datosCiudad = new DatosHTML();
+                    datosCiudad.procesarDatosPorCiudad(ciudad);
                     GeneradorHTML.generarHtml(ciudad);
                 } catch (IOException e) {
                     System.err.println("No se ha podido generar el HTML.");
@@ -110,17 +120,18 @@ public class ProcesamientoDatos {
         });
     }
 
-    // Mide el tiempo de ejecucion del programa
-    public String tiempoInforme() {
+    /**
+     * Mide el tiempo de ejecución del programa y devuelve un informe
+     * @return Devuelve cuándo se ha creado el informe y cuánto tiempo ha tardado
+     */
+    public static String tiempoInforme() {
         double tiempo = (double) ((System.currentTimeMillis() - Utils.init_time)/1000);
         LocalDate fecha = LocalDate.now();
         String formatearFecha = "dd/MM/yyyy";
         LocalTime hora = LocalTime.now();
         String formatearHora = "HH:mm:ss";
 
-        String retorno = "Informe generado en el día " + fecha.format(DateTimeFormatter.ofPattern(formatearFecha))
+        return "Informe generado en el día " + fecha.format(DateTimeFormatter.ofPattern(formatearFecha))
                 + " a las " + hora.format(DateTimeFormatter.ofPattern(formatearHora))+ " en "+ tiempo + " segundos";
-
-        return retorno;
     }
 }

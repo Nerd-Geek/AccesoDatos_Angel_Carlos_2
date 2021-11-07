@@ -271,21 +271,6 @@ public class Utils {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Mide el tiempo de ejecución del programa y devuelve un informe
-     * @return Devuelve cuándo se ha creado el informe y cuánto tiempo ha tardado
-     */
-    public static String tiempoInforme() {
-        double tiempo = (double) ((System.currentTimeMillis() - Utils.init_time)/1000);
-        LocalDate fecha = LocalDate.now();
-        String formatearFecha = "dd/MM/yyyy";
-        LocalTime hora = LocalTime.now();
-        String formatearHora = "HH:mm:ss";
-
-        return "Informe generado en el día " + fecha.format(DateTimeFormatter.ofPattern(formatearFecha))
-                + " a las " + hora.format(DateTimeFormatter.ofPattern(formatearHora))+ " en "+ tiempo + " segundos";
-    }
-
     public static Optional<String> obtenerCodeEstacion(String nombreCiudad){
         Optional<List<UbicacionEstaciones>> listaEstaciones = Utils.filtrarPorCiudad(nombreCiudad);
         Optional <String> codigoCiudad = Optional.empty();
@@ -346,11 +331,12 @@ public class Utils {
         }
 
         //Crear directorio db si no existe
-        directory = new File(System.getProperty("user.dir") + File.separator + "src" + File.separator
+        directory = new File("src" + File.separator
                 + "main"  + File.separator + "resources" +  File.separator +"data" + File.separator+"db");
+
         while (!directory.exists()){
             if (directory.mkdirs()){
-                System.out.println("Carpeta /db creada");
+                System.out.println("Carpeta 'db' creada");
             };
         }
     }

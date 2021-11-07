@@ -24,8 +24,13 @@ public class GeneradorHTML {
                 "    <head>\n" +
                 "    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n" +
                 "    <title>%s</title>\n" +
+                "    <link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\" media=\"screen\" />" +
                 "    </head>\n" +
-                "    <body>",PROGRAM_NAME));
+                "    <body>\n" +
+                "<header>\n" +
+                "\t<img src=\"informe.png\">\n" +
+                "\t</header>\n" +
+                "<section>\n",PROGRAM_NAME));
 
         //Obtener estaciones
         StringBuilder sb = new StringBuilder();
@@ -51,10 +56,11 @@ public class GeneradorHTML {
         DatosHTML.resetHTMLData(); //Resetear StringHTMLData
 
 
-        htmlString.append("<p>" + Utils.tiempoInforme() + "</p>");
+        htmlString.append("<p>" + ProcesamientoDatos.tiempoInforme() + "</p>");
 
         //END
-        htmlString .append("</body>\n" +
+        htmlString .append("</section>\n" +
+                "</body>\n" +
                 "</html>");
 
         WriterFiles.writeFile(htmlString.toString(), nombreCiudad);

@@ -121,8 +121,8 @@ public class DatosHTML {
                             StringBuilder tabla = new StringBuilder();
                             tabla.append("\n<table>\n" +
                                     "<tr>\n" +
-                                    "<td>Día</td>\n" +
-                                    "<td>Precipitación</td>\n" +
+                                    "<th>Día</th>\n" +
+                                    "<th>Precipitación</th>\n" +
                                     "</tr>\n");
                             MedicionesService.listaDiasPrecipitacion(listaMediciones)
                                     .forEach((key, value) ->

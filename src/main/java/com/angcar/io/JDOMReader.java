@@ -32,6 +32,10 @@ public class JDOMReader {
     private JDOMReader() {
     }
 
+    /**
+     * JDOMReader
+     * @return JDOMReader
+     */
     public static JDOMReader getInstance() {
         if (controller == null) {
             controller = new JDOMReader();
@@ -39,6 +43,11 @@ public class JDOMReader {
         return controller;
     }
 
+    /**
+     * Carga los datos
+     * @throws IOException Excepción
+     * @throws JDOMException Excepción
+     */
     public void loadData() throws IOException, JDOMException {
         SAXBuilder builder = new SAXBuilder();
         File zonasXML = new File(PATH_ZONAS);
@@ -55,8 +64,12 @@ public class JDOMReader {
         this.dataMagMeteo = builder.build(magMeteoXML);
     }
 
+    /**
+     * Devuelve una lista Optional con las zonas del municipio
+     * @return Optional<List<ZonasMunicipio>>
+     */
     public Optional<List<ZonasMunicipio>> getZonas() {
-        Element root = (Element) this.dataZonas.getRootElement();
+        Element root = this.dataZonas.getRootElement();
         List<Element> listOfZonas = root.getChildren("item");
 
         List<ZonasMunicipio> zonasList = new ArrayList<>();
@@ -71,8 +84,12 @@ public class JDOMReader {
         return Optional.of(zonasList);
     }
 
+    /**
+     * Devuelve una lista Optional de Ubicación estaciones
+     * @return Optional<List<UbicacionEstaciones>>
+     */
     public Optional<List<UbicacionEstaciones>> getUbicaciones() {
-        Element root = (Element) this.dataUbicaciones.getRootElement();
+        Element root = this.dataUbicaciones.getRootElement();
         List<Element> listOfUbic = root.getChildren("item");
         List<UbicacionEstaciones> listUbica = new ArrayList<>();
 
@@ -108,6 +125,10 @@ public class JDOMReader {
         return Optional.of(listUbica);
     }
 
+    /**
+     * Devuelve una lista Optional de Meteorización
+     * @return Optional<List<Meteorizacion>>
+     */
     public Optional<List<Meteorizacion>> getMeteorizacion() {
         Element root = this.dataMeteo.getRootElement();
         List<Element> listOfMeteo = root.getChildren("item");
@@ -128,11 +149,16 @@ public class JDOMReader {
                 horas[n] = new Hora(meteo.getChildText("h" + String.format("%02d", n + 1)),
                         meteo.getChildText("v" + String.format("%02d", n + 1)),n + 1);
             }
+            meteorizacion.setHours(horas);
             listMeteo.add(meteorizacion);
         });
         return Optional.of(listMeteo);
     }
 
+    /**
+     * Devuelve una lista Optional de Contaminación
+     * @return Optional<List<Contaminacion>>
+     */
     public Optional<List<Contaminacion>> getContaminacion() {
         Element root = this.dataContamina.getRootElement();
         List<Element> listOfContamina = root.getChildren("item");
@@ -153,11 +179,16 @@ public class JDOMReader {
                 horas[n] = new Hora(cont.getChildText("h" + String.format("%02d", n + 1)),
                         cont.getChildText("v" + String.format("%02d", n + 1)),n + 1);
             }
+            contaminacion.setHours(horas);
             listContamina.add(contaminacion);
         });
         return Optional.of(listContamina);
     }
 
+    /**
+     * Devuelve una lista Optional de Meteorización
+     * @return Optional<List<Magnitud>>
+     */
     public Optional<List<Magnitud>> getMagnitudMeteorizacion() {
         Element root = this.dataMagMeteo.getRootElement();
         List<Element> listOfMagMeteo = root.getChildren("item");
@@ -175,8 +206,12 @@ public class JDOMReader {
         return Optional.of(listMagMeteo);
     }
 
+    /**
+     * Devuelve una lista Optional de Contaminación
+     * @return Optional<List<Magnitud>>
+     */
     public Optional<List<Magnitud>> getMagnitudContaminacion() {
-        Element root = this.dataMagMeteo.getRootElement();
+        Element root = this.dataMagContamina.getRootElement();
         List<Element> listOfMagMeteo = root.getChildren("item");
         List<Magnitud> listMagMeteo = new ArrayList<>();
 

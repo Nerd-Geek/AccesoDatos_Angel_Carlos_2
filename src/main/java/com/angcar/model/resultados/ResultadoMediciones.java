@@ -7,7 +7,8 @@ import javax.xml.bind.annotation.*;
 import java.util.List;
 
 @Data
-@XmlType(name = "resultado", propOrder = {"ciudad", "estacionesAsociadas", "fechaInicio", "fechaFin", "datosMeteo", "datosContamina"})
+@XmlType(name = "resultado", propOrder = {"ciudad", "estacionesAsociadas", "fechaInicio",
+        "fechaFin", "datosMeteo", "datosContamina"})
 public class ResultadoMediciones {
     @Getter(AccessLevel.NONE) private String id;
     private String ciudad;
