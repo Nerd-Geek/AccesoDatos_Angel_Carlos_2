@@ -86,9 +86,11 @@ public class ProcesamientoDatos {
                 JAXBdbMediciones bd = JAXBdbMediciones.getInstance();
                 try {
 
-                    bd.crearBDMediciones(datosResultadoMediciones, "db"
+                    bd.crearBDMediciones(datosResultadoMediciones, System.getProperty("user.dir") + File.separator + "src" + File.separator
+                            + "main"  + File.separator + "resources" +  File.separator +"data" + File.separator+"db"
                             + File.separator + "mediciones.xml");
-                    bd.domTest(datosResultadoMediciones, "db"
+                    bd.domTest(datosResultadoMediciones, System.getProperty("user.dir") + File.separator + "src" + File.separator
+                            + "main"  + File.separator + "resources" +  File.separator +"data" + File.separator + "db"
                             + File.separator + "mediciones.xml", ciudad,path_destination);
                 } catch (JAXBException | IOException | ParserConfigurationException | XPathExpressionException e) {
                     e.printStackTrace();

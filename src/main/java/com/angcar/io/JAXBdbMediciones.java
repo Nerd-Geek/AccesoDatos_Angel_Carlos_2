@@ -98,7 +98,7 @@ public class JAXBdbMediciones {
         this.marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         this.marshaller.marshal(resultados, doc);
 
-        /* TODO XPATH*/
+
         // Almacenar los datos necesarios para mostrarselo al usuario
         XPathFactory factory = XPathFactory.newInstance();
         XPath xpath = factory.newXPath();
