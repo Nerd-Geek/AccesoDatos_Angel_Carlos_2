@@ -32,7 +32,7 @@ public class MedicionesService {
         //Mapear la medición con su hora máxima
         Map<Medicion, Optional<Hora>> medicionesMax = listaMediciones.stream()
                 .collect(Collectors.toMap(
-                        medicion -> medicion, (o) -> Arrays.stream(o.getHours())
+                        medicion -> medicion, o -> Arrays.stream(o.getHours())
                                 .filter(hora -> hora.getValidation().equals("V"))
                                 .max(Comparator.comparing(Hora::getValue)),(o, o2) -> o
                 ));
@@ -52,7 +52,7 @@ public class MedicionesService {
         //Mapear la medición con su hora máxima
         Map<Medicion, Optional<Hora>> medicionesMin = listaMediciones.stream()
                 .collect(Collectors.toMap(
-                        medicion -> medicion, (o) -> Arrays.stream(o.getHours())
+                        medicion -> medicion, o -> Arrays.stream(o.getHours())
                                 .filter(hora -> hora.getValidation().equals("V"))
                                 .min(Comparator.comparing(Hora::getValue)),(o, o2) -> o
                 ));

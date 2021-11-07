@@ -5,6 +5,10 @@
     <file url="file://$PROJECT_DIR$/data/calidad_aire_zonas.csv" charset="windows-1252" />
     <file url="file://$PROJECT_DIR$/data/magnitudes_contaminacion.csv" charset="windows-1252" />
     <file url="file://$PROJECT_DIR$/data/magnitudes_meteorizacion.csv" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/out/artifacts/AccesoDatos_Angel_Carlos_2_jar/data/calidad_aire_estaciones.csv" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/out/artifacts/AccesoDatos_Angel_Carlos_2_jar/data/calidad_aire_zonas.csv" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/out/artifacts/AccesoDatos_Angel_Carlos_2_jar/data/magnitudes_contaminacion.csv" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/out/artifacts/AccesoDatos_Angel_Carlos_2_jar/data/magnitudes_meteorizacion.csv" charset="windows-1252" />
     <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>

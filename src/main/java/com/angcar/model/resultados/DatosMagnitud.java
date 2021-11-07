@@ -25,8 +25,8 @@ public class DatosMagnitud {
         return tipo;
     }
 
-    @XmlElementWrapper(name = "dias", required = false)
-    @XmlElement(name = "dia", required = false)
+    @XmlElementWrapper(name = "dias")
+    @XmlElement(name = "dia")
     public List<DatosDiaMagnitud> getDias() {
         return dias;
     }

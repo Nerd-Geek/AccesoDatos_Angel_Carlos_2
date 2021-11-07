@@ -29,9 +29,9 @@ public class ResultadosMedicionService {
         //Agregar valores
         resultadoMediciones.setId(java.util.UUID.randomUUID().toString());
         resultadoMediciones.setCiudad(CITY_NAME);
-        Utils.obtenerEstaciones(CITY_NAME).ifPresent(resultadoMediciones::setEstaciones_asociadas);
-        resultadoMediciones.setFecha_inicio(Utils.obtenerFechaInicioMedicion());
-        resultadoMediciones.setFecha_final(Utils.obtenerFechaFinalMedicion());
+        Utils.obtenerEstaciones(CITY_NAME).ifPresent(resultadoMediciones::setEstacionesAsociadas);
+        resultadoMediciones.setFechaInicio(Utils.obtenerFechaInicioMedicion());
+        resultadoMediciones.setFechaFin(Utils.obtenerFechaFinalMedicion());
 
         //AGREGAR LISTAS DE DATOS DE MEDICIONES (METEO Y CONTAMINA)
         String codigoCiudad;
@@ -43,10 +43,10 @@ public class ResultadosMedicionService {
             List<Medicion> listaContaminacion = Utils.filtrarContaminacion(codigoCiudad);
 
             //Agregar los respectivos filtros
-            Predicate<Magnitud> filtroMedicion = (Magnitud m) -> m.getCode_magnitude() == 83 || m.getCode_magnitude() == 88
-                    || m.getCode_magnitude() == 89 || m.getCode_magnitude() == 86 || m.getCode_magnitude() == 81;
+            Predicate<Magnitud> filtroMedicion = (Magnitud m) -> m.getCodeMagnitud() == 83 || m.getCodeMagnitud() == 88
+                    || m.getCodeMagnitud() == 89 || m.getCodeMagnitud() == 86 || m.getCodeMagnitud() == 81;
 
-            Predicate<Magnitud> filtroContamina = (Magnitud m) -> m.getCode_magnitude() != -1;
+            Predicate<Magnitud> filtroContamina = (Magnitud m) -> m.getCodeMagnitud() != -1;
 
             Optional<List<DatosMagnitud>> listaMeteo = procesarDatosMagnitud(Utils.getMagnMeteo(),
                     listaMeteorizacion,filtroMedicion);
@@ -77,7 +77,7 @@ public class ResultadosMedicionService {
         List<DatosMagnitud> listaDatos = new ArrayList<>();
 
         magnitudLista.stream().filter(filtro).forEach((magnitud) -> {
-            int idMagnitud = magnitud.getCode_magnitude();
+            int idMagnitud = magnitud.getCodeMagnitud();
 
             //Filtrar por magnitud
             List<Medicion> listaMediciones;
@@ -88,7 +88,7 @@ public class ResultadosMedicionService {
                 if (!listaMediciones.isEmpty()){
                     //AGREGAR MAGNITUD
                         DatosMagnitud datosMagnitud = new DatosMagnitud();
-                        datosMagnitud.setTipo(magnitud.getDescription_magnitude());
+                        datosMagnitud.setTipo(magnitud.getDescriptionMagnitude());
 
                     //Agregar media mensual
                         Optional<Double> medicionOpt = MedicionesService.medicionMedia(listaMediciones);
@@ -113,12 +113,16 @@ public class ResultadosMedicionService {
 
                     //Agregar días
                         List<DatosDiaMagnitud> listaDeDias = new ArrayList<>();
-                        DatosDiaMagnitud datosDiaMagnitud = new DatosDiaMagnitud();
-                        MedicionesService.listaDiasPrecipitacion(listaMediciones).forEach((key, value) -> {
-                            datosDiaMagnitud.setFecha(key.toString());
-                            datosDiaMagnitud.setPrecipitacion(value);
-                            listaDeDias.add(datosDiaMagnitud);
-                        });
+
+
+                        if (datosMagnitud.getTipo().equalsIgnoreCase("Precipitación")) {
+                            MedicionesService.listaDiasPrecipitacion(listaMediciones).forEach((key, value) -> {
+                                DatosDiaMagnitud datosDiaMagnitud = new DatosDiaMagnitud();
+                                datosDiaMagnitud.setFecha(key.toString());
+                                datosDiaMagnitud.setValor(value);
+                                listaDeDias.add(datosDiaMagnitud);
+                            });
+                        }
 
                     datosMagnitud.setDias(listaDeDias);
 

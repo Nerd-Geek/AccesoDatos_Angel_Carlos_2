@@ -3,6 +3,7 @@ package com.angcar.io;
 import com.angcar.model.resultados.ResultadoMediciones;
 import com.angcar.model.resultados.ResultadosMediciones;
 import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -11,9 +12,11 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +36,7 @@ public class JAXBdbMediciones {
         return controller;
     }
 
-    public void crearBDMediciones(ResultadoMediciones resultadoMediciones, String uri) throws JAXBException, IOException {
+    public void crearBDMediciones(ResultadoMediciones resultadoMediciones, String uri) throws JAXBException {
         JAXBContext context = JAXBContext.newInstance(ResultadosMediciones.class);
 
         //Leer archivo e introducir resultados
@@ -59,7 +62,7 @@ public class JAXBdbMediciones {
         this.marshaller.marshal(resultados, xml);
     }
 
-    public void domTest(ResultadoMediciones resultadoMediciones, String uri) throws JAXBException, IOException, ParserConfigurationException {
+    public void domTest(ResultadoMediciones resultadoMediciones, String uri) throws JAXBException, ParserConfigurationException, XPathExpressionException {
         JAXBContext context = JAXBContext.newInstance(ResultadosMediciones.class);
 
         //Leer archivo e introducir resultados
@@ -89,16 +92,20 @@ public class JAXBdbMediciones {
         this.marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         this.marshaller.marshal(resultados, doc);
 
-        /* TODO XPATH
         XPathFactory factory = XPathFactory.newInstance();
-XPath xpath = factory.newXPath();
+        XPath xpath = factory.newXPath();
 
-NodeList list = (NodeList) xpath.evaluate(
-          "/movieLibrary/collection[releaseYear < 1980]/title",
-          doc, XPathConstants.NODESET);
-for (int i = 0; i < list.getLength(); i++)  // print list of movies older than 1980
-  System.out.println(list.item(i).getTextContent());
-         */
+        NodeList list = (NodeList) xpath.evaluate("//resultado/datos-metereologicos/dato/media",
+                  doc, XPathConstants.NODESET);
+
+        NodeList list2 = (NodeList) xpath.evaluate("//resultado/datos-metereologicos/dato/@tipo",
+                doc, XPathConstants.NODESET);
+
+        for (int i = 0; i < list.getLength(); i++) {
+            System.out.println("Media de " + list2.item(i).getTextContent() + ": " + list.item(i).getTextContent());
+        }
+
+
     }
 
 }
