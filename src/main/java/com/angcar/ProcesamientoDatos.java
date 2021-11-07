@@ -10,6 +10,7 @@ import org.jdom2.JDOMException;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathExpressionException;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -84,11 +85,11 @@ public class ProcesamientoDatos {
                 //CREAR LA BASE DE DATOS DE MEDICIONES
                 JAXBdbMediciones bd = JAXBdbMediciones.getInstance();
                 try {
-                    bd.crearBDMediciones(datosResultadoMediciones, path_destination + File.separator + "db"
+                    bd.crearBDMediciones(datosResultadoMediciones, "db"
                             + File.separator + "mediciones.xml");
-                    bd.domTest(datosResultadoMediciones, path_destination + File.separator + "db"
+                    bd.domTest(datosResultadoMediciones, "db"
                             + File.separator + "mediciones.xml");
-                } catch (JAXBException | IOException | ParserConfigurationException e) {
+                } catch (JAXBException | ParserConfigurationException | XPathExpressionException e) {
                     e.printStackTrace();
                 }
 
@@ -110,7 +111,6 @@ public class ProcesamientoDatos {
     // Mide el tiempo de ejecucion del programa
     public String tiempoInforme() {
         double tiempo = (double) ((System.currentTimeMillis() - Utils.init_time)/1000);
-        DateTimeFormatter dtf5 = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm");
         LocalDate fecha = LocalDate.now();
         String formatearFecha = "dd/MM/yyyy";
         LocalTime hora = LocalTime.now();

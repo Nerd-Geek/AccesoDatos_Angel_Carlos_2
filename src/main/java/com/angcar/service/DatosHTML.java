@@ -45,10 +45,10 @@ public class DatosHTML {
         this.nombreCiudad = nombreCiudad;
 
         Optional<List<UbicacionEstaciones>> listaEstaciones = Utils.filtrarPorCiudad(nombreCiudad);
-        String codigoCiudad = Utils.filtrarPorCiudad(nombreCiudad).get().get(0).getStation_code();
+        String codigoCiudad = Utils.filtrarPorCiudad(nombreCiudad).get().get(0).getStationCode();
 
         if (listaEstaciones.isPresent()){
-            codigoCiudad = listaEstaciones.get().get(0).getStation_code();
+            codigoCiudad = listaEstaciones.get().get(0).getStationCode();
         }
 
         if (listaEstaciones.isPresent()){
@@ -70,11 +70,11 @@ public class DatosHTML {
             List<Medicion> listaMeteorizacion = Utils.filtrarMeteorizacion(codigoCiudad);
             List<Medicion> listaContaminacion = Utils.filtrarContaminacion(codigoCiudad);
 
-            Predicate<Magnitud> filtroMedicion = (Magnitud m) -> m.getCode_magnitude() == 83 || m.getCode_magnitude() == 88
-                    || m.getCode_magnitude() == 89 || m.getCode_magnitude() == 86 || m.getCode_magnitude() == 81;
+            Predicate<Magnitud> filtroMedicion = (Magnitud m) -> m.getCodeMagnitud() == 83 || m.getCodeMagnitud() == 88
+                    || m.getCodeMagnitud() == 89 || m.getCodeMagnitud() == 86 || m.getCodeMagnitud() == 81;
 
             Predicate<Magnitud> filtroContamina = (Magnitud m) ->
-                    m.getCode_magnitude() != -1;
+                    m.getCodeMagnitud() != -1;
 
             procesarDatosMeteo(listaMeteorizacion, filtroMedicion);
             procesarDatosContamina(listaContaminacion, filtroContamina);
@@ -91,8 +91,8 @@ public class DatosHTML {
         stringHTMLData.append("<h1>Meteorología</h1>\n");
 
         Utils.getMagnMeteo().stream().filter(filtro).forEach((magnitudMeteo) -> {
-            String actualPath = "image" + File.separator + magnitudMeteo.getCode_magnitude() + ".png";
-            int idMagnitud = magnitudMeteo.getCode_magnitude();
+            String actualPath = "image" + File.separator + magnitudMeteo.getCodeMagnitud() + ".png";
+            int idMagnitud = magnitudMeteo.getCodeMagnitud();
 
 
             //Filtrar por magnitud
@@ -103,11 +103,11 @@ public class DatosHTML {
 
                 if (!listaMediciones.isEmpty()){
                     try {
-                        if (magnitudMeteo.getCode_magnitude() == 89){
+                        if (magnitudMeteo.getCodeMagnitud() == 89){
 
                             ChartUtilities.saveChartAsPNG(
                                     new File(ProcesamientoDatos.path_destination + actualPath),
-                                    datosMedicion(listaMeteo, magnitudMeteo.getDescription_magnitude())
+                                    datosMedicion(listaMeteo, magnitudMeteo.getDescriptionMagnitude())
                                     , 800, 800);
 
                             //MEDICIÓN MENSUAL
@@ -137,13 +137,13 @@ public class DatosHTML {
                                             "%s" +
                                             "<p>Histograma por días de precipitación:</p>\n" +
                                             "<img src=\"%s\" />",
-                                    magnitudMeteo.getDescription_magnitude(), valorMediomensual,
+                                    magnitudMeteo.getDescriptionMagnitude(), valorMediomensual,
                                     tabla, actualPath));
                         }
                         //Si es otro tipo de medición, tratar de manera habitual
                         else {
                             ChartUtilities.saveChartAsPNG(new File(ProcesamientoDatos.path_destination + actualPath),
-                                    datosMedicion(listaMeteo, magnitudMeteo.getDescription_magnitude())
+                                    datosMedicion(listaMeteo, magnitudMeteo.getDescriptionMagnitude())
                                     , 800, 800);
 
 
@@ -154,7 +154,7 @@ public class DatosHTML {
                                     .medicionMaximaMomento(listaMediciones);
                             if (mapEntry.getValue().isPresent()){
                                 medicionMaxMomento = "Valor máximo <b>" + mapEntry.getValue().get().getValue()
-                                        + " " + magnitudMeteo.getUndid()
+                                        + " " + magnitudMeteo.getUnidad()
                                         + "</b> el día <b>" + Utils.obtenerFechaMedicion(mapEntry.getKey())
                                         .format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
                                         + "</b> a las <b>" + String.format("%02d:00:00"
@@ -167,7 +167,7 @@ public class DatosHTML {
                             mapEntry = MedicionesService.medicionMinimaMomento(listaMediciones);
                             if (mapEntry.getValue().isPresent()){
                                 medicionMinMomento = "Valor mínimo <b>" + mapEntry.getValue().get().getValue()
-                                         + " " + magnitudMeteo.getUndid()
+                                         + " " + magnitudMeteo.getUnidad()
                                         + "</b> el día <b>" + Utils.obtenerFechaMedicion(mapEntry.getKey())
                                         .format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
                                         + "</b> a las <b>" + String.format("%02d:00:00"
@@ -187,7 +187,7 @@ public class DatosHTML {
                                             "<p>Momento y valor mínimo impacto: %s</p>\n" +
                                             "<p>Gráfica de la evolución del impacto:</p>\n" +
                                             "<img src=\"%s\" />",
-                                    magnitudMeteo.getDescription_magnitude(), valorMediomensual,
+                                    magnitudMeteo.getDescriptionMagnitude(), valorMediomensual,
                                     medicionMaxMomento, medicionMinMomento, actualPath));
                         }
                     } catch (IOException e) {
@@ -214,8 +214,8 @@ public class DatosHTML {
         stringHTMLData.append("<h1>Contaminación</h1>\n");
 
         Utils.getMagnContamina().stream().filter(filtro).forEach((magnitudContamina) -> {
-            String actualPath = "image" + File.separator + magnitudContamina.getCode_magnitude() + ".png";
-            int idMagnitud = magnitudContamina.getCode_magnitude();
+            String actualPath = "image" + File.separator + magnitudContamina.getCodeMagnitud() + ".png";
+            int idMagnitud = magnitudContamina.getCodeMagnitud();
 
 
             //Filtrar por magnitud
@@ -228,7 +228,7 @@ public class DatosHTML {
                     try {
 
                         ChartUtilities.saveChartAsPNG(new File(ProcesamientoDatos.path_destination + actualPath),
-                                datosMedicion(listaContamina, magnitudContamina.getDescription_magnitude())
+                                datosMedicion(listaContamina, magnitudContamina.getDescriptionMagnitude())
                                 , 800, 800);
 
                         //MEDICIÓN MÁXIMA
@@ -238,7 +238,7 @@ public class DatosHTML {
                                 .medicionMaximaMomento(listaMediciones);
                         if (mapEntry.getValue().isPresent()){
                             medicionMaxMomento = "Valor máximo <b>" + mapEntry.getValue().get().getValue()
-                                    + " " + magnitudContamina.getUndid()
+                                    + " " + magnitudContamina.getUnidad()
                                     + "</b> el día <b>" + Utils.obtenerFechaMedicion(mapEntry.getKey())
                                     .format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
                                     + "</b> a las <b>" + String.format("%02d:00:00"
@@ -251,7 +251,7 @@ public class DatosHTML {
                         mapEntry = MedicionesService.medicionMinimaMomento(listaMediciones);
                         if (mapEntry.getValue().isPresent()){
                             medicionMinMomento = "Valor mínimo <b>" + mapEntry.getValue().get().getValue()
-                                    + " " + magnitudContamina.getUndid()
+                                    + " " + magnitudContamina.getUnidad()
                                     + "</b> el día <b>" + Utils.obtenerFechaMedicion(mapEntry.getKey())
                                     .format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
                                     + "</b> a las <b>" + String.format("%02d:00:00"
@@ -271,7 +271,7 @@ public class DatosHTML {
                                         "<p>Momento y valor mínimo impacto: %s</p>\n" +
                                         "<p>Gráfica de la evolución del impacto:</p>\n" +
                                         "<img src=\"%s\" />",
-                                magnitudContamina.getDescription_magnitude(), valorMediomensual,
+                                magnitudContamina.getDescriptionMagnitude(), valorMediomensual,
                                 medicionMaxMomento, medicionMinMomento, actualPath));
 
                     } catch (IOException e) {

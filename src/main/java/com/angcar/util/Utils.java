@@ -137,7 +137,7 @@ public class Utils {
 
     public static Optional<List<UbicacionEstaciones>> filtrarPorCiudad(String nombreCiudad) {
         return Optional.of(estacionesUbi.stream().filter(ubicacionEstaciones ->
-                ubicacionEstaciones.getStation_municipal().equalsIgnoreCase(nombreCiudad)).collect(Collectors.toList()));
+                ubicacionEstaciones.getStationMunicipal().equalsIgnoreCase(nombreCiudad)).collect(Collectors.toList()));
     }
 
     /**
@@ -146,7 +146,7 @@ public class Utils {
      * @return Lista de mediciones
      */
     public static List<Medicion> filtrarMeteorizacion(String codigoCiudad) {
-        return meteo.stream().filter(punto_muestreo -> punto_muestreo.getSampling_point()
+        return meteo.stream().filter(punto_muestreo -> punto_muestreo.getSamplingPoint()
                 .contains(codigoCiudad)).collect(Collectors.toList());
     }
 
@@ -156,7 +156,7 @@ public class Utils {
      * @return Lista de contaminaciones
      */
     public static List<Medicion> filtrarContaminacion(String codigoCiudad) {
-        return contamina.stream().filter(punto_muestreo -> punto_muestreo.getSampling_point()
+        return contamina.stream().filter(punto_muestreo -> punto_muestreo.getSamplingPoint()
                 .contains(codigoCiudad)).collect(Collectors.toList());
     }
 
@@ -237,10 +237,10 @@ public class Utils {
      */
     public static String obtenerCodigo(String nombreCiudad) {
         Optional<UbicacionEstaciones> estacion = estacionesUbi.stream().filter(ubicacionEstaciones ->
-                ubicacionEstaciones.getStation_municipal().equalsIgnoreCase(nombreCiudad)).findFirst();
+                ubicacionEstaciones.getStationMunicipal().equalsIgnoreCase(nombreCiudad)).findFirst();
 
         String name = "";
-        if (estacion.isPresent()) name = estacion.get().getStation_code();
+        if (estacion.isPresent()) name = estacion.get().getStationCode();
         return name;
     }
 
@@ -254,10 +254,10 @@ public class Utils {
         String codigo = obtenerCodigo(ciudad);
 
         List<UbicacionEstaciones> estacion = estacionesUbi.stream().filter(ubicacionEstaciones ->
-                        codigo.substring(6).equals(ubicacionEstaciones.getStation_code().substring(6)))
+                        codigo.substring(6).equals(ubicacionEstaciones.getStationCode().substring(6)))
                 .collect(Collectors.toList());
 
-       return Optional.of(estacion.stream().map(UbicacionEstaciones::getStation_municipal).collect(Collectors.toList()));
+       return Optional.of(estacion.stream().map(UbicacionEstaciones::getStationMunicipal).collect(Collectors.toList()));
 
     }
 
@@ -291,7 +291,7 @@ public class Utils {
         Optional <String> codigoCiudad = Optional.empty();
 
         if (Utils.filtrarPorCiudad(nombreCiudad).isPresent()){
-            codigoCiudad = Optional.of(Utils.filtrarPorCiudad(nombreCiudad).get().get(0).getStation_code());
+            codigoCiudad = Optional.of(Utils.filtrarPorCiudad(nombreCiudad).get().get(0).getStationCode());
         }
 
         return codigoCiudad;
@@ -346,7 +346,7 @@ public class Utils {
         }
 
         //Crear directorio db si no existe
-        directory = new File(path_destination + File.separator + "db");
+        directory = new File( "db");
         while (!directory.exists()){
             if (directory.mkdirs()){
                 System.out.println("Carpeta /db creada");

@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class JDOMReader {
     private static JDOMReader controller;
@@ -47,12 +46,12 @@ public class JDOMReader {
         File contaminaXML = new File(PATH_CONTAMINACION);
         File magContaminaXML = new File(PATH_MAGNITUDES_CONTAMINACION);
         File magMeteoXML = new File(PATH_MAGNITUDES_METEO);
-        this.dataZonas = (Document) builder.build(zonasXML);
-        this.dataUbicaciones = (Document) builder.build(ubicacionesXML);
-        this.dataMeteo = (Document) builder.build(meteoXML);
-        this.dataContamina = (Document) builder.build(contaminaXML);
-        this.dataMagContamina = (Document) builder.build(magContaminaXML);
-        this.dataMagMeteo = (Document) builder.build(magMeteoXML);
+        this.dataZonas = builder.build(zonasXML);
+        this.dataUbicaciones = builder.build(ubicacionesXML);
+        this.dataMeteo = builder.build(meteoXML);
+        this.dataContamina = builder.build(contaminaXML);
+        this.dataMagContamina = builder.build(magContaminaXML);
+        this.dataMagMeteo = builder.build(magMeteoXML);
     }
 
     public Optional<List<ZonasMunicipio>> getZonas() {
@@ -63,9 +62,9 @@ public class JDOMReader {
 
         listOfZonas.forEach(zona -> {
             ZonasMunicipio zonas_m = new ZonasMunicipio();
-            zonas_m.setAir_code_quality_zone(zona.getChildText("zona_calidad_aire_codigo"));
-            zonas_m.setMunicipal_air_quality_zone(zona.getChildText("zona_calidad_aire_descripcion"));
-            zonas_m.setMunicipal_air_quality_zone(zona.getChildText("zona_calidad_aire_municipio"));
+            zonas_m.setAirCodeQualityZone(zona.getChildText("zona_calidad_aire_codigo"));
+            zonas_m.setMunicipalAirQualityZone(zona.getChildText("zona_calidad_aire_descripcion"));
+            zonas_m.setMunicipalAirQualityZone(zona.getChildText("zona_calidad_aire_municipio"));
             zonasList.add(zonas_m);
         });
         return Optional.of(zonasList);
@@ -78,31 +77,31 @@ public class JDOMReader {
 
         listOfUbic.forEach(ubica ->  {
             UbicacionEstaciones ubicacionEstaciones = new UbicacionEstaciones();
-            ubicacionEstaciones.setStation_code(ubica.getChildText("estacion_codigo"));
-            ubicacionEstaciones.setAir_quality_zone_description(ubica.getChildText("zona_calidad_aire_descripcion"));
-            ubicacionEstaciones.setStation_municipal(ubica.getChildText("estacion_municipio"));
-            ubicacionEstaciones.setHigh_date_station(ubica.getChildText("estacion_fecha_alta"));
-            ubicacionEstaciones.setArea_type_station(ubica.getChildText("estacion_tipo_area"));
-            ubicacionEstaciones.setStation_type_station(ubica.getChildText("estacion_tipo_estacion"));
-            ubicacionEstaciones.setRural_subarea_station(ubica.getChildText("estacion_subarea_rural"));
-            ubicacionEstaciones.setPostal_address_station(ubica.getChildText("estacion_direccion_postal"));
-            ubicacionEstaciones.setStation_coord_UTM_ETRS89_x(ubica.getChildText("estacion_coord_UTM_ETRS89_x"));
-            ubicacionEstaciones.setStation_coord_UTM_ETRS89_y(ubica.getChildText("estacion_coord_UTM_ETRS89_y"));
-            ubicacionEstaciones.setStation_coord_length(ubica.getChildText("estacion_coord_longitud"));
-            ubicacionEstaciones.setLatitude_coord_station(ubica.getChildText("estacion_coord_latitud"));
-            ubicacionEstaciones.setStation_altitude(ubica.getChildText("estacion_altitud"));
-            ubicacionEstaciones.setNO_analyzer_station(ubica.getChildText("estacion_analizador_NO"));
-            ubicacionEstaciones.setNO2_analyzer_station(ubica.getChildText("estacion_analizador_NO2"));
-            ubicacionEstaciones.setAnalyzer_station_PM10(ubica.getChildText("estacion_analizador_PM10"));
-            ubicacionEstaciones.setAnalyzer_station_PM2_5(ubica.getChildText("estacion_analizador_PM2_5"));
-            ubicacionEstaciones.setO3_analyzer_station(ubica.getChildText("estacion_analizador_O3"));
-            ubicacionEstaciones.setTOL_analyzer_station(ubica.getChildText("estacion_analizador_TOL"));
-            ubicacionEstaciones.setBEN_analyzer_station(ubica.getChildText("estacion_analizador_BEN"));
-            ubicacionEstaciones.setXIL_analyzer_station(ubica.getChildText("estacion_analizador_XIL"));
-            ubicacionEstaciones.setCO_analyzer_station(ubica.getChildText("estacion_analizador_CO"));
-            ubicacionEstaciones.setSO2_analyzer_station(ubica.getChildText("estacion_analizador_SO2"));
-            ubicacionEstaciones.setHCT_analyzer_station(ubica.getChildText("estacion_analizador_HCT"));
-            ubicacionEstaciones.setHNM_analyzer_station(ubica.getChildText("estacion_analizador_HNM"));
+            ubicacionEstaciones.setStationCode(ubica.getChildText("estacion_codigo"));
+            ubicacionEstaciones.setAirQualityZoneDescription(ubica.getChildText("zona_calidad_aire_descripcion"));
+            ubicacionEstaciones.setStationMunicipal(ubica.getChildText("estacion_municipio"));
+            ubicacionEstaciones.setHighDateStation(ubica.getChildText("estacion_fecha_alta"));
+            ubicacionEstaciones.setAreaTypeStation(ubica.getChildText("estacion_tipo_area"));
+            ubicacionEstaciones.setStationTypeStation(ubica.getChildText("estacion_tipo_estacion"));
+            ubicacionEstaciones.setRuralSubareaStation(ubica.getChildText("estacion_subarea_rural"));
+            ubicacionEstaciones.setPostalAddressStation(ubica.getChildText("estacion_direccion_postal"));
+            ubicacionEstaciones.setStationCoordUTMETRS89x(ubica.getChildText("estacion_coord_UTM_ETRS89_x"));
+            ubicacionEstaciones.setStationCoordUTMETRS89y(ubica.getChildText("estacion_coord_UTM_ETRS89_y"));
+            ubicacionEstaciones.setStationCoordLength(ubica.getChildText("estacion_coord_longitud"));
+            ubicacionEstaciones.setLatitudeCoordStation(ubica.getChildText("estacion_coord_latitud"));
+            ubicacionEstaciones.setStationAltitude(ubica.getChildText("estacion_altitud"));
+            ubicacionEstaciones.setNoAnalyzerStation(ubica.getChildText("estacion_analizador_NO"));
+            ubicacionEstaciones.setNO2AnalyzerStation(ubica.getChildText("estacion_analizador_NO2"));
+            ubicacionEstaciones.setAnalyzerStationPM10(ubica.getChildText("estacion_analizador_PM10"));
+            ubicacionEstaciones.setAnalyzerStationPM25(ubica.getChildText("estacion_analizador_PM2_5"));
+            ubicacionEstaciones.setO3AnalyzerStation(ubica.getChildText("estacion_analizador_O3"));
+            ubicacionEstaciones.setTolAnalyzerStation(ubica.getChildText("estacion_analizador_TOL"));
+            ubicacionEstaciones.setBenAnalyzerStation(ubica.getChildText("estacion_analizador_BEN"));
+            ubicacionEstaciones.setXilAnalyzerStation(ubica.getChildText("estacion_analizador_XIL"));
+            ubicacionEstaciones.setCoAnalyzerStation(ubica.getChildText("estacion_analizador_CO"));
+            ubicacionEstaciones.setSo2AnalyzerStation(ubica.getChildText("estacion_analizador_SO2"));
+            ubicacionEstaciones.setHctAnalyzerStation(ubica.getChildText("estacion_analizador_HCT"));
+            ubicacionEstaciones.setHnmAnalyzerStation(ubica.getChildText("estacion_analizador_HNM"));
             listUbica.add(ubicacionEstaciones);
         });
         return Optional.of(listUbica);
@@ -119,7 +118,7 @@ public class JDOMReader {
             meteorizacion.setMunicipal(meteo.getChildText("municipio"));
             meteorizacion.setStation(meteo.getChildText("estacion"));
             meteorizacion.setMagnitude(meteo.getChildText("magnitud"));
-            meteorizacion.setSampling_point(meteo.getChildText("punto_muestreo"));
+            meteorizacion.setSamplingPoint(meteo.getChildText("punto_muestreo"));
             meteorizacion.setYear(Integer.parseInt(meteo.getChildText("ano")));
             meteorizacion.setMonth(Integer.parseInt(meteo.getChildText("mes")));
             meteorizacion.setDay(Integer.parseInt(meteo.getChildText("dia")));
@@ -144,7 +143,7 @@ public class JDOMReader {
             contaminacion.setMunicipal(cont.getChildText("municipio"));
             contaminacion.setStation(cont.getChildText("estacion"));
             contaminacion.setMagnitude(cont.getChildText("magnitud"));
-            contaminacion.setSampling_point(cont.getChildText("punto_muestreo"));
+            contaminacion.setSamplingPoint(cont.getChildText("punto_muestreo"));
             contaminacion.setYear(Integer.parseInt(cont.getChildText("ano")));
             contaminacion.setMonth(Integer.parseInt(cont.getChildText("mes")));
             contaminacion.setDay(Integer.parseInt(cont.getChildText("dia")));
@@ -165,11 +164,11 @@ public class JDOMReader {
 
         listOfMagMeteo.forEach(mag -> {
             MagnitudMeteorizacion magnitudMeteorizacion = new MagnitudMeteorizacion();
-            magnitudMeteorizacion.setCode_magnitude(Integer.parseInt(mag.getChildText("cod_magnitud")));
-            magnitudMeteorizacion.setDescription_magnitude(mag.getChildText("desc_magnitud"));
-            magnitudMeteorizacion.setCode_technical_measure(Integer.parseInt(mag.getChildText("cod_tec_medida")));
-            magnitudMeteorizacion.setUndid(mag.getChildText("unidad"));
-            magnitudMeteorizacion.setDescriptions_undid(mag.getChildText("desc_unidad"));
+            magnitudMeteorizacion.setCodeMagnitud(Integer.parseInt(mag.getChildText("cod_magnitud")));
+            magnitudMeteorizacion.setDescriptionMagnitude(mag.getChildText("desc_magnitud"));
+            magnitudMeteorizacion.setCodeTechnicalMeasure(Integer.parseInt(mag.getChildText("cod_tec_medida")));
+            magnitudMeteorizacion.setUnidad(mag.getChildText("unidad"));
+            magnitudMeteorizacion.setDescriptionsUnidad(mag.getChildText("desc_unidad"));
             listMagMeteo.add(magnitudMeteorizacion);
         });
         return Optional.of(listMagMeteo);
@@ -182,11 +181,11 @@ public class JDOMReader {
 
         listOfMagMeteo.forEach(mag -> {
             MagnitudContaminacion magnitudContaminacion = new MagnitudContaminacion();
-            magnitudContaminacion.setCode_magnitude(Integer.parseInt(mag.getChildText("cod_magnitud")));
-            magnitudContaminacion.setDescription_magnitude(mag.getChildText("desc_magnitud"));
-            magnitudContaminacion.setCode_technical_measure(Integer.parseInt(mag.getChildText("cod_tec_medida")));
-            magnitudContaminacion.setUndid(mag.getChildText("unidad"));
-            magnitudContaminacion.setDescriptions_undid(mag.getChildText("desc_unidad"));
+            magnitudContaminacion.setCodeMagnitud(Integer.parseInt(mag.getChildText("cod_magnitud")));
+            magnitudContaminacion.setDescriptionMagnitude(mag.getChildText("desc_magnitud"));
+            magnitudContaminacion.setCodeTechnicalMeasure(Integer.parseInt(mag.getChildText("cod_tec_medida")));
+            magnitudContaminacion.setUnidad(mag.getChildText("unidad"));
+            magnitudContaminacion.setDescriptionsUnidad(mag.getChildText("desc_unidad"));
             listMagMeteo.add(magnitudContaminacion);
         });
         return Optional.of(listMagMeteo);

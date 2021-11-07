@@ -7,13 +7,13 @@ import javax.xml.bind.annotation.*;
 import java.util.List;
 
 @Data
-@XmlType(name = "resultado", propOrder = {"ciudad", "estaciones_asociadas", "fecha_inicio", "fecha_final", "datosMeteo", "datosContamina"})
+@XmlType(name = "resultado", propOrder = {"ciudad", "estacionesAsociadas", "fechaInicio", "fechaFin", "datosMeteo", "datosContamina"})
 public class ResultadoMediciones {
     @Getter(AccessLevel.NONE) private String id;
     private String ciudad;
-    @Getter(AccessLevel.NONE) private List<String> estaciones_asociadas;
-    private String fecha_inicio;
-    private String fecha_final;
+    @Getter(AccessLevel.NONE) private List<String> estacionesAsociadas;
+    private String fechaInicio;
+    private String fechaFin;
     @Getter(AccessLevel.NONE) private List<DatosMagnitud> datosMeteo;
     @Getter(AccessLevel.NONE) private List<DatosMagnitud> datosContamina;
 
@@ -24,8 +24,8 @@ public class ResultadoMediciones {
 
     @XmlElementWrapper(name = "estaciones_asociadas")
     @XmlElement(name = "estacion")
-    public List<String> getEstaciones_asociadas() {
-        return estaciones_asociadas;
+    public List<String> getEstacionesAsociadas() {
+        return estacionesAsociadas;
     }
 
     @XmlElementWrapper(name = "datos-metereologicos")

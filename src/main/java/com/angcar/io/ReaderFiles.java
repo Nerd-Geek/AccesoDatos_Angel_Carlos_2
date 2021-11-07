@@ -244,33 +244,32 @@ public class ReaderFiles {
     public static Optional<List<ZonasMunicipio>> readDataOfPathZonasMunicipio() {
 
         Path path = Paths.get(PATH_ZONAS);
-        String nombreArchivo = XMLConvertUtil.nombreArchivoDeCSV(path.getFileName().toString()); //TODO: AGREGADO NUEVO
+        String nombreArchivo = XMLConvertUtil.nombreArchivoDeCSV(path.getFileName().toString());
 
         if (Files.exists(path)) {
             try (Stream<String> stream = Files.lines(path, Charset.forName("windows-1252"))) {
 
-                //TODO: AGREGADO NUEVO
+
                 Element contenidos = new Element(nombreArchivo);
                 Document doc = new Document(contenidos);
                 ArrayList<String> elementos = XMLConvertUtil.getTitlesCSV(path);
-                //TODO: AGREGADO NUEVO
 
                 Optional<List<ZonasMunicipio>> listaFinal =  Optional.of(stream
                         .map(s -> s.split(";", -1)).skip(1)
                         .map(splitted -> {
 
-                            contenidos.addContent(XMLConvertUtil.contenidoCSVLoad(elementos, splitted)); //TODO: AGREGADO NUEVO
+                            contenidos.addContent(XMLConvertUtil.contenidoCSVLoad(elementos, splitted));
 
-                            String zona_calidad_aire_codigo = splitted[0];
-                            String zona_calidad_aire_descripcion = splitted[1];
-                            String zona_calidad_aire_municipio = splitted[2];
+                            String zonaCalidadAireCodigo = splitted[0];
+                            String zonaCalidadAireDesc = splitted[1];
+                            String zonaCalidadAireMunicipio = splitted[2];
 
-                            return new ZonasMunicipio(zona_calidad_aire_codigo,
-                                    zona_calidad_aire_descripcion, zona_calidad_aire_municipio);
+                            return new ZonasMunicipio(zonaCalidadAireCodigo,
+                                    zonaCalidadAireDesc, zonaCalidadAireMunicipio);
 
                         })
                         .collect(Collectors.toList()));
-                XMLConvertUtil.generarXML(nombreArchivo,doc); //Generar el XML //TODO: AGREGADO NUEVO
+                XMLConvertUtil.generarXML(nombreArchivo,doc); //Generar el XML
                 return listaFinal;
             } catch (IOException ex) {
                 System.err.println(ex.getMessage());
