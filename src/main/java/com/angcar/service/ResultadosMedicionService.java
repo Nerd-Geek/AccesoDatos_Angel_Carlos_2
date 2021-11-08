@@ -1,5 +1,6 @@
 package com.angcar.service;
 
+import com.angcar.ProcesamientoDatos;
 import com.angcar.model.Hora;
 import com.angcar.model.Magnitud;
 import com.angcar.model.Medicion;
@@ -8,7 +9,14 @@ import com.angcar.model.resultados.DatosMagnitud;
 import com.angcar.model.resultados.DatosMomento;
 import com.angcar.model.resultados.ResultadoMediciones;
 import com.angcar.util.Utils;
+
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -89,6 +97,24 @@ public class ResultadosMedicionService {
             } catch (IOException e) {
                 System.err.println("No se ha podido generar el HTML.");
             }
+
+            //Copiar CSS e imagen
+            Path fileOrigenCss = Paths.get(System.getProperty("user.dir") + File.separator + "src" + File.separator
+                    + "main" + File.separator + "resources");
+            Path fileDestinoCss = Paths.get(ProcesamientoDatos.path_destination + File.separator + "style" +
+                    File.separator + "style.css");
+            Path fileOrigenImage = Paths.get(System.getProperty("user.dir") + File.separator + "src" + File.separator
+                    + "main" + File.separator + "resources");
+            Path fileDestinoImage = Paths.get(ProcesamientoDatos.path_destination + File.separator + "style" +
+                    File.separator + "style.css");
+            try {
+                Files.copy(fileOrigenCss, fileDestinoCss, StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(fileOrigenImage, fileDestinoImage, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.err.println("No se ha podido copiar el CSS y su imagen");
+            }
+
 
             //Asignar los respectivos valores
         }else{
