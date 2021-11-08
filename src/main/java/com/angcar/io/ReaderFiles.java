@@ -239,6 +239,10 @@ public class ReaderFiles {
 
     }
 
+    /**
+     * Leer datos de zonas de municipio
+     * @return Opcional que de vuelve una lista de {@link ZonasMunicipio}
+     */
     public static Optional<List<ZonasMunicipio>> readDataOfPathZonasMunicipio() {
 
         Path path = Paths.get(PATH_ZONAS);

@@ -8,7 +8,7 @@ import com.angcar.model.resultados.DatosMagnitud;
 import com.angcar.model.resultados.DatosMomento;
 import com.angcar.model.resultados.ResultadoMediciones;
 import com.angcar.util.Utils;
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +18,9 @@ import java.util.function.Predicate;
 
 public class ResultadosMedicionService {
 
+    private boolean isPrecipitation;
+    private DatosHTML datosHTML;
+
     private final String CITY_NAME;
 
     /**
@@ -26,6 +29,7 @@ public class ResultadosMedicionService {
      */
     public ResultadosMedicionService(String nombreCiudad){
         this.CITY_NAME = nombreCiudad;
+        datosHTML = new DatosHTML();
     }
 
     /**
@@ -33,6 +37,10 @@ public class ResultadosMedicionService {
      * @return
      */
     public ResultadoMediciones cargarResultadosMediciones() {
+
+        //Crear Html StringBuilder
+        StringBuilder stringMedicionesData = new StringBuilder();
+
         ResultadoMediciones resultadoMediciones = new ResultadoMediciones();
 
         //Agregar valores
@@ -57,16 +65,30 @@ public class ResultadosMedicionService {
 
             Predicate<Magnitud> filtroContamina = (Magnitud m) -> m.getCodeMagnitud() != -1;
 
+            stringMedicionesData.append("<h1>Meteorología</h1>\n");
             Optional<List<DatosMagnitud>> listaMeteo = procesarDatosMagnitud(Utils.getMagnMeteo(),
                     listaMeteorizacion,filtroMedicion);
+            stringMedicionesData.append(datosHTML.getStringHTMLData());
+            datosHTML.resetHTMLData();
+
+            stringMedicionesData.append("<h1>Contaminación</h1>\n");
             Optional<List<DatosMagnitud>> listaContamina = procesarDatosMagnitud(Utils.getMagnContamina(),
                     listaContaminacion, filtroContamina);
+            stringMedicionesData.append(datosHTML.getStringHTMLData());
+            datosHTML.resetHTMLData();
 
             //Agregar
             listaMeteo.ifPresent(resultadoMediciones::setDatosMeteo);
             listaContamina.ifPresent(resultadoMediciones::setDatosContamina);
 
             System.out.println("Base de datos XML creada.");
+
+            //Intentar generar HTML
+            try {
+                datosHTML.generarHtml(this.CITY_NAME,stringMedicionesData);
+            } catch (IOException e) {
+                System.err.println("No se ha podido generar el HTML.");
+            }
 
             //Asignar los respectivos valores
         }else{
@@ -102,32 +124,40 @@ public class ResultadosMedicionService {
                         DatosMagnitud datosMagnitud = new DatosMagnitud();
                         datosMagnitud.setTipo(magnitud.getDescriptionMagnitude());
 
+                    //Detectar si es precipitación
+                    if (datosMagnitud.getTipo().equalsIgnoreCase("Precipitación")){
+                        isPrecipitation = true;
+                    }else{
+                        isPrecipitation = false;
+                    }
+
                     //Agregar media mensual
                         Optional<Double> medicionOpt = MedicionesService.medicionMedia(listaMediciones);
                         medicionOpt.ifPresent(datosMagnitud::setMedia);
 
                     //Agregar momentos;
-                        Map.Entry<Medicion, Optional<Hora>> mapEntry;
+                        Map.Entry<Medicion, Optional<Hora>> mapEntryMax;
+                        Map.Entry<Medicion, Optional<Hora>> mapEntryMin;
 
                     //Agregar momento máximo
-                        mapEntry =  MedicionesService.medicionMaximaMomento(listaMediciones);
+                    mapEntryMax =  MedicionesService.medicionMaximaMomento(listaMediciones);
                         DatosMomento max = new DatosMomento();
-                            Utils.obtenerFechaAndHoraMedicion(mapEntry).ifPresent(max::setFechaConvert);
-                            mapEntry.getValue().ifPresent(hora -> max.setValor(hora.getValue()));
+                            Utils.obtenerFechaAndHoraMedicion(mapEntryMax).ifPresent(max::setFechaConvert);
+                    mapEntryMax.getValue().ifPresent(hora -> max.setValor(hora.getValue()));
                         datosMagnitud.setMaxima(max);
 
                     //Agregar momento mínimo
-                        mapEntry =  MedicionesService.medicionMinimaMomento(listaMediciones);
+                    mapEntryMin =  MedicionesService.medicionMinimaMomento(listaMediciones);
                         DatosMomento min = new DatosMomento();
-                            Utils.obtenerFechaAndHoraMedicion(mapEntry).ifPresent(min::setFechaConvert);
-                            mapEntry.getValue().ifPresent(hora -> min.setValor(hora.getValue()));
+                            Utils.obtenerFechaAndHoraMedicion(mapEntryMin).ifPresent(min::setFechaConvert);
+                    mapEntryMin.getValue().ifPresent(hora -> min.setValor(hora.getValue()));
                         datosMagnitud.setMinima(min);
 
                     //Agregar días
                         List<DatosDiaMagnitud> listaDeDias = new ArrayList<>();
 
 
-                        if (datosMagnitud.getTipo().equalsIgnoreCase("Precipitación")) {
+                        if (isPrecipitation) {
                             MedicionesService.listaDiasPrecipitacion(listaMediciones).forEach((key, value) -> {
                                 DatosDiaMagnitud datosDiaMagnitud = new DatosDiaMagnitud();
                                 datosDiaMagnitud.setFecha(key.toString());
@@ -139,7 +169,16 @@ public class ResultadosMedicionService {
                     datosMagnitud.setDias(listaDeDias);
 
                     //Agregar a la lista de datos
-                        listaDatos.add(datosMagnitud);
+                    listaDatos.add(datosMagnitud);
+
+                    //Agregar también al HTML
+                    try {
+                        datosHTML.agregarDatosMagnitudHtml(isPrecipitation,datosMagnitud.getMedia(),
+                                mapEntryMax,mapEntryMin,magnitud, listaMediciones, CITY_NAME);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        System.err.println("No se ha podido generar el HTML");
+                    }
                 }
             }
         }
@@ -151,4 +190,6 @@ public class ResultadosMedicionService {
             return Optional.of(listaDatos);
         }
     }
+
+
 }

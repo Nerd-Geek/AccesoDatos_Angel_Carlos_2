@@ -12,6 +12,7 @@ import javax.xml.xpath.XPathFactory;
 import java.io.FileWriter;
 import java.io.IOException;
 
+
 public class ConsultasXPATH {
     /**
      * Realizar operaciones XPATH, generar archivo '.md' y mostrar por consola

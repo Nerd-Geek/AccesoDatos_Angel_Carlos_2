@@ -1,9 +1,8 @@
-# AccesoDatos_Angel_Carlos
-Primera_Practica_Accesos
-![Meteorlogía-Contaminacion](https://cdn.pixabay.com/photo/2015/05/15/14/24/weather-768460_960_720.jpg)
+# Segunda práctica de Acceso a Datos
+![Meteorlogía-Contaminacion](https://i.imgur.com/VGfOcQ8.png)
 
 ## Descripción
-Se ha codificado y modificado el programa donde se debe pasar una ciudad, por ejemplo "Lenganés", una vez ingresada, se te abrirá el navegador por defecto de tu ordenador y se te mostrará un HTML con los datos correspondiestes con la meteorización y contaminación sobre la ciudad. Se ha puesto cuanto tarda el programa en ejecutarse. Se generan imágenes para ver más gráficamente los datos por día, se exportan una serie de XML con los datos idénticos a los del CSV, se exporta un fichero XML que será la base de datos sobre cada una de las mediciones y se va ampliando tras ejecución, se muestra por consola los datos sobre la media por la ciudad introducida, se generá una fichero Markdown donde también plasman las medias por la ciudad introducida.
+Se ha codificado y modificado el programa donde se debe pasar una ciudad, por ejemplo "Lenganés", una vez ingresada, se te abrirá el navegador por defecto en tu ordenador y se te mostrará un HTML con los datos correspondientes con la meteorización y contaminación sobre la ciudad. Al final del documento HTML se detallará el tiempo que ha tardado el programa en ejecutarse. Se generan imágenes para ver más gráficamente los datos por día, se exportan una serie de XML con los datos idénticos a los del CSV, se exporta un fichero XML que será la base de datos sobre cada una de las mediciones y se va ampliando tras ejecución. Se muestra por consola los datos sobre la media por la ciudad introducida. Se genera un fichero Markdown donde también se plasman las medias por la ciudad introducida.
 
 ## Puesto en práctica
 - API Stream
