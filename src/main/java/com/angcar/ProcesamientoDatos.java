@@ -3,8 +3,6 @@ package com.angcar;
 import com.angcar.io.ConsultasXPATH;
 import com.angcar.io.JAXBdbMediciones;
 import com.angcar.model.resultados.ResultadoMediciones;
-import com.angcar.service.DatosHTML;
-import com.angcar.service.GeneradorHTML;
 import com.angcar.service.ResultadosMedicionService;
 import com.angcar.util.Utils;
 import org.jdom2.JDOMException;
@@ -23,8 +21,7 @@ import java.util.stream.IntStream;
 
 public class ProcesamientoDatos {
     private final String[] ARGS;
-    static public String path_destination;
-
+    public static String path_destination;
     private static ProcesamientoDatos procesamientoDatos;
 
     /**
@@ -105,14 +102,6 @@ public class ProcesamientoDatos {
                     System.err.println("No se han podido realizar las consultas con XPATH.");
                 }
 
-                //Intentar generar HTML
-                try {
-                    DatosHTML datosCiudad = new DatosHTML();
-                    datosCiudad.procesarDatosPorCiudad(ciudad);
-                    GeneradorHTML.generarHtml(ciudad);
-                } catch (IOException e) {
-                    System.err.println("No se ha podido generar el HTML.");
-                }
             } else {
                 System.err.println("Los archivos CSV no se han podido leer.");
                 System.exit(0);
@@ -125,7 +114,7 @@ public class ProcesamientoDatos {
      * @return Devuelve cuándo se ha creado el informe y cuánto tiempo ha tardado
      */
     public static String tiempoInforme() {
-        double tiempo = (double) ((System.currentTimeMillis() - Utils.init_time)/1000);
+        double tiempo = (double) (System.currentTimeMillis() - Utils.init_time)/1000;
         LocalDate fecha = LocalDate.now();
         String formatearFecha = "dd/MM/yyyy";
         LocalTime hora = LocalTime.now();

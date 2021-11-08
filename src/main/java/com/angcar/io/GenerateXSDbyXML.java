@@ -11,8 +11,8 @@ public class GenerateXSDbyXML extends SchemaOutputResolver {
 
     /**
      * Crea el xsd en base a un contexto
-     * @param namespaceURI
-     * @param suggestedFileName
+     * @param namespaceURI {@link String}
+     * @param suggestedFileName {@link String}
      * @return Result
      */
     @SneakyThrows

@@ -1,6 +1,7 @@
 package com.angcar.service;
 
 import com.angcar.ProcesamientoDatos;
+import com.angcar.io.WriterFiles;
 import com.angcar.model.*;
 import com.angcar.util.Utils;
 import org.jfree.chart.ChartFactory;
@@ -20,16 +21,21 @@ import java.util.function.Predicate;
  * Datos de HTML
  */
 public class DatosHTML {
-    private String nombreCiudad;
-    static private StringBuilder stringHTMLData;
-    public static StringBuilder getStringHTMLData() {
-        return stringHTMLData;
+    private StringBuilder stringHTMLData;
+    private static final String PROGRAM_NAME = "Servicio meteorológico y contaminación";
+
+    public DatosHTML(){
+        stringHTMLData = new StringBuilder();
+    }
+
+    public StringBuilder getStringHTMLData(){
+        return this.stringHTMLData;
     }
 
     /**
      * Reset HTML Data
      */
-    public static void resetHTMLData(){
+    public void resetHTMLData(){
 
         if (stringHTMLData !=null) {
             stringHTMLData.setLength(0);
@@ -37,255 +43,146 @@ public class DatosHTML {
     }
 
     /**
-     * Procesar los datos por ciudad
+     * Genera el HTML
      * @param nombreCiudad {@link String}
+     * @throws IOException Excepción IO
      */
-    public void procesarDatosPorCiudad(String nombreCiudad){
+    public void generarHtml(String nombreCiudad, StringBuilder datosMediciones) throws IOException {
 
-        this.nombreCiudad = nombreCiudad;
+        //HEAD
+        StringBuilder htmlString = new StringBuilder();
+        htmlString.append(String.format("<!DOCTYPE html>\n" +
+                "<html lang=\"es\">\n" +
+                "    <head>\n" +
+                "    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n" +
+                "    <title>%s</title>\n" +
+                "    <link rel=\"stylesheet\" type=\"text/css\" href=\"style/style.css\" media=\"screen\" />" +
+                "    </head>\n" +
+                "    <body>\n" +
+                "<header>\n" +
+                "\t<img src=\"informe.png\">\n" +
+                "\t</header>\n" +
+                "<section>\n",PROGRAM_NAME));
 
-        Optional<List<UbicacionEstaciones>> listaEstaciones = Utils.filtrarPorCiudad(nombreCiudad);
-        String codigoCiudad = Utils.filtrarPorCiudad(nombreCiudad).get().get(0).getStationCode();
+        //Obtener estaciones
+        StringBuilder estacionesAsociadas = new StringBuilder();
+        Utils.obtenerEstaciones(nombreCiudad).ifPresent(strings -> strings
+                .forEach(s -> estacionesAsociadas.append("<p>").append(s).append("</p>")));
 
-        if (listaEstaciones.isPresent()){
-            codigoCiudad = listaEstaciones.get().get(0).getStationCode();
-        }
+        String fechaIni = Utils.obtenerFechaInicioMedicion();
+        String fechaFin = Utils.obtenerFechaFinalMedicion();
 
-        if (listaEstaciones.isPresent()){
-            procesarDatosPorCode(codigoCiudad);
-        }else{
-            System.out.printf("Ciudad no encontrada: %s", nombreCiudad);
-            System.exit(0);
-        }
+        htmlString.append(String.format("<h1>%s</h1>\n" +
+                        "<h2>%s</h2>\n" +
+                        "        <h3>Estaciones asociadas:</h3>\n" +
+                        "        %s\n" +
+                        "<h3>Fecha de inicio de la medición:</h3>\n" +
+                        "<p>%s</p>\n" +
+                        "<h3>Fecha de fin de la medición:</h3>\n" +
+                        "<p>%s</p>\n"
+                ,PROGRAM_NAME, nombreCiudad, estacionesAsociadas, fechaIni, fechaFin));
+
+
+        ///CARGAR DATOS MEDICIONES
+        htmlString.append(datosMediciones); //Agregar Datos de mediciones
+        resetHTMLData(); //Resetear StringHTMLData
+
+
+        htmlString.append("<p>" + ProcesamientoDatos.tiempoInforme() + "</p>");
+
+        //END
+        htmlString .append("</section>\n" +
+                "</body>\n" +
+                "</html>");
+
+        WriterFiles.writeFile(htmlString.toString(), nombreCiudad);
     }
 
     /**
-     * Procesar datos por código de ciudad
-     * @param codigoCiudad {@link String}
+     * Agregar Datos de magnitud al HTML
+     * @param isPrecipitation boolean
+     * @param media {@link Double}
+     * @param mapEntryMax Map.Entry<Medicion, Optional<Hora>>
+     * @param mapEntryMin Map.Entry<Medicion, Optional<Hora>>
+     * @param magnitud {@link Magnitud}
+     * @param listaMediciones List<Medicion> listaMediciones
+     * @return StringBuilder
+     * @throws IOException excepción
      */
-        private void procesarDatosPorCode(String codigoCiudad){
-            stringHTMLData = new StringBuilder();
+    public void agregarDatosMagnitudHtml(boolean isPrecipitation, Double media, Map.Entry<Medicion, Optional<Hora>> mapEntryMax,
+                                                   Map.Entry<Medicion, Optional<Hora>> mapEntryMin,
+                                                   Magnitud magnitud, List<Medicion> listaMediciones, String nombreCiudad) throws IOException {
 
-            //Filtrar por ciudad pasada por parámetro
-            List<Medicion> listaMeteorizacion = Utils.filtrarMeteorizacion(codigoCiudad);
-            List<Medicion> listaContaminacion = Utils.filtrarContaminacion(codigoCiudad);
+        //MEDICIÓN MÁXIMA
+        String medicionMaxMomento = "No se ha encontrado valor máximo."; //Por defecto
 
-            Predicate<Magnitud> filtroMedicion = (Magnitud m) -> m.getCodeMagnitud() == 83 || m.getCodeMagnitud() == 88
-                    || m.getCodeMagnitud() == 89 || m.getCodeMagnitud() == 86 || m.getCodeMagnitud() == 81;
-
-            Predicate<Magnitud> filtroContamina = (Magnitud m) ->
-                    m.getCodeMagnitud() != -1;
-
-            procesarDatosMeteo(listaMeteorizacion, filtroMedicion);
-            procesarDatosContamina(listaContaminacion, filtroContamina);
-
-            System.out.println("Datos procesados.");
+        if (mapEntryMax.getValue().isPresent()){
+            medicionMaxMomento = "Valor máximo <b>" + mapEntryMax.getValue().get().getValue()
+                    + " " + magnitud.getUnidad()
+                    + "</b> el día <b>" + Utils.obtenerFechaMedicion(mapEntryMax.getKey())
+                    .format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+                    + "</b> a las <b>" + String.format("%02d:00:00"
+                    , mapEntryMax.getValue().get().getNumHour()) + "</b>";
         }
 
-    /**
-     * Procesar los datos de meteorización
-     * @param listaMeteo {@link List}<{@link Medicion}>
-     * @param filtro {@link Predicate}<{@link Magnitud}>
-     */
-    private void procesarDatosMeteo(List<Medicion> listaMeteo, Predicate<Magnitud> filtro) {
-        stringHTMLData.append("<h1>Meteorología</h1>\n");
+        //MEDICIÓN MÍNIMA
+        String medicionMinMomento = "No se ha encontrado valor máximo."; //Por defecto
 
-        Utils.getMagnMeteo().stream().filter(filtro).forEach((magnitudMeteo) -> {
-            String actualPath = "image" + File.separator + magnitudMeteo.getCodeMagnitud() + ".png";
-            int idMagnitud = magnitudMeteo.getCodeMagnitud();
+        if (mapEntryMin.getValue().isPresent()){
+            medicionMinMomento = "Valor mínimo <b>" + mapEntryMin.getValue().get().getValue()
+                    + " " + magnitud.getUnidad()
+                    + "</b> el día <b>" + Utils.obtenerFechaMedicion(mapEntryMin.getKey())
+                    .format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+                    + "</b> a las <b>" + String.format("%02d:00:00"
+                    , mapEntryMin.getValue().get().getNumHour()) + "</b>";
+        }
 
+        //Agregar gráfica
+        String actualPath = "image" + File.separator + magnitud.getCodeMagnitud() + ".png";
+        ChartUtilities.saveChartAsPNG(
+                new File(ProcesamientoDatos.path_destination + actualPath),
+                datosMedicion(listaMediciones, magnitud.getDescriptionMagnitude(),
+                        nombreCiudad)
+                , 800, 800);
 
-            //Filtrar por magnitud
-            List<Medicion> listaMediciones;
+        //Agregar descripción de magnitud y media mensual
+        stringHTMLData.append(String.format("\n<h2>%s</h2>\n" +
+                        "<p>Valor medio mensual: %s</p>\n",
+                magnitud.getDescriptionMagnitude(), media));
 
-            if (Utils.obtenerMagnitudLista(idMagnitud, listaMeteo).isPresent()){
-                listaMediciones = Utils.obtenerMagnitudLista(idMagnitud, listaMeteo).get();
+        //Agregar días si es precipitación
+        if (isPrecipitation) {
+            //Crear la tabla
+            //PRECIPITACIÓN DE CADA DÍA QUE HA LLOVIDO
+            StringBuilder tabla = new StringBuilder();
+            tabla.append("\n<table>\n" +
+                    "<tr>\n" +
+                    "<th>Día</th>\n" +
+                    "<th>Precipitación</th>\n" +
+                    "</tr>\n");
+            MedicionesService.listaDiasPrecipitacion(listaMediciones)
+                    .forEach((key, value) ->
+                            tabla.append("<tr>\n" + "<td>").append(key).append("</td>\n")
+                                    .append("<td>").append(value).append("</td>\n").append("</tr>\n")
+                    );
+            tabla.append("</table>\n");
 
-                if (!listaMediciones.isEmpty()){
-                    try {
-                        if (magnitudMeteo.getCodeMagnitud() == 89){
+            stringHTMLData.append(String.format("<p>Lista de los días que ha llovido y" +
+                    "precipitación de cada día:</p>\n" + "%s", tabla));
 
-                            ChartUtilities.saveChartAsPNG(
-                                    new File(ProcesamientoDatos.path_destination + actualPath),
-                                    datosMedicion(listaMeteo, magnitudMeteo.getDescriptionMagnitude())
-                                    , 800, 800);
+        }
+        //Agregar momento y valor del máximo y mínimo impacto SOLO si no es de tipo precipitación
+        else{
+            stringHTMLData.append(String.format(
+                    "<p>Momento y valor máximo impacto: %s</p>\n" +
+                            "<p>Momento y valor mínimo impacto: %s</p>\n",
+                    medicionMaxMomento, medicionMinMomento));
+        }
 
-                            //MEDICIÓN MENSUAL
-                            double valorMediomensual = 0;
-                            Optional<Double> medicionOpt = MedicionesService.medicionMedia(listaMediciones);
-                            if (medicionOpt.isPresent()) {
-                                valorMediomensual = medicionOpt.get();
-                            }
+        //Generar gráfico
+        stringHTMLData.append(String.format("<p>Gráfica de la evolución del impacto:</p>\n" +
+                "<img src=\"%s\" />",actualPath));
 
-                            //PRECIPITACIÓN DE CADA DÍA QUE HA LLOVIDO
-                            StringBuilder tabla = new StringBuilder();
-                            tabla.append("\n<table>\n" +
-                                    "<tr>\n" +
-                                    "<th>Día</th>\n" +
-                                    "<th>Precipitación</th>\n" +
-                                    "</tr>\n");
-                            MedicionesService.listaDiasPrecipitacion(listaMediciones)
-                                    .forEach((key, value) ->
-                                            tabla.append("<tr>\n" + "<td>").append(key).append("</td>\n")
-                                                    .append("<td>").append(value).append("</td>\n").append("</tr>\n")
-                                    );
-                            tabla.append("</table>\n");
-
-                            stringHTMLData.append(String.format("\n<h2>%s</h2>\n" +
-                                            "<p>Precipitación media mensual: %s</p>\n" +
-                                            "<p>Lista de los días que ha llovido y precipitación de cada día:</p>\n" +
-                                            "%s" +
-                                            "<p>Histograma por días de precipitación:</p>\n" +
-                                            "<img src=\"%s\" />",
-                                    magnitudMeteo.getDescriptionMagnitude(), valorMediomensual,
-                                    tabla, actualPath));
-                        }
-                        //Si es otro tipo de medición, tratar de manera habitual
-                        else {
-                            ChartUtilities.saveChartAsPNG(new File(ProcesamientoDatos.path_destination + actualPath),
-                                    datosMedicion(listaMeteo, magnitudMeteo.getDescriptionMagnitude())
-                                    , 800, 800);
-
-
-                            //MEDICIÓN MÁXIMA
-                            String medicionMaxMomento = "No se ha encontrado valor máximo."; //Por defecto
-
-                            Map.Entry<Medicion, Optional<Hora>> mapEntry =  MedicionesService
-                                    .medicionMaximaMomento(listaMediciones);
-                            if (mapEntry.getValue().isPresent()){
-                                medicionMaxMomento = "Valor máximo <b>" + mapEntry.getValue().get().getValue()
-                                        + " " + magnitudMeteo.getUnidad()
-                                        + "</b> el día <b>" + Utils.obtenerFechaMedicion(mapEntry.getKey())
-                                        .format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-                                        + "</b> a las <b>" + String.format("%02d:00:00"
-                                        , mapEntry.getValue().get().getNumHour()) + "</b>";
-                            }
-
-                            //MEDICIÓN MÍNIMA
-                            String medicionMinMomento = "No se ha encontrado valor máximo."; //Por defecto
-
-                            mapEntry = MedicionesService.medicionMinimaMomento(listaMediciones);
-                            if (mapEntry.getValue().isPresent()){
-                                medicionMinMomento = "Valor mínimo <b>" + mapEntry.getValue().get().getValue()
-                                         + " " + magnitudMeteo.getUnidad()
-                                        + "</b> el día <b>" + Utils.obtenerFechaMedicion(mapEntry.getKey())
-                                        .format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-                                        + "</b> a las <b>" + String.format("%02d:00:00"
-                                        , mapEntry.getValue().get().getNumHour()) + "</b>";
-                            }
-
-                            //VALOR MEDIO MENSUAL
-                            double valorMediomensual = 0;
-                            Optional<Double> medicionOpt = MedicionesService.medicionMedia(listaMediciones);
-                            if (medicionOpt.isPresent()){
-                                valorMediomensual = medicionOpt.get();
-                            }
-
-                            stringHTMLData.append(String.format("\n<h2>%s</h2>\n" +
-                                            "<p>Valor medio mensual: %s</p>\n" +
-                                            "<p>Momento y valor máximo impacto: %s</p>\n" +
-                                            "<p>Momento y valor mínimo impacto: %s</p>\n" +
-                                            "<p>Gráfica de la evolución del impacto:</p>\n" +
-                                            "<img src=\"%s\" />",
-                                    magnitudMeteo.getDescriptionMagnitude(), valorMediomensual,
-                                    medicionMaxMomento, medicionMinMomento, actualPath));
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-
-            }
-
-            else{
-                System.err.println("Error: no se ha podido procesar la lista de mediciones");
-                System.exit(0);
-            }
-        });
-    }
-
-    /**
-     * Procesar los datos de contaminación
-     * @param listaContamina {@link List}<{@link Medicion}>
-     * @param filtro {@link Predicate}<{@link Magnitud}>
-     */
-    private void procesarDatosContamina(List<Medicion> listaContamina, Predicate<Magnitud> filtro) {
-        stringHTMLData.append("<h1>Contaminación</h1>\n");
-
-        Utils.getMagnContamina().stream().filter(filtro).forEach((magnitudContamina) -> {
-            String actualPath = "image" + File.separator + magnitudContamina.getCodeMagnitud() + ".png";
-            int idMagnitud = magnitudContamina.getCodeMagnitud();
-
-
-            //Filtrar por magnitud
-            List<Medicion> listaMediciones;
-
-            if (Utils.obtenerMagnitudLista(idMagnitud, listaContamina).isPresent()){
-                listaMediciones = Utils.obtenerMagnitudLista(idMagnitud, listaContamina).get();
-
-                if (!listaMediciones.isEmpty()){
-                    try {
-
-                        ChartUtilities.saveChartAsPNG(new File(ProcesamientoDatos.path_destination + actualPath),
-                                datosMedicion(listaContamina, magnitudContamina.getDescriptionMagnitude())
-                                , 800, 800);
-
-                        //MEDICIÓN MÁXIMA
-                        String medicionMaxMomento = "No se ha encontrado valor máximo."; //Por defecto
-
-                        Map.Entry<Medicion, Optional<Hora>> mapEntry =  MedicionesService
-                                .medicionMaximaMomento(listaMediciones);
-                        if (mapEntry.getValue().isPresent()){
-                            medicionMaxMomento = "Valor máximo <b>" + mapEntry.getValue().get().getValue()
-                                    + " " + magnitudContamina.getUnidad()
-                                    + "</b> el día <b>" + Utils.obtenerFechaMedicion(mapEntry.getKey())
-                                    .format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-                                    + "</b> a las <b>" + String.format("%02d:00:00"
-                                    , mapEntry.getValue().get().getNumHour()) + "</b>";
-                        }
-
-                        //MEDICIÓN MÍNIMA
-                        String medicionMinMomento = "No se ha encontrado valor máximo."; //Por defecto
-
-                        mapEntry = MedicionesService.medicionMinimaMomento(listaMediciones);
-                        if (mapEntry.getValue().isPresent()){
-                            medicionMinMomento = "Valor mínimo <b>" + mapEntry.getValue().get().getValue()
-                                    + " " + magnitudContamina.getUnidad()
-                                    + "</b> el día <b>" + Utils.obtenerFechaMedicion(mapEntry.getKey())
-                                    .format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-                                    + "</b> a las <b>" + String.format("%02d:00:00"
-                                    , mapEntry.getValue().get().getNumHour()) + "</b>";
-                        }
-
-                        double valorMediomensual = 0;
-                        Optional<Double> medicionOpt = MedicionesService.medicionMedia(listaMediciones);
-                        if (medicionOpt.isPresent()){
-
-                            valorMediomensual = medicionOpt.get();
-                        }
-
-                        stringHTMLData.append(String.format("\n<h2>%s</h2>\n" +
-                                        "<p>Valor medio mensual: %s</p>\n" +
-                                        "<p>Momento y valor máximo impacto: %s</p>\n" +
-                                        "<p>Momento y valor mínimo impacto: %s</p>\n" +
-                                        "<p>Gráfica de la evolución del impacto:</p>\n" +
-                                        "<img src=\"%s\" />",
-                                magnitudContamina.getDescriptionMagnitude(), valorMediomensual,
-                                medicionMaxMomento, medicionMinMomento, actualPath));
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-            }
-
-            else{
-                System.err.println("Error: no se ha podido procesar la lista de mediciones");
-                System.exit(0);
-            }
-        });
     }
 
     /**
@@ -294,7 +191,7 @@ public class DatosHTML {
      * @param descripcion_magnitud Descripción de magnitud {@link String}
      * @return List<Medicion>
      */
-        private JFreeChart datosMedicion(List<Medicion> listaMediciones,String descripcion_magnitud) {
+        private JFreeChart datosMedicion(List<Medicion> listaMediciones, String descripcion_magnitud, String nombreCiudad) {
 
             DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 

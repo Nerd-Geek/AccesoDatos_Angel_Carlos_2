@@ -63,39 +63,6 @@ public class MedicionesService {
                         Double.parseDouble(hora.getValue())).orElse(0.0))));
     }
 
-    /*public static Map.Entry<Medicion, Hora> medicionMinimaMomento(List<Medicion> listaMediciones) {
-        //Mapear la medición con su hora máxima
-        Map<Medicion, Hora> medicionesMin = listaMedic
-                Map.Entry.comparingByValue(Comparator.comparingDouble(o -> Double.parseDouble(o.getValor()))));
-    }*/
-
-    public static Optional<Double> medicionMaxima(List<Medicion> listaMediciones) {
-            double maxima = listaMediciones.stream()
-                    .mapToDouble(medicion1 -> Utils.obtenerHorasValidadas(medicion1.getHours()).stream()
-                            .mapToDouble(value -> Double.parseDouble(value.getValue()))
-                            .summaryStatistics().getMax())
-                    .summaryStatistics().getMax();
-
-            return Optional.of(Math.round(maxima * 100d) / 100d);
-    }
-
-    /**
-     * calcular el dato minimo de la lista medicion
-     * @param listaMediciones lista medicion
-     * @return
-     */
-
-    public static Optional<Double> medicionMinima(List<Medicion> listaMediciones) {
-            double minima = listaMediciones.stream()
-                    .mapToDouble(medicion1 -> Utils.obtenerHorasValidadas(medicion1.getHours()).stream()
-                            .mapToDouble(value -> Double.parseDouble(value.getValue()))
-                            .summaryStatistics().getMin())
-                    .summaryStatistics().getMin();
-
-            return Optional.of(Math.round(minima * 100d) / 100d);
-        }
-
-
     /**
      * Lista de días que ha llovido y precipitación de cada día
      * @param listaMediciones Una lista de mediciones

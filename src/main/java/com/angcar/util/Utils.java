@@ -78,6 +78,11 @@ public class Utils {
         return realizado.get();
     }
 
+    /**
+     * Inicializar los datos de XML
+     * @throws IOException excepción IO
+     * @throws JDOMException excepción JDOM
+     */
     public static void inicializarDatosXML() throws IOException, JDOMException {
         //Leer .xml's
         JDOMReader controller = JDOMReader.getInstance();
@@ -134,7 +139,6 @@ public class Utils {
      * @param nombreCiudad El nombre de la ciudad
      * @return Optional con una lista de mediciones
      */
-
     public static Optional<List<UbicacionEstaciones>> filtrarPorCiudad(String nombreCiudad) {
         return Optional.of(estacionesUbi.stream().filter(ubicacionEstaciones ->
                 ubicacionEstaciones.getStationMunicipal().equalsIgnoreCase(nombreCiudad)).collect(Collectors.toList()));
