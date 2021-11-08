@@ -93,6 +93,59 @@ public class DatosHTML {
         //END
         htmlString .append("</section>\n" +
                 "</body>\n" +
+                "<style>\n"+
+                "body{\n"+
+            "background-color: #454872cc;\n"+
+            "font-family: system-ui;\n"+
+        "}\n"+
+
+        "header{\n"+
+            "margin-top:50px;\n"+
+            "margin-bottom:10px;\n"+
+        "}\n"+
+
+        "section{\n"+
+            "background-color: #ffffff;\n"+
+            "width: 70%;\n"+
+            "display: block;\n"+
+            "margin: auto;\n"+
+            "padding: 30px;\n"+
+            "border-radius: 40px;\n"+
+            "margin-bottom: 50px;\n"+
+        "}\n"+
+
+        "h1{\n"+
+            "color: #ef3535;\n"+
+        "}\n"+
+
+        "img{\n"+
+            "display: block;\n"+
+            "margin: auto;\n"+
+            "max-width: 100%;\n"+
+        "}\n"+
+
+        "table{\n"+
+            "border: 2px solid black;\n"+
+            "border-collapse: collapse;\n"+
+            "margin: auto;\n"+
+        "}\n"+
+
+
+        "th, td{\n"+
+            "border: 2px solid black;\n"+
+            "text-align: center;\n"+
+            "padding: 10px;\n"+
+            "padding-left: 40px;\n"+
+            "padding-right: 40px;\n"+
+            "background-color: #f2f3ff;\n"+
+        "}\n"+
+
+        "th{\n"+
+            "color: #002952;\n"+
+            "background-color: #bdc0ff;\n"+
+            "font-weight: bold;\n"+
+        "}\n"+
+                "</style>\n"+
                 "</html>");
 
         WriterFiles.writeFile(htmlString.toString(), nombreCiudad);
