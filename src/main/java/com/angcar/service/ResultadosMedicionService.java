@@ -9,6 +9,7 @@ import com.angcar.model.resultados.DatosMagnitud;
 import com.angcar.model.resultados.DatosMomento;
 import com.angcar.model.resultados.ResultadoMediciones;
 import com.angcar.util.Utils;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -89,8 +90,6 @@ public class ResultadosMedicionService {
             listaMeteo.ifPresent(resultadoMediciones::setDatosMeteo);
             listaContamina.ifPresent(resultadoMediciones::setDatosContamina);
 
-            System.out.println("Base de datos XML creada.");
-
             //Intentar generar HTML
             try {
                 datosHTML.generarHtml(this.CITY_NAME,stringMedicionesData);
@@ -98,22 +97,26 @@ public class ResultadosMedicionService {
                 System.err.println("No se ha podido generar el HTML.");
             }
 
-            //Copiar CSS e imagen
-            Path fileOrigenCss = Paths.get(System.getProperty("user.dir") + File.separator + "src" + File.separator
-                    + "main" + File.separator + "resources");
-            Path fileDestinoCss = Paths.get(ProcesamientoDatos.path_destination + File.separator + "style" +
+
+            File fileCSS = new File(System.getProperty("user.dir") + File.separator + "src" + File.separator
+                    + "main" + File.separator + "resources" + File.separator + "style" + File.separator + "style.css");
+            File fileCSSDest = new File(ProcesamientoDatos.path_destination + File.separator + "style" +
                     File.separator + "style.css");
-            Path fileOrigenImage = Paths.get(System.getProperty("user.dir") + File.separator + "src" + File.separator
-                    + "main" + File.separator + "resources");
-            Path fileDestinoImage = Paths.get(ProcesamientoDatos.path_destination + File.separator + "style" +
-                    File.separator + "style.css");
+
+            File fileImg = new File(System.getProperty("user.dir") + File.separator + "src" + File.separator
+                    + "main" + File.separator + "resources" + File.separator + "image" + File.separator + "informe.png");
+            File fileImgDest = new File(ProcesamientoDatos.path_destination + File.separator + "image" +
+                    File.separator + "informe.png");
             try {
-                Files.copy(fileOrigenCss, fileDestinoCss, StandardCopyOption.REPLACE_EXISTING);
-                Files.copy(fileOrigenImage, fileDestinoImage, StandardCopyOption.REPLACE_EXISTING);
+                FileUtils.copyFile(fileCSS,fileCSSDest);
+                FileUtils.copyFile(fileImg,fileImgDest);
             } catch (IOException e) {
-                e.printStackTrace();
                 System.err.println("No se ha podido copiar el CSS y su imagen");
+                System.out.println(e);
             }
+
+
+
 
 
             //Asignar los respectivos valores

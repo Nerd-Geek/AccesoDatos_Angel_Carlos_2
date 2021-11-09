@@ -23,7 +23,7 @@ Se ha codificado y modificado el programa donde se debe pasar una ciudad, por ej
 - jaxen
 
 ## Vídeo
-falta vídeo
+https://www.youtube.com/watch?v=YI_jTGb5Ikg
 
 ## Autores
 Creado y 💻 codificado por: Carlos Moreno y Ángel Mateo

@@ -95,6 +95,8 @@ public class ProcesamientoDatos {
                             bd.crearBDMediciones(datosResultadoMediciones, uri)
                     );
 
+                    System.out.println("Base de datos XML creada.");
+
                 } catch (JAXBException | ParserConfigurationException e) {
                     System.err.println("No se ha podido crear la base de datos de mediciones.");
                     System.exit(0);
