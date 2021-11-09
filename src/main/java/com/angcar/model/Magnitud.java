@@ -2,15 +2,17 @@ package com.angcar.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class Magnitud{ // POJO
-    private int codigo_magnitud;
-    private String descripcion_magnitud;
-    private int codigo_tecnica_medida;
+    private int codeMagnitud;
+    private String descriptionMagnitude;
+    private int codeTechnicalMeasure;
     private String unidad;
-    private String descripcion_unidad;
+    private String descriptionsUnidad;
 
-    private String descripcion_tecnica_medida;
+    private String technicalDescriptionMeasure;
 }

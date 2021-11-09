@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class Hora { // POJO
-    private String valor;
+    private String value;
     private String validation;
-    private int numHora;
+    private int numHour;
 }

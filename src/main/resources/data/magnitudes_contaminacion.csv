@@ -1,4 +1,4 @@
-Código magnitud;Descripción magnitud;Código técnica de medida;Descripción técnica de medida;Unidad;Descripción unidad
+cod_magnitud;desc_magnitud;cod_tec_medida;desc_tec_medida;unidad;desc_unidad
 1;Dióxido de azufre;38;Fluorescencia ultravioleta;?g/m³;microgramos por metro cúbico
 6;Monóxido de carbono;48;Espectrometría infrarroja no dispersiva;mg/m³;miligramos por metro cúbico
 7;Monóxido de nitrógeno;8;Quimioluminiscencia;?g/m³;microgramos por metro cúbico

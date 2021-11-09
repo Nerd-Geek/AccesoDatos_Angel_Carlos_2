@@ -7,7 +7,9 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="AccesoDatos_Angel_Carlos_2" />
         <module name="Primera_Practica_Accesos" />
+        <module name="servicioMeteorologicoXML" />
         <module name="AccesoDatos_Angel_Carlos" />
         <module name="servicioMeteorologico" />
         <module name="AngCar_PrimeraPractica" />

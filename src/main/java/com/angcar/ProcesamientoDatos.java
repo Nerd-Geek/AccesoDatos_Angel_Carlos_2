@@ -1,9 +1,15 @@
 package com.angcar;
 
-import com.angcar.service.DatosHTML;
-import com.angcar.service.GeneradorHTML;
+import com.angcar.io.ConsultasXPATH;
+import com.angcar.io.JAXBdbMediciones;
+import com.angcar.model.resultados.ResultadoMediciones;
+import com.angcar.service.ResultadosMedicionService;
 import com.angcar.util.Utils;
+import org.jdom2.JDOMException;
 
+import javax.xml.bind.JAXBException;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathExpressionException;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -15,8 +21,7 @@ import java.util.stream.IntStream;
 
 public class ProcesamientoDatos {
     private final String[] ARGS;
-    static public String path_destination;
-
+    public static String path_destination;
     private static ProcesamientoDatos procesamientoDatos;
 
     /**
@@ -28,16 +33,6 @@ public class ProcesamientoDatos {
         this.ARGS = argumentos;
         creteEmptyFolders();
         ejecutarPrograma();
-    }
-
-    /**
-     * Crea las carpetas necesarias si no existen
-     */
-    private void creteEmptyFolders() {
-        File directory = new File(path_destination + "/image/");
-        while (!directory.exists()){
-            directory.mkdirs();
-        }
     }
 
     /**
@@ -62,7 +57,6 @@ public class ProcesamientoDatos {
      * Ejecución del programa
      */
     public void ejecutarPrograma() {
-
         List<String[]> pares = IntStream.iterate(0, i -> i += 2).limit(ARGS.length / 2)
                 .mapToObj(n -> new String[]{ARGS[n], ARGS[n + 1]}).collect(Collectors.toList());
 
@@ -70,15 +64,45 @@ public class ProcesamientoDatos {
             String ciudad = pair[0]; //Argumento ciudad
             path_destination = pair[1] + File.separator;
 
-            creteEmptyFolders();
+            Utils.createEmptyFolders(path_destination);
 
-            if (Utils.inicializarDatos()) {
-                DatosHTML datosCiudad = new DatosHTML();
-                datosCiudad.procesarDatosPorCiudad(ciudad);
+            if (Utils.inicializarDatosCSV()) {
+                ResultadoMediciones datosResultadoMediciones = new ResultadoMediciones();
+
+                //En su lugar, leer los datos desde el XML
                 try {
-                    GeneradorHTML.generarHtml(ciudad);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    Utils.inicializarDatosXML();
+                    ResultadosMedicionService res = new ResultadosMedicionService(ciudad);
+                    datosResultadoMediciones = res.cargarResultadosMediciones();
+
+                } catch (IOException | JDOMException e) {
+                    System.err.println("No se ha podido inicializar los datos del XML.");
+                    System.exit(0);
+                }
+
+                //Una vez recibidos los datos de las mediciones, trabajar con ellos
+                //CREAR LA BASE DE DATOS DE MEDICIONES
+                JAXBdbMediciones bd = JAXBdbMediciones.getInstance();
+
+                //Intentar generar Base de datos
+                try {
+
+                String uri = System.getProperty("user.dir") + File.separator + "src" + File.separator
+                        + "main"  + File.separator + "resources" +  File.separator +"data" + File.separator+"db"
+                        + File.separator + "mediciones.xml";
+
+                    //Crear base de datos de mediciones
+                    ConsultasXPATH.operacionesXpath(ciudad,path_destination,
+                            bd.crearBDMediciones(datosResultadoMediciones, uri)
+                    );
+
+                    System.out.println("Base de datos XML creada.");
+
+                } catch (JAXBException | ParserConfigurationException e) {
+                    System.err.println("No se ha podido crear la base de datos de mediciones.");
+                    System.exit(0);
+                } catch (XPathExpressionException | IOException e) {
+                    System.err.println("No se han podido realizar las consultas con XPATH.");
                 }
 
             } else {
@@ -88,18 +112,18 @@ public class ProcesamientoDatos {
         });
     }
 
-    // Mide el tiempo de ejecucion del programa
-    public String tiempoInforme() {
-        double tiempo = (double) ((System.currentTimeMillis() - Utils.init_time)/1000);
-        DateTimeFormatter dtf5 = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm");
+    /**
+     * Mide el tiempo de ejecución del programa y devuelve un informe
+     * @return Devuelve cuándo se ha creado el informe y cuánto tiempo ha tardado
+     */
+    public static String tiempoInforme() {
+        double tiempo = (double) (System.currentTimeMillis() - Utils.init_time)/1000;
         LocalDate fecha = LocalDate.now();
         String formatearFecha = "dd/MM/yyyy";
         LocalTime hora = LocalTime.now();
         String formatearHora = "HH:mm:ss";
 
-        String retorno = "Informe generado en el día " + fecha.format(DateTimeFormatter.ofPattern(formatearFecha))
+        return "Informe generado en el día " + fecha.format(DateTimeFormatter.ofPattern(formatearFecha))
                 + " a las " + hora.format(DateTimeFormatter.ofPattern(formatearHora))+ " en "+ tiempo + " segundos";
-
-        return retorno;
     }
 }

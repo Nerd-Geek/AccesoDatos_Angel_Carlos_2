@@ -2,11 +2,13 @@ package com.angcar.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class ZonasMunicipio { //POJO
-    private String zona_calidad_aire_codigo;
-    private String zona_calidad_aire_descripcion;
-    private String zona_calidad_aire_municipio;
+    private String airCodeQualityZone;
+    private String airQualityZoneDescription;
+    private String municipalAirQualityZone;
 }

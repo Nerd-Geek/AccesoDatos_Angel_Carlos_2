@@ -1,10 +1,14 @@
 package com.angcar.util;
 
-import com.angcar.ProcesamientoDatos;
+import com.angcar.io.JDOMReader;
 import com.angcar.io.ReaderFiles;
 import com.angcar.model.*;
+import org.jdom2.JDOMException;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -15,15 +19,15 @@ public class Utils {
     private static List<UbicacionEstaciones> estacionesUbi;
     private static List<Contaminacion> contamina;
     private static List<Meteorizacion> meteo;
-    //private static List<ZonasMunicipio> municipio;
-    private static List<MagnitudContaminacion> magnContamina;
-    private static List<MagnitudMeteorizacion> magnMeteo;
+    private static List<ZonasMunicipio> municipio;
+    private static List<Magnitud> magnContamina;
+    private static List<Magnitud> magnMeteo;
     static public long init_time;
 
-    public static List<MagnitudContaminacion> getMagnContamina() {
+    public static List<Magnitud> getMagnContamina() {
         return magnContamina;
     }
-    public static List<MagnitudMeteorizacion> getMagnMeteo() {
+    public static List<Magnitud> getMagnMeteo() {
         return magnMeteo;
     }
 
@@ -31,7 +35,7 @@ public class Utils {
     /**
      * Carga e inicializa los CSV's
      */
-    public static boolean inicializarDatos(){
+    public static boolean inicializarDatosCSV(){
         //Leer .csv's
         AtomicBoolean realizado = new AtomicBoolean(true);
 
@@ -65,7 +69,56 @@ public class Utils {
             realizado.set(false);
         });
 
+        ReaderFiles.readDataOfPathZonasMunicipio().ifPresentOrElse(
+                munic -> municipio = munic,
+                () -> {System.err.println("No se ha localizado el csv de magnitudes de meteorización");
+                    realizado.set(false);
+                });
+
         return realizado.get();
+    }
+
+    /**
+     * Inicializar los datos de XML
+     * @throws IOException excepción IO
+     * @throws JDOMException excepción JDOM
+     */
+    public static void inicializarDatosXML() throws IOException, JDOMException {
+        //Leer .xml's
+        JDOMReader controller = JDOMReader.getInstance();
+        AtomicBoolean realizado = new AtomicBoolean(true);
+        controller.loadData();
+
+        controller.getZonas().ifPresentOrElse(d -> d = municipio, () -> {
+            System.out.println("No se ha localizado el xml de municipio.");
+            realizado.set(false);
+        });;
+
+        controller.getUbicaciones().ifPresentOrElse(d -> d = estacionesUbi, () -> {
+            System.out.println("No se ha localizado el xml de estaciones.");
+            realizado.set(false);
+        });;
+
+        controller.getMeteorizacion().ifPresentOrElse(d -> d = meteo, () -> {
+            System.out.println("No se ha localizado el xml de meteorización.");
+            realizado.set(false);
+        });;
+
+        controller.getContaminacion().ifPresentOrElse(d -> d = contamina, () -> {
+            System.out.println("No se ha localizado el xml de contaminación.");
+            realizado.set(false);
+        });;
+
+        controller.getMagnitudContaminacion().ifPresentOrElse(d -> d = magnContamina, () -> {
+            System.out.println("No se ha localizado el xml de magnitud de contaminación.");
+            realizado.set(false);
+        });;
+
+        controller.getMagnitudMeteorizacion().ifPresentOrElse(d -> d = magnMeteo, () -> {
+            System.out.println("No se ha localizado el xml de magnitud de meteorización.");
+            realizado.set(false);
+        });;
+
     }
 
     /**
@@ -76,7 +129,7 @@ public class Utils {
      */
     public static Optional<List<Medicion>> obtenerMagnitudLista(int idMagnitud, List<Medicion> lista){
         return Optional.of(lista.stream().filter(nombreMagn ->
-                        nombreMagn.getMagnitud().equalsIgnoreCase(String.valueOf(idMagnitud)))
+                        nombreMagn.getMagnitude().equalsIgnoreCase(String.valueOf(idMagnitud)))
                 .collect(Collectors.toList()));
 
     }
@@ -86,10 +139,9 @@ public class Utils {
      * @param nombreCiudad El nombre de la ciudad
      * @return Optional con una lista de mediciones
      */
-
     public static Optional<List<UbicacionEstaciones>> filtrarPorCiudad(String nombreCiudad) {
         return Optional.of(estacionesUbi.stream().filter(ubicacionEstaciones ->
-                ubicacionEstaciones.getEstacion_municipio().equalsIgnoreCase(nombreCiudad)).collect(Collectors.toList()));
+                ubicacionEstaciones.getStationMunicipal().equalsIgnoreCase(nombreCiudad)).collect(Collectors.toList()));
     }
 
     /**
@@ -98,7 +150,7 @@ public class Utils {
      * @return Lista de mediciones
      */
     public static List<Medicion> filtrarMeteorizacion(String codigoCiudad) {
-        return meteo.stream().filter(punto_muestreo -> punto_muestreo.getPunto_muestreo()
+        return meteo.stream().filter(punto_muestreo -> punto_muestreo.getSamplingPoint()
                 .contains(codigoCiudad)).collect(Collectors.toList());
     }
 
@@ -108,7 +160,7 @@ public class Utils {
      * @return Lista de contaminaciones
      */
     public static List<Medicion> filtrarContaminacion(String codigoCiudad) {
-        return contamina.stream().filter(punto_muestreo -> punto_muestreo.getPunto_muestreo()
+        return contamina.stream().filter(punto_muestreo -> punto_muestreo.getSamplingPoint()
                 .contains(codigoCiudad)).collect(Collectors.toList());
     }
 
@@ -118,11 +170,11 @@ public class Utils {
      */
     public static String obtenerFechaInicioMedicion(){
         String formatearFecha = "dd/MM/yyyy - 00:00:00";
-        Optional<LocalDate> fecha = meteo.stream().min(Comparator.comparingInt(Medicion::getDia))
-                .map(s -> LocalDate.of(s.getAno(), s.getMes(), s.getDia()));
+        Optional<LocalDate> fecha = meteo.stream().min(Comparator.comparingInt(Medicion::getDay))
+                .map(s -> LocalDate.of(s.getYear(), s.getMonth(), s.getDay()));
 
-        Optional<LocalDate> fecha2 = contamina.stream().min(Comparator.comparingInt(Medicion::getDia))
-                .map(s -> LocalDate.of(s.getAno(), s.getMes(), s.getDia()));
+        Optional<LocalDate> fecha2 = contamina.stream().min(Comparator.comparingInt(Medicion::getDay))
+                .map(s -> LocalDate.of(s.getYear(), s.getMonth(), s.getDay()));
 
         if (fecha.isPresent() && fecha2.isPresent()){
             if (fecha.get().equals(fecha2.get())) {
@@ -147,11 +199,11 @@ public class Utils {
     public static String obtenerFechaFinalMedicion(){
         String formatearFecha = "dd/MM/yyyy - 00:00:00";
 
-        Optional<LocalDate> fecha = meteo.stream().max(Comparator.comparingInt(Medicion::getDia))
-                .map(s -> LocalDate.of(s.getAno(), s.getMes(), s.getDia()));
+        Optional<LocalDate> fecha = meteo.stream().max(Comparator.comparingInt(Medicion::getDay))
+                .map(s -> LocalDate.of(s.getYear(), s.getMonth(), s.getDay()));
 
-        Optional<LocalDate> fecha2 = contamina.stream().max(Comparator.comparingInt(Medicion::getDia))
-                .map(s -> LocalDate.of(s.getAno(), s.getMes(), s.getDia()));
+        Optional<LocalDate> fecha2 = contamina.stream().max(Comparator.comparingInt(Medicion::getDay))
+                .map(s -> LocalDate.of(s.getYear(), s.getMonth(), s.getDay()));
 
         if (fecha.isPresent() && fecha2.isPresent()){
             if (fecha.get().equals(fecha2.get())) {
@@ -174,23 +226,13 @@ public class Utils {
      * @return double con la media diaria
      */
     public static double obtenerMediaDiaria(Medicion medicion){
-            double media = Utils.obtenerHorasValidadas(medicion.getHoras())
+            double media = Utils.obtenerHorasValidadas(medicion.getHours())
                     .stream()
-                    .mapToDouble(value -> Double.parseDouble(value.getValor()))
+                    .mapToDouble(value -> Double.parseDouble(value.getValue()))
                     .summaryStatistics().getAverage();
 
             return Math.round(media * 100d) / 100d;
     }
-
-    /**
-     * Obtiene la fecha de una medición
-     * @param medicion {@link Medicion}
-     * @return fecha de medición
-     */
-    public static LocalDate obtenerFechaMedicion(Medicion medicion){
-        return LocalDate.of(medicion.getAno(), medicion.getMes(), medicion.getDia());
-    }
-
 
     /**
      * Obtener código de la estación principal dada una ciudad
@@ -199,10 +241,10 @@ public class Utils {
      */
     public static String obtenerCodigo(String nombreCiudad) {
         Optional<UbicacionEstaciones> estacion = estacionesUbi.stream().filter(ubicacionEstaciones ->
-                ubicacionEstaciones.getEstacion_municipio().equalsIgnoreCase(nombreCiudad)).findFirst();
+                ubicacionEstaciones.getStationMunicipal().equalsIgnoreCase(nombreCiudad)).findFirst();
 
         String name = "";
-        if (estacion.isPresent()) name = estacion.get().getEstacion_codigo();
+        if (estacion.isPresent()) name = estacion.get().getStationCode();
         return name;
     }
 
@@ -216,10 +258,10 @@ public class Utils {
         String codigo = obtenerCodigo(ciudad);
 
         List<UbicacionEstaciones> estacion = estacionesUbi.stream().filter(ubicacionEstaciones ->
-                        codigo.substring(6).equals(ubicacionEstaciones.getEstacion_codigo().substring(6)))
+                        codigo.substring(6).equals(ubicacionEstaciones.getStationCode().substring(6)))
                 .collect(Collectors.toList());
 
-       return Optional.of(estacion.stream().map(UbicacionEstaciones::getEstacion_municipio).collect(Collectors.toList()));
+       return Optional.of(estacion.stream().map(UbicacionEstaciones::getStationMunicipal).collect(Collectors.toList()));
 
     }
 
@@ -233,20 +275,82 @@ public class Utils {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Mide el tiempo de ejecución del programa y devuelve un informe
-     * @return Devuelve cuándo se ha creado el informe y cuánto tiempo ha tardado
-     */
-    public static String tiempoInforme() {
-        double tiempo = (double) ((System.currentTimeMillis() - Utils.init_time)/1000);
-        LocalDate fecha = LocalDate.now();
-        String formatearFecha = "dd/MM/yyyy";
-        LocalTime hora = LocalTime.now();
-        String formatearHora = "HH:mm:ss";
+    public static Optional<String> obtenerCodeEstacion(String nombreCiudad){
+        Optional<List<UbicacionEstaciones>> listaEstaciones = Utils.filtrarPorCiudad(nombreCiudad);
+        Optional <String> codigoCiudad = Optional.empty();
 
-        return "Informe generado en el día " + fecha.format(DateTimeFormatter.ofPattern(formatearFecha))
-                + " a las " + hora.format(DateTimeFormatter.ofPattern(formatearHora))+ " en "+ tiempo + " segundos";
+        if (Utils.filtrarPorCiudad(nombreCiudad).isPresent()){
+            codigoCiudad = Optional.of(Utils.filtrarPorCiudad(nombreCiudad).get().get(0).getStationCode());
+        }
+
+        return codigoCiudad;
     }
 
+    /**
+     * Obtiene la fecha de una medición
+     * @param medicion {@link Medicion}
+     * @return fecha de medición
+     */
+    public static LocalDate obtenerFechaMedicion(Medicion medicion){
+        return LocalDate.of(medicion.getYear(), medicion.getMonth(), medicion.getDay());
+    }
 
+    /**
+     * Dada una hora, obtiene un LocalTime
+     * @param value
+     * @return
+     */
+    public static Optional<LocalTime> obtenerHoraMedicion(Optional<Hora> value) {
+        return value.map(hora -> LocalTime.of(hora.getNumHour(), 0));
+    }
+
+    /**
+     * Obtener la fecha y la hora dada una medición
+     * @param mapEntry
+     * @return
+     */
+    public static Optional<LocalDateTime> obtenerFechaAndHoraMedicion(Map.Entry<Medicion, Optional<Hora>> mapEntry) {
+        LocalDate date;
+        LocalTime time;
+
+        if (Utils.obtenerHoraMedicion(mapEntry.getValue()).isPresent()){
+            return Optional.of(LocalDateTime.of(Utils.obtenerFechaMedicion(mapEntry.getKey()),
+                    Utils.obtenerHoraMedicion(mapEntry.getValue()).get()));
+        }
+
+        return Optional.empty();
+    }
+
+    /**
+     * Crea las carpetas necesarias si no existen
+     */
+    public static void createEmptyFolders(String path_destination) {
+
+        //Crear directorio inicial si no existe + directorio image
+        File directory = new File(path_destination + File.separator + "image");
+        while (!directory.exists()){
+            if (directory.mkdirs()){
+                System.out.println("Directorio " + directory.getPath() + " creado");
+            };
+        }
+
+        //Crear directorio db si no existe
+        directory = new File(System.getProperty("user.dir") + File.separator + "src" + File.separator
+                + "main"  + File.separator + "resources" +  File.separator +"data" + File.separator+"db");
+
+        while (!directory.exists()){
+            if (directory.mkdirs()){
+                System.out.println("Carpeta 'db' creada");
+            };
+        }
+
+        //Crear directorio style si no existe
+        directory = new File(path_destination + File.separator + "style");
+
+        while (!directory.exists()){
+            if (directory.mkdirs()){
+                System.out.println("Carpeta 'style' creada");
+            };
+        }
+    }
 }
